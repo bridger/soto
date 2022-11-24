@@ -1,5 +1,5 @@
 {{%CONTENT_TYPE:TEXT}}
-// swift-tools-version:5.2
+// swift-tools-version:5.6
 //===----------------------------------------------------------------------===//
 //
 // This source file is part of the Soto for AWS open source project
@@ -21,20 +21,16 @@ let package = Package(
     platforms: [.iOS(.v12), .tvOS(.v12), .watchOS(.v5)],
     products: [
 {{#targets}}
-        .library(name: "Soto{{name}}", targets: ["Soto{{name}}"]){{^last()}},{{/last()}}
+        .library(name: "{{name}}", targets: ["{{name}}"]){{^last()}},{{/last()}}
 {{/targets}}
     ],
     dependencies: [
-        .package(url: "https://github.com/soto-project/soto-core.git", .branch("main"))
+        .package(url: "https://github.com/soto-project/soto-core.git", branch: "main"),
+        .package(url: "https://github.com/soto-project/soto-codegenerator", branch: "feature/plugin"),
     ],
     targets: [
 {{#targets}}
-{{#hasExtension}}
-        .target(name: "Soto{{name}}", dependencies: [{{#dependencies}}{{.}}{{^last()}}, {{/last()}}{{/dependencies}}], path: "./Sources/Soto/", sources: ["Services/{{name}}", "Extensions/{{name}}"]){{^last()}},{{/last()}}
-{{/hasExtension}}
-{{^hasExtension}}
-        .target(name: "Soto{{name}}", dependencies: [{{#dependencies}}{{.}}{{^last()}}, {{/last()}}{{/dependencies}}], path: "./Sources/Soto/Services/{{name}}"),
-{{/hasExtension}}
+        .target(name: "{{name}}", dependencies: [.product(name: "SotoCore", package: "soto-core")], plugins: [.plugin(name: "SotoCodeGeneratorPlugin", package: "soto-codegenerator")]),
 {{/targets}}
 
         .testTarget(

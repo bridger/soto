@@ -19,26 +19,20 @@ import HummingbirdMustache // hummingbird-project/hummingbird-mustache
 struct GeneratePackage {
     struct Target {
         let name: String
-        let hasExtension: Bool
-        let dependencies: [String]
     }
 
     init() {}
 
     func run() throws {
         let library = try HBMustacheLibrary(directory: "./scripts/templates/generate-package")
-        let servicesFolder = try Folder(path: "./Sources/Soto/Services")
-        let extensionsFolder = try Folder(path: "./Sources/Soto/Extensions")
+        let servicesFolder = try Folder(path: "./Sources")
         let testFolder = try Folder(path: "./Tests/SotoTests/Services")
         let currentFolder = try Folder(path: ".")
 
-        let extensionSubfolders = extensionsFolder.subfolders
         // construct list of services along with a flag to say if they have an extension
         let srcFolders = servicesFolder.subfolders.map { folder -> Target in
-            let hasExtension = extensionSubfolders.first { $0.name == folder.name } != nil
             let dependencies: [String]
-            dependencies = [#".product(name: "SotoCore", package: "soto-core")"#]
-            return Target(name: folder.name, hasExtension: hasExtension, dependencies: dependencies)
+            return Target(name: folder.name)
         }
         // construct list of tests, plus the ones used in AWSRequestTests.swift
         var testFolders = Set<String>(testFolder.subfolders.map { $0.name })
