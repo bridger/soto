@@ -174,4 +174,163 @@ extension MediaConnect {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MediaConnect {
+    ///  Displays a list of all entitlements that have been granted to this account. This request returns 20 results per page.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEntitlementsPaginator(
+        _ input: ListEntitlementsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEntitlementsRequest, ListEntitlementsResponse> {
+        return .init(
+            input: input,
+            command: self.listEntitlements,
+            inputKey: \ListEntitlementsRequest.nextToken,
+            outputKey: \ListEntitlementsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Displays a list of flows that are associated with this account. This request returns a paginated result.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFlowsPaginator(
+        _ input: ListFlowsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFlowsRequest, ListFlowsResponse> {
+        return .init(
+            input: input,
+            command: self.listFlows,
+            inputKey: \ListFlowsRequest.nextToken,
+            outputKey: \ListFlowsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Displays a list of all offerings that are available to this account in the current AWS Region. If you have an active reservation (which means you've purchased an offering that has already started and hasn't expired yet), your account isn't eligible for other offerings.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listOfferingsPaginator(
+        _ input: ListOfferingsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListOfferingsRequest, ListOfferingsResponse> {
+        return .init(
+            input: input,
+            command: self.listOfferings,
+            inputKey: \ListOfferingsRequest.nextToken,
+            outputKey: \ListOfferingsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Displays a list of all reservations that have been purchased by this account in the current AWS Region. This list includes all reservations in all states (such as active and expired).
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listReservationsPaginator(
+        _ input: ListReservationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListReservationsRequest, ListReservationsResponse> {
+        return .init(
+            input: input,
+            command: self.listReservations,
+            inputKey: \ListReservationsRequest.nextToken,
+            outputKey: \ListReservationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MediaConnect {
+    public func waitUntilFlowActive(
+        _ input: DescribeFlowRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("flow.status", expected: "ACTIVE")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("flow.status", expected: "STARTING")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("flow.status", expected: "UPDATING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("ServiceUnavailableException")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("flow.status", expected: "ERROR")),
+            ],
+            minDelayTime: .seconds(3),
+            command: self.describeFlow
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilFlowDeleted(
+        _ input: DescribeFlowRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("NotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("flow.status", expected: "DELETING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("ServiceUnavailableException")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("flow.status", expected: "ERROR")),
+            ],
+            minDelayTime: .seconds(3),
+            command: self.describeFlow
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilFlowStandby(
+        _ input: DescribeFlowRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("flow.status", expected: "STANDBY")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("flow.status", expected: "STOPPING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("ServiceUnavailableException")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("flow.status", expected: "ERROR")),
+            ],
+            minDelayTime: .seconds(3),
+            command: self.describeFlow
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

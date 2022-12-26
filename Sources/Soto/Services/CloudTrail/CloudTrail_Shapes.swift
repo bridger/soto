@@ -164,7 +164,7 @@ extension CloudTrail {
         public let endsWith: [String]?
         ///  An operator that includes events that match the exact value of the event record field specified as the value of Field. This is the only valid operator that you can use with the readOnly, eventCategory, and resources.type fields.
         public let equals: [String]?
-        ///  A field in an event record on which to filter events to be logged. Supported fields include readOnly, eventCategory,  eventSource (for management events), eventName, resources.type, and resources.ARN.      readOnly - Optional. Can be set to Equals a value of true or false. If you do not add this field, CloudTrail logs both read and write events. A value of true logs only read events. A value of false  logs only write events.     eventSource - For filtering management events only.  This can be set only to NotEquals  kms.amazonaws.com.     eventName - Can use any operator. You can use it to ﬁlter in or ﬁlter out any data event logged to CloudTrail, such as PutBucket or GetSnapshotBlock. You can have multiple values for this ﬁeld, separated by commas.     eventCategory - This is required. It must be set to Equals, and  the value must be Management or Data.     resources.type - This ﬁeld is required. resources.type can only use the Equals operator, and the value can be one of the following:    AWS::S3::Object     AWS::Lambda::Function     AWS::DynamoDB::Table     AWS::S3Outposts::Object     AWS::ManagedBlockchain::Node     AWS::S3ObjectLambda::AccessPoint     AWS::EC2::Snapshot     AWS::S3::AccessPoint     AWS::DynamoDB::Stream     AWS::Glue::Table     You can have only one resources.type ﬁeld per selector. To log data events on more than one resource type, add another selector.     resources.ARN - You can use any operator with resources.ARN, but if you use Equals or NotEquals, the value must exactly match the ARN of a valid resource of the type you've speciﬁed in the template as the value of resources.type. For example, if resources.type equals AWS::S3::Object, the ARN must be in one of the following formats. To log all data events for all objects in a specific S3 bucket, use the StartsWith operator, and include only the bucket ARN as the matching value. The trailing slash is intentional; do not exclude it. Replace the text between less than and greater than symbols (<>) with resource-specific information.     arn::s3:::/     arn::s3::://    When resources.type equals AWS::S3::AccessPoint, and the operator is set to Equals or NotEquals, the ARN must be in one of the following formats. To log events on all objects in an S3 access point, we recommend that you use only the access point ARN, don’t include the object path, and use the StartsWith or NotStartsWith operators.    arn::s3:::accesspoint/     arn::s3:::accesspoint//object/    When resources.type equals AWS::Lambda::Function, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::lambda:::function:    When resources.type equals AWS::DynamoDB::Table, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::dynamodb:::table/    When resources.type equals AWS::S3Outposts::Object, and the operator  is set to Equals or NotEquals, the ARN must be in the following format:    arn::s3-outposts:::    When resources.type equals AWS::ManagedBlockchain::Node, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::managedblockchain:::nodes/    When resources.type equals AWS::S3ObjectLambda::AccessPoint, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::s3-object-lambda:::accesspoint/    When resources.type equals AWS::EC2::Snapshot, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::ec2:::snapshot/    When resources.type equals AWS::DynamoDB::Stream, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::dynamodb:::table//stream/    When resources.type equals AWS::Glue::Table, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::glue:::table//
+        ///  A field in an event record on which to filter events to be logged. Supported fields include readOnly, eventCategory,  eventSource (for management events), eventName, resources.type, and resources.ARN.      readOnly - Optional. Can be set to Equals a value of true or false. If you do not add this field, CloudTrail logs both read and write events. A value of true logs only read events. A value of false  logs only write events.     eventSource - For filtering management events only.  This can be set only to NotEquals kms.amazonaws.com.     eventName - Can use any operator. You can use it to ﬁlter in or ﬁlter out any data event logged to CloudTrail, such as PutBucket or GetSnapshotBlock. You can have multiple values for this ﬁeld, separated by commas.     eventCategory - This is required. It must be set to Equals, and  the value must be Management or Data.     resources.type - This ﬁeld is required. resources.type can only use the Equals operator, and the value can be one of the following:    AWS::S3::Object     AWS::Lambda::Function     AWS::DynamoDB::Table     AWS::S3Outposts::Object     AWS::ManagedBlockchain::Node     AWS::S3ObjectLambda::AccessPoint     AWS::EC2::Snapshot     AWS::S3::AccessPoint     AWS::DynamoDB::Stream     AWS::Glue::Table     You can have only one resources.type ﬁeld per selector. To log data events on more than one resource type, add another selector.     resources.ARN - You can use any operator with resources.ARN, but if you use Equals or NotEquals, the value must exactly match the ARN of a valid resource of the type you've speciﬁed in the template as the value of resources.type. For example, if resources.type equals AWS::S3::Object, the ARN must be in one of the following formats. To log all data events for all objects in a specific S3 bucket, use the StartsWith operator, and include only the bucket ARN as the matching value. The trailing slash is intentional; do not exclude it. Replace the text between less than and greater than symbols (<>) with resource-specific information.     arn::s3:::/     arn::s3::://    When resources.type equals AWS::S3::AccessPoint, and the operator is set to Equals or NotEquals, the ARN must be in one of the following formats. To log events on all objects in an S3 access point, we recommend that you use only the access point ARN, don’t include the object path, and use the StartsWith or NotStartsWith operators.    arn::s3:::accesspoint/     arn::s3:::accesspoint//object/    When resources.type equals AWS::Lambda::Function, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::lambda:::function:    When resources.type equals AWS::DynamoDB::Table, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::dynamodb:::table/    When resources.type equals AWS::S3Outposts::Object, and the operator  is set to Equals or NotEquals, the ARN must be in the following format:    arn::s3-outposts:::    When resources.type equals AWS::ManagedBlockchain::Node, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::managedblockchain:::nodes/    When resources.type equals AWS::S3ObjectLambda::AccessPoint, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::s3-object-lambda:::accesspoint/    When resources.type equals AWS::EC2::Snapshot, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::ec2:::snapshot/    When resources.type equals AWS::DynamoDB::Stream, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::dynamodb:::table//stream/    When resources.type equals AWS::Glue::Table, and the operator is set to Equals or NotEquals, the ARN must be in the following format:    arn::glue:::table//
         public let field: String
         ///  An operator that excludes events that match the last few characters of the event record field specified as the value of Field.
         public let notEndsWith: [String]?
@@ -560,8 +560,7 @@ extension CloudTrail {
     }
 
     public struct DataResource: AWSEncodableShape & AWSDecodableShape {
-        /// The resource type in which you want to log data events. You can specify the following basic event selector resource types:    AWS::S3::Object     AWS::Lambda::Function     AWS::DynamoDB::Table
-        ///  The following resource types are also available through advanced event selectors. Basic event selector resource types are valid in advanced event selectors, but advanced event selector resource types are not valid in basic event selectors. For more information, see AdvancedFieldSelector$Field.    AWS::S3Outposts::Object     AWS::ManagedBlockchain::Node     AWS::S3ObjectLambda::AccessPoint     AWS::EC2::Snapshot     AWS::S3::AccessPoint     AWS::DynamoDB::Stream     AWS::Glue::Table
+        /// The resource type in which you want to log data events. You can specify the following basic event selector resource types:    AWS::S3::Object     AWS::Lambda::Function     AWS::DynamoDB::Table    The following resource types are also available through advanced event selectors. Basic event selector resource types are valid in advanced event selectors, but advanced event selector resource types are not valid in basic event selectors. For more information, see AdvancedFieldSelector$Field.    AWS::S3Outposts::Object     AWS::ManagedBlockchain::Node     AWS::S3ObjectLambda::AccessPoint     AWS::EC2::Snapshot     AWS::S3::AccessPoint     AWS::DynamoDB::Stream     AWS::Glue::Table
         public let type: String?
         /// An array of Amazon Resource Name (ARN) strings or partial ARN strings for the specified objects.   To log data events for all objects in all S3 buckets in your Amazon Web Services account, specify the  prefix as arn:aws:s3.  This also enables logging of data event activity performed by any user or role in your Amazon Web Services account,  even if that activity is performed on a bucket that belongs to another Amazon Web Services account.    To log data events for all objects in an S3 bucket, specify the bucket and an empty object prefix such as arn:aws:s3:::bucket-1/. The trail logs data events for all objects in this S3 bucket.   To log data events for specific objects, specify the S3 bucket and object prefix such as arn:aws:s3:::bucket-1/example-images. The trail logs data events for objects in this S3 bucket that match the prefix.   To log data events for all Lambda functions in your Amazon Web Services account, specify the prefix as arn:aws:lambda.  This also enables logging of Invoke activity performed by any user or role in your Amazon Web Services account,  even if that activity is performed on a function that belongs to another Amazon Web Services account.     To log data events for a specific Lambda function, specify the function ARN.  Lambda function ARNs are exact. For example, if you specify a  function ARN arn:aws:lambda:us-west-2:111111111111:function:helloworld, data events will only be logged for arn:aws:lambda:us-west-2:111111111111:function:helloworld. They will not be logged for arn:aws:lambda:us-west-2:111111111111:function:helloworld2.    To log data events for all DynamoDB tables in your Amazon Web Services account, specify the prefix as arn:aws:dynamodb.
         public let values: [String]?
@@ -712,7 +711,7 @@ extension CloudTrail {
     public struct DescribeTrailsRequest: AWSEncodableShape {
         /// Specifies whether to include shadow trails in the response. A shadow trail is the replication in a region of a trail that was created in a different region, or in the case of an organization trail, the replication of an organization trail in member accounts. If you do not include shadow trails, organization trails in a member account and region replication trails will not be returned. The default is true.
         public let includeShadowTrails: Bool?
-        /// Specifies a list of trail names, trail ARNs, or both, of the trails to describe. The format of a trail ARN is:  arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail   If an empty list is specified, information for the trail in the current region is returned.   If an empty list is specified and IncludeShadowTrails is false, then information for all trails in the current region is returned.   If an empty list is specified and IncludeShadowTrails is null or true, then information for all trails in the current region and any associated shadow trails in other regions is returned.    If one or more trail names are specified, information is returned only if the names match the names of trails belonging only to the current region. To return information about a trail in another region, you must specify its trail ARN.
+        /// Specifies a list of trail names, trail ARNs, or both, of the trails to describe. The format of a trail ARN is:  arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail  If an empty list is specified, information for the trail in the current region is returned.   If an empty list is specified and IncludeShadowTrails is false, then information for all trails in the current region is returned.   If an empty list is specified and IncludeShadowTrails is null or true, then information for all trails in the current region and any associated shadow trails in other regions is returned.    If one or more trail names are specified, information is returned only if the names match the names of trails belonging only to the current region. To return information about a trail in another region, you must specify its trail ARN.
         public let trailNameList: [String]?
 
         public init(includeShadowTrails: Bool? = nil, trailNameList: [String]? = nil) {
@@ -869,7 +868,7 @@ extension CloudTrail {
         public let dataResources: [DataResource]?
         /// An optional list of service event sources from which you do not want management events to be logged on your trail. In this release, the list can be empty (disables the filter),  or it can filter out Key Management Service or Amazon RDS Data API events by  containing kms.amazonaws.com or rdsdata.amazonaws.com. By default, ExcludeManagementEventSources is empty, and KMS and  Amazon RDS Data API events are logged to your trail. You can exclude management event sources only in regions that support the event source.
         public let excludeManagementEventSources: [String]?
-        /// Specify if you want your event selector to include management events for your trail.  For more information, see Management Events in the CloudTrail User Guide.   By default, the value is true. The first copy of management events is free. You are charged for additional copies of management  events that you are logging on any subsequent trail in the same region. For more information about  CloudTrail pricing, see CloudTrail Pricing.
+        /// Specify if you want your event selector to include management events for your trail.  For more information, see Management Events in the CloudTrail User Guide. By default, the value is true. The first copy of management events is free. You are charged for additional copies of management  events that you are logging on any subsequent trail in the same region. For more information about  CloudTrail pricing, see CloudTrail Pricing.
         public let includeManagementEvents: Bool?
         /// Specify if you want your trail to log read-only events, write-only events, or all. For example, the EC2 GetConsoleOutput is a read-only API operation and RunInstances is a write-only API operation. By default, the value is All.
         public let readWriteType: ReadWriteType?
@@ -1801,6 +1800,11 @@ extension CloudTrail {
             self.attributeValue = attributeValue
         }
 
+        public func validate(name: String) throws {
+            try self.validate(self.attributeValue, name: "attributeValue", parent: name, max: 2000)
+            try self.validate(self.attributeValue, name: "attributeValue", parent: name, min: 1)
+        }
+
         private enum CodingKeys: String, CodingKey {
             case attributeKey = "AttributeKey"
             case attributeValue = "AttributeValue"
@@ -1831,6 +1835,9 @@ extension CloudTrail {
         }
 
         public func validate(name: String) throws {
+            try self.lookupAttributes?.forEach {
+                try $0.validate(name: "\(name).lookupAttributes[]")
+            }
             try self.validate(self.maxResults, name: "maxResults", parent: name, max: 50)
             try self.validate(self.maxResults, name: "maxResults", parent: name, min: 1)
         }
@@ -2505,7 +2512,7 @@ extension CloudTrail {
         public let s3BucketName: String?
         /// Specifies the Amazon S3 key prefix that comes after the name of the bucket you have designated for log file delivery. For more information, see Finding Your CloudTrail Log Files.  The maximum length is 200 characters.
         public let s3KeyPrefix: String?
-        /// Specifies the ARN of the Amazon SNS topic that CloudTrail uses to send notifications when log files are delivered. The following is the format of a topic ARN.   arn:aws:sns:us-east-2:123456789012:MyTopic
+        /// Specifies the ARN of the Amazon SNS topic that CloudTrail uses to send notifications when log files are delivered. The following is the format of a topic ARN.  arn:aws:sns:us-east-2:123456789012:MyTopic
         public let snsTopicARN: String?
         /// This field is no longer in use. Use SnsTopicARN.
         public let snsTopicName: String?
@@ -2767,7 +2774,7 @@ extension CloudTrail {
         public let isMultiRegionTrail: Bool?
         /// Specifies whether the trail is an organization trail.
         public let isOrganizationTrail: Bool?
-        /// Specifies the KMS key ID that encrypts the logs delivered by CloudTrail. The value is a fully specified ARN to a KMS key in the following format.   arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012
+        /// Specifies the KMS key ID that encrypts the logs delivered by CloudTrail. The value is a fully specified ARN to a KMS key in the following format.  arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012
         public let kmsKeyId: String?
         /// Specifies whether log file integrity validation is enabled.
         public let logFileValidationEnabled: Bool?
@@ -2832,5 +2839,260 @@ extension CloudTrail {
             case snsTopicName = "SnsTopicName"
             case trailARN = "TrailARN"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for CloudTrail
+public struct CloudTrailErrorType: AWSErrorType {
+    enum Code: String {
+        case accountHasOngoingImportException = "AccountHasOngoingImportException"
+        case accountNotFoundException = "AccountNotFoundException"
+        case accountNotRegisteredException = "AccountNotRegisteredException"
+        case accountRegisteredException = "AccountRegisteredException"
+        case cannotDelegateManagementAccountException = "CannotDelegateManagementAccountException"
+        case channelARNInvalidException = "ChannelARNInvalidException"
+        case channelNotFoundException = "ChannelNotFoundException"
+        case cloudTrailARNInvalidException = "CloudTrailARNInvalidException"
+        case cloudTrailAccessNotEnabledException = "CloudTrailAccessNotEnabledException"
+        case cloudTrailInvalidClientTokenIdException = "CloudTrailInvalidClientTokenIdException"
+        case cloudWatchLogsDeliveryUnavailableException = "CloudWatchLogsDeliveryUnavailableException"
+        case conflictException = "ConflictException"
+        case delegatedAdminAccountLimitExceededException = "DelegatedAdminAccountLimitExceededException"
+        case eventDataStoreARNInvalidException = "EventDataStoreARNInvalidException"
+        case eventDataStoreAlreadyExistsException = "EventDataStoreAlreadyExistsException"
+        case eventDataStoreHasOngoingImportException = "EventDataStoreHasOngoingImportException"
+        case eventDataStoreMaxLimitExceededException = "EventDataStoreMaxLimitExceededException"
+        case eventDataStoreNotFoundException = "EventDataStoreNotFoundException"
+        case eventDataStoreTerminationProtectedException = "EventDataStoreTerminationProtectedException"
+        case importNotFoundException = "ImportNotFoundException"
+        case inactiveEventDataStoreException = "InactiveEventDataStoreException"
+        case inactiveQueryException = "InactiveQueryException"
+        case insightNotEnabledException = "InsightNotEnabledException"
+        case insufficientDependencyServiceAccessPermissionException = "InsufficientDependencyServiceAccessPermissionException"
+        case insufficientEncryptionPolicyException = "InsufficientEncryptionPolicyException"
+        case insufficientS3BucketPolicyException = "InsufficientS3BucketPolicyException"
+        case insufficientSnsTopicPolicyException = "InsufficientSnsTopicPolicyException"
+        case invalidCloudWatchLogsLogGroupArnException = "InvalidCloudWatchLogsLogGroupArnException"
+        case invalidCloudWatchLogsRoleArnException = "InvalidCloudWatchLogsRoleArnException"
+        case invalidDateRangeException = "InvalidDateRangeException"
+        case invalidEventCategoryException = "InvalidEventCategoryException"
+        case invalidEventDataStoreCategoryException = "InvalidEventDataStoreCategoryException"
+        case invalidEventDataStoreStatusException = "InvalidEventDataStoreStatusException"
+        case invalidEventSelectorsException = "InvalidEventSelectorsException"
+        case invalidHomeRegionException = "InvalidHomeRegionException"
+        case invalidImportSourceException = "InvalidImportSourceException"
+        case invalidInsightSelectorsException = "InvalidInsightSelectorsException"
+        case invalidKmsKeyIdException = "InvalidKmsKeyIdException"
+        case invalidLookupAttributesException = "InvalidLookupAttributesException"
+        case invalidMaxResultsException = "InvalidMaxResultsException"
+        case invalidNextTokenException = "InvalidNextTokenException"
+        case invalidParameterCombinationException = "InvalidParameterCombinationException"
+        case invalidParameterException = "InvalidParameterException"
+        case invalidQueryStatementException = "InvalidQueryStatementException"
+        case invalidQueryStatusException = "InvalidQueryStatusException"
+        case invalidS3BucketNameException = "InvalidS3BucketNameException"
+        case invalidS3PrefixException = "InvalidS3PrefixException"
+        case invalidSnsTopicNameException = "InvalidSnsTopicNameException"
+        case invalidTagParameterException = "InvalidTagParameterException"
+        case invalidTimeRangeException = "InvalidTimeRangeException"
+        case invalidTokenException = "InvalidTokenException"
+        case invalidTrailNameException = "InvalidTrailNameException"
+        case kmsException = "KmsException"
+        case kmsKeyDisabledException = "KmsKeyDisabledException"
+        case kmsKeyNotFoundException = "KmsKeyNotFoundException"
+        case maxConcurrentQueriesException = "MaxConcurrentQueriesException"
+        case maximumNumberOfTrailsExceededException = "MaximumNumberOfTrailsExceededException"
+        case noManagementAccountSLRExistsException = "NoManagementAccountSLRExistsException"
+        case notOrganizationManagementAccountException = "NotOrganizationManagementAccountException"
+        case notOrganizationMasterAccountException = "NotOrganizationMasterAccountException"
+        case operationNotPermittedException = "OperationNotPermittedException"
+        case organizationNotInAllFeaturesModeException = "OrganizationNotInAllFeaturesModeException"
+        case organizationsNotInUseException = "OrganizationsNotInUseException"
+        case queryIdNotFoundException = "QueryIdNotFoundException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case resourceTypeNotSupportedException = "ResourceTypeNotSupportedException"
+        case s3BucketDoesNotExistException = "S3BucketDoesNotExistException"
+        case tagsLimitExceededException = "TagsLimitExceededException"
+        case trailAlreadyExistsException = "TrailAlreadyExistsException"
+        case trailNotFoundException = "TrailNotFoundException"
+        case trailNotProvidedException = "TrailNotProvidedException"
+        case unsupportedOperationException = "UnsupportedOperationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize CloudTrail
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    ///  This exception is thrown when you start a new import and a  previous import is still in progress.
+    public static var accountHasOngoingImportException: Self { .init(.accountHasOngoingImportException) }
+    /// This exception is thrown when when the specified account is not found or not part of an organization.
+    public static var accountNotFoundException: Self { .init(.accountNotFoundException) }
+    /// This exception is thrown when the specified account is not registered as the CloudTrail delegated administrator.
+    public static var accountNotRegisteredException: Self { .init(.accountNotRegisteredException) }
+    /// This exception is thrown when the account is already registered as the CloudTrail delegated administrator.
+    public static var accountRegisteredException: Self { .init(.accountRegisteredException) }
+    /// This exception is thrown when the management account of an organization is registered as the CloudTrail delegated administrator.
+    public static var cannotDelegateManagementAccountException: Self { .init(.cannotDelegateManagementAccountException) }
+    /// This exception is thrown when the specified value of ChannelARN is not valid.
+    public static var channelARNInvalidException: Self { .init(.channelARNInvalidException) }
+    ///  The specified channel was not found.
+    public static var channelNotFoundException: Self { .init(.channelNotFoundException) }
+    /// This exception is thrown when an operation is called with a trail ARN that is not valid. The following is the format of a trail ARN.  arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail
+    public static var cloudTrailARNInvalidException: Self { .init(.cloudTrailARNInvalidException) }
+    /// This exception is thrown when trusted access has not been enabled between CloudTrail and Organizations. For more information,  see Enabling Trusted Access with Other Amazon Web Services Services and Prepare For Creating a Trail For Your Organization.
+    public static var cloudTrailAccessNotEnabledException: Self { .init(.cloudTrailAccessNotEnabledException) }
+    /// This exception is thrown when a call results in the InvalidClientTokenId error code.  This can occur when you are creating or updating a trail to send notifications to an Amazon SNS topic that  is in a suspended Amazon Web Services account.
+    public static var cloudTrailInvalidClientTokenIdException: Self { .init(.cloudTrailInvalidClientTokenIdException) }
+    /// Cannot set a CloudWatch Logs delivery for this region.
+    public static var cloudWatchLogsDeliveryUnavailableException: Self { .init(.cloudWatchLogsDeliveryUnavailableException) }
+    /// This exception is thrown when the specified resource is not ready for an operation.  This can occur when you try to run an operation on a resource before CloudTrail has time to fully load the resource.  If this exception occurs, wait a few minutes, and then try the operation again.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// This exception is thrown when the maximum number of CloudTrail delegated administrators is reached.
+    public static var delegatedAdminAccountLimitExceededException: Self { .init(.delegatedAdminAccountLimitExceededException) }
+    /// The specified event data store ARN is not valid or does not map to an event data store in your account.
+    public static var eventDataStoreARNInvalidException: Self { .init(.eventDataStoreARNInvalidException) }
+    /// An event data store with that name already exists.
+    public static var eventDataStoreAlreadyExistsException: Self { .init(.eventDataStoreAlreadyExistsException) }
+    ///  This exception is thrown when you try to update or delete an event data store that currently has an import in progress.
+    public static var eventDataStoreHasOngoingImportException: Self { .init(.eventDataStoreHasOngoingImportException) }
+    /// Your account has used the maximum number of event data stores.
+    public static var eventDataStoreMaxLimitExceededException: Self { .init(.eventDataStoreMaxLimitExceededException) }
+    /// The specified event data store was not found.
+    public static var eventDataStoreNotFoundException: Self { .init(.eventDataStoreNotFoundException) }
+    /// The event data store cannot be deleted because termination protection is enabled for it.
+    public static var eventDataStoreTerminationProtectedException: Self { .init(.eventDataStoreTerminationProtectedException) }
+    ///  The specified import was not found.
+    public static var importNotFoundException: Self { .init(.importNotFoundException) }
+    /// The event data store is inactive.
+    public static var inactiveEventDataStoreException: Self { .init(.inactiveEventDataStoreException) }
+    /// The specified query cannot be canceled because it is in the FINISHED, FAILED, TIMED_OUT, or CANCELLED state.
+    public static var inactiveQueryException: Self { .init(.inactiveQueryException) }
+    /// If you run GetInsightSelectors on a trail that does not have Insights events enabled, the operation throws the exception InsightNotEnabledException.
+    public static var insightNotEnabledException: Self { .init(.insightNotEnabledException) }
+    /// This exception is thrown when the IAM user or role that is used to create  the organization resource lacks one or more required permissions for  creating an organization resource in a required service.
+    public static var insufficientDependencyServiceAccessPermissionException: Self { .init(.insufficientDependencyServiceAccessPermissionException) }
+    /// This exception is thrown when the policy on the S3 bucket or KMS key does not have sufficient permissions for the operation.
+    public static var insufficientEncryptionPolicyException: Self { .init(.insufficientEncryptionPolicyException) }
+    /// This exception is thrown when the policy on the S3 bucket is not sufficient.
+    public static var insufficientS3BucketPolicyException: Self { .init(.insufficientS3BucketPolicyException) }
+    /// This exception is thrown when the policy on the Amazon SNS topic is not sufficient.
+    public static var insufficientSnsTopicPolicyException: Self { .init(.insufficientSnsTopicPolicyException) }
+    /// This exception is thrown when the provided CloudWatch Logs log group is not valid.
+    public static var invalidCloudWatchLogsLogGroupArnException: Self { .init(.invalidCloudWatchLogsLogGroupArnException) }
+    /// This exception is thrown when the provided role is not valid.
+    public static var invalidCloudWatchLogsRoleArnException: Self { .init(.invalidCloudWatchLogsRoleArnException) }
+    /// A date range for the query was specified that is not valid. Be sure that the start time is chronologically   before the end time. For more information  about writing a query, see Create  or edit a query in the CloudTrail User Guide.
+    public static var invalidDateRangeException: Self { .init(.invalidDateRangeException) }
+    /// Occurs if an event category that is not valid is specified as a value of EventCategory.
+    public static var invalidEventCategoryException: Self { .init(.invalidEventCategoryException) }
+    /// This exception is thrown when event categories of specified event data stores are not valid.
+    public static var invalidEventDataStoreCategoryException: Self { .init(.invalidEventDataStoreCategoryException) }
+    /// The event data store is not in a status that supports the operation.
+    public static var invalidEventDataStoreStatusException: Self { .init(.invalidEventDataStoreStatusException) }
+    /// This exception is thrown when the PutEventSelectors operation is called with a number of event  selectors, advanced event selectors, or data resources that is not valid. The combination of event selectors or advanced event selectors and  data resources is not valid. A trail can have up to 5 event selectors. If a trail uses advanced event selectors, a maximum  of 500 total values for all conditions in all advanced event selectors is allowed. A trail is limited to 250 data resources. These data resources can be distributed across event selectors, but the overall total cannot exceed 250. You can:   Specify a valid number of event selectors (1 to 5) for a trail.   Specify a valid number of data resources (1 to 250) for an event selector.  The limit of number of resources on an individual event selector is configurable up to 250.  However, this upper limit is allowed only if the total number of data resources does not  exceed 250 across all event selectors for a trail.   Specify up to 500 values for all conditions in all advanced event selectors for a trail.   Specify a valid value for a parameter. For example, specifying the ReadWriteType  parameter with a value of read-only is not valid.
+    public static var invalidEventSelectorsException: Self { .init(.invalidEventSelectorsException) }
+    /// This exception is thrown when an operation is called on a trail from a region other than the region in which the trail was created.
+    public static var invalidHomeRegionException: Self { .init(.invalidHomeRegionException) }
+    ///  This exception is thrown when the provided source S3 bucket is not valid for import.
+    public static var invalidImportSourceException: Self { .init(.invalidImportSourceException) }
+    /// The formatting or syntax of the InsightSelectors JSON statement in your PutInsightSelectors or GetInsightSelectors request  is not valid, or the specified insight type in the InsightSelectors statement is not a valid insight type.
+    public static var invalidInsightSelectorsException: Self { .init(.invalidInsightSelectorsException) }
+    /// This exception is thrown when the KMS key ARN is not valid.
+    public static var invalidKmsKeyIdException: Self { .init(.invalidKmsKeyIdException) }
+    /// Occurs when a lookup attribute is specified that is not valid.
+    public static var invalidLookupAttributesException: Self { .init(.invalidLookupAttributesException) }
+    /// This exception is thrown if the limit specified is not valid.
+    public static var invalidMaxResultsException: Self { .init(.invalidMaxResultsException) }
+    /// A token that is not valid, or a token that was previously used in a request with different parameters. This exception is thrown if the token is not valid.
+    public static var invalidNextTokenException: Self { .init(.invalidNextTokenException) }
+    /// This exception is thrown when the combination of parameters provided is not valid.
+    public static var invalidParameterCombinationException: Self { .init(.invalidParameterCombinationException) }
+    /// The request includes a parameter that is not valid.
+    public static var invalidParameterException: Self { .init(.invalidParameterException) }
+    /// The query that was submitted has validation errors, or uses incorrect syntax or unsupported keywords. For more information  about writing a query, see Create  or edit a query in the CloudTrail User Guide.
+    public static var invalidQueryStatementException: Self { .init(.invalidQueryStatementException) }
+    /// The query status is not valid for the operation.
+    public static var invalidQueryStatusException: Self { .init(.invalidQueryStatusException) }
+    /// This exception is thrown when the provided S3 bucket name is not valid.
+    public static var invalidS3BucketNameException: Self { .init(.invalidS3BucketNameException) }
+    /// This exception is thrown when the provided S3 prefix is not valid.
+    public static var invalidS3PrefixException: Self { .init(.invalidS3PrefixException) }
+    /// This exception is thrown when the provided SNS topic name is not valid.
+    public static var invalidSnsTopicNameException: Self { .init(.invalidSnsTopicNameException) }
+    /// This exception is thrown when the specified tag key or values are not valid.  It can also occur if there are duplicate tags or too many tags on the resource.
+    public static var invalidTagParameterException: Self { .init(.invalidTagParameterException) }
+    /// Occurs if the timestamp values are not valid. Either the start time occurs after the end time, or the time range is outside the range of possible values.
+    public static var invalidTimeRangeException: Self { .init(.invalidTimeRangeException) }
+    /// Reserved for future use.
+    public static var invalidTokenException: Self { .init(.invalidTokenException) }
+    /// This exception is thrown when the provided trail name is not valid. Trail names must meet the following requirements:   Contain only ASCII letters (a-z, A-Z), numbers (0-9), periods (.), underscores (_), or dashes (-)   Start with a letter or number, and end with a letter or number   Be between 3 and 128 characters   Have no adjacent periods, underscores or dashes. Names like my-_namespace and my--namespace are not valid.   Not be in IP address format (for example, 192.168.5.4)
+    public static var invalidTrailNameException: Self { .init(.invalidTrailNameException) }
+    /// This exception is thrown when there is an issue with the specified KMS key and the trail or event data store can&#39;t be updated.
+    public static var kmsException: Self { .init(.kmsException) }
+    /// This exception is no longer in use.
+    public static var kmsKeyDisabledException: Self { .init(.kmsKeyDisabledException) }
+    /// This exception is thrown when the KMS key does not exist, when the S3 bucket and the KMS key are not in the same region, or when the KMS key associated with the Amazon SNS topic either does not exist or is not in the same region.
+    public static var kmsKeyNotFoundException: Self { .init(.kmsKeyNotFoundException) }
+    /// You are already running the maximum number of concurrent queries. Wait a minute for some queries to finish, and then  run the query again.
+    public static var maxConcurrentQueriesException: Self { .init(.maxConcurrentQueriesException) }
+    /// This exception is thrown when the maximum number of trails is reached.
+    public static var maximumNumberOfTrailsExceededException: Self { .init(.maximumNumberOfTrailsExceededException) }
+    ///  This exception is thrown when the management account does not have a service-linked role.
+    public static var noManagementAccountSLRExistsException: Self { .init(.noManagementAccountSLRExistsException) }
+    ///  This exception is thrown when the account making the request is not the organization&#39;s management account.
+    public static var notOrganizationManagementAccountException: Self { .init(.notOrganizationManagementAccountException) }
+    /// This exception is thrown when the Amazon Web Services account making the request to create  or update an organization trail or event data store is not the management account for an  organization in Organizations. For more information, see  Prepare For Creating a Trail For Your Organization or Create an event data store.
+    public static var notOrganizationMasterAccountException: Self { .init(.notOrganizationMasterAccountException) }
+    /// This exception is thrown when the requested operation is not permitted.
+    public static var operationNotPermittedException: Self { .init(.operationNotPermittedException) }
+    /// This exception is thrown when Organizations is not configured to support all  features. All features must be enabled in Organizations to support creating an organization trail or event data store.
+    public static var organizationNotInAllFeaturesModeException: Self { .init(.organizationNotInAllFeaturesModeException) }
+    /// This exception is thrown when the request is made from an Amazon Web Services account that is not a member of an organization.  To make this request, sign in using the credentials of an account that belongs to an organization.
+    public static var organizationsNotInUseException: Self { .init(.organizationsNotInUseException) }
+    /// The query ID does not exist or does not map to a query.
+    public static var queryIdNotFoundException: Self { .init(.queryIdNotFoundException) }
+    /// This exception is thrown when the specified resource is not found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// This exception is thrown when the specified resource type is not supported by CloudTrail.
+    public static var resourceTypeNotSupportedException: Self { .init(.resourceTypeNotSupportedException) }
+    /// This exception is thrown when the specified S3 bucket does not exist.
+    public static var s3BucketDoesNotExistException: Self { .init(.s3BucketDoesNotExistException) }
+    /// The number of tags per trail has exceeded the permitted amount. Currently, the limit is 50.
+    public static var tagsLimitExceededException: Self { .init(.tagsLimitExceededException) }
+    /// This exception is thrown when the specified trail already exists.
+    public static var trailAlreadyExistsException: Self { .init(.trailAlreadyExistsException) }
+    /// This exception is thrown when the trail with the given name is not found.
+    public static var trailNotFoundException: Self { .init(.trailNotFoundException) }
+    /// This exception is no longer in use.
+    public static var trailNotProvidedException: Self { .init(.trailNotProvidedException) }
+    /// This exception is thrown when the requested operation is not supported.
+    public static var unsupportedOperationException: Self { .init(.unsupportedOperationException) }
+}
+
+extension CloudTrailErrorType: Equatable {
+    public static func == (lhs: CloudTrailErrorType, rhs: CloudTrailErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension CloudTrailErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

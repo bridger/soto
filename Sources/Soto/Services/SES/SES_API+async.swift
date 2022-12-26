@@ -383,4 +383,74 @@ extension SES {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension SES {
+    ///  Lists the existing custom verification email templates for your account in the current AWS Region. For more information about custom verification email templates, see Using Custom Verification Email Templates in the Amazon SES Developer Guide. You can execute this operation no more than once per second.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listCustomVerificationEmailTemplatesPaginator(
+        _ input: ListCustomVerificationEmailTemplatesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListCustomVerificationEmailTemplatesRequest, ListCustomVerificationEmailTemplatesResponse> {
+        return .init(
+            input: input,
+            command: self.listCustomVerificationEmailTemplates,
+            inputKey: \ListCustomVerificationEmailTemplatesRequest.nextToken,
+            outputKey: \ListCustomVerificationEmailTemplatesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list containing all of the identities (email addresses and domains) for your AWS account in the current AWS Region, regardless of verification status. You can execute this operation no more than once per second.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listIdentitiesPaginator(
+        _ input: ListIdentitiesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListIdentitiesRequest, ListIdentitiesResponse> {
+        return .init(
+            input: input,
+            command: self.listIdentities,
+            inputKey: \ListIdentitiesRequest.nextToken,
+            outputKey: \ListIdentitiesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension SES {
+    public func waitUntilIdentityExists(
+        _ input: GetIdentityVerificationAttributesRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("verificationAttributes.*.verificationStatus", expected: "Success")),
+            ],
+            minDelayTime: .seconds(3),
+            command: self.getIdentityVerificationAttributes
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

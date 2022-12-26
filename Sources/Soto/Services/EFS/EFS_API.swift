@@ -68,6 +68,7 @@ public struct EFS: AWSService {
                 "fips-cn-north-1": "elasticfilesystem-fips.cn-north-1.amazonaws.com.cn",
                 "fips-cn-northwest-1": "elasticfilesystem-fips.cn-northwest-1.amazonaws.com.cn",
                 "fips-eu-central-1": "elasticfilesystem-fips.eu-central-1.amazonaws.com",
+                "fips-eu-central-2": "elasticfilesystem-fips.eu-central-2.amazonaws.com",
                 "fips-eu-north-1": "elasticfilesystem-fips.eu-north-1.amazonaws.com",
                 "fips-eu-south-1": "elasticfilesystem-fips.eu-south-1.amazonaws.com",
                 "fips-eu-west-1": "elasticfilesystem-fips.eu-west-1.amazonaws.com",
@@ -95,7 +96,7 @@ public struct EFS: AWSService {
 
     // MARK: API Calls
 
-    /// Creates an EFS access point. An access point is an application-specific view into an EFS file system that applies an operating system user and group, and a file system path, to any file system request made through the access point. The operating system user and group override any identity information provided by the NFS client. The file system path is exposed as the access point's root directory. Applications using the access point can only access data in the application's own directory and any subdirectories. To learn more, see Mounting a file system using EFS access points. This operation requires permissions for the elasticfilesystem:CreateAccessPoint action.
+    /// Creates an EFS access point. An access point is an application-specific view into an EFS file system that applies an operating system user and group, and a file system path, to any file system request made through the access point. The operating system user and group override any identity information provided by the NFS client. The file system path is exposed as the access point's root directory. Applications using the access point can only access data in the application's own directory and any subdirectories. To learn more, see Mounting a file system using EFS access points.  If multiple requests to create access points on the same file system are sent in quick succession, and the file system is near the limit of 120 access points, you may experience a throttling response for these requests. This  is to ensure that the file system does not exceed the stated access point limit.  This operation requires permissions for the elasticfilesystem:CreateAccessPoint action.
     public func createAccessPoint(_ input: CreateAccessPointRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<AccessPointDescription> {
         return self.client.execute(operation: "CreateAccessPoint", path: "/2015-02-01/access-points", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -243,7 +244,7 @@ public struct EFS: AWSService {
         return self.client.execute(operation: "PutFileSystemPolicy", path: "/2015-02-01/file-systems/{FileSystemId}/policy", httpMethod: .PUT, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Use this action to manage EFS lifecycle management and intelligent tiering. A  LifecycleConfiguration consists of one or more LifecyclePolicy objects that  define the following:    EFS Lifecycle management - When Amazon EFS  automatically transitions files in a file system into the lower-cost Infrequent Access (IA) storage class. To enable EFS Lifecycle management, set the value of TransitionToIA to one of the available options.    EFS Intelligent tiering - When Amazon EFS  automatically transitions files from IA back into the file system's primary storage class (Standard or One Zone Standard. To enable EFS Intelligent Tiering, set the value of TransitionToPrimaryStorageClass to AFTER_1_ACCESS.    For more information, see EFS Lifecycle Management.       Each Amazon EFS file system supports one lifecycle configuration, which applies to all files in the file system. If a LifecycleConfiguration object already exists for the specified file system, a PutLifecycleConfiguration call modifies the existing configuration. A PutLifecycleConfiguration call with an empty LifecyclePolicies array in the request body deletes any existing LifecycleConfiguration and turns off lifecycle management and intelligent tiering for the file system.     In the request, specify the following:    The ID for the file system for which you are enabling, disabling, or modifying lifecycle management  and intelligent tiering.   A LifecyclePolicies array of LifecyclePolicy objects that define when files are moved into IA storage, and when they are moved back to Standard storage.   Amazon EFS requires that each LifecyclePolicy  object have only have a single transition, so the LifecyclePolicies array needs to be structured with separate  LifecyclePolicy objects. See the example requests in the following section for more information.
+    /// Use this action to manage EFS lifecycle management and EFS Intelligent-Tiering. A LifecycleConfiguration consists of one or more LifecyclePolicy objects that define the following:    EFS Lifecycle management - When Amazon EFS automatically transitions files in a file system into the lower-cost EFS Infrequent Access (IA) storage class. To enable EFS Lifecycle management, set the value of TransitionToIA to one of the available options.    EFS Intelligent-Tiering - When Amazon EFS automatically transitions files from IA back into the file system's primary storage class (EFS Standard or EFS One Zone Standard). To enable EFS Intelligent-Tiering, set the value of TransitionToPrimaryStorageClass to AFTER_1_ACCESS.    For more information, see EFS Lifecycle Management.       Each Amazon EFS file system supports one lifecycle configuration, which applies to all files in the file system. If a LifecycleConfiguration object already exists for the specified file system, a PutLifecycleConfiguration call modifies the existing configuration. A PutLifecycleConfiguration call with an empty LifecyclePolicies array in the request body deletes any existing LifecycleConfiguration and turns off lifecycle management and EFS Intelligent-Tiering for the file system.     In the request, specify the following:    The ID for the file system for which you are enabling, disabling, or modifying lifecycle management and EFS Intelligent-Tiering.   A LifecyclePolicies array of LifecyclePolicy objects that define when files are moved into IA storage, and when they are moved back to Standard storage.   Amazon EFS requires that each LifecyclePolicy  object have only have a single transition, so the LifecyclePolicies array needs to be structured with separate  LifecyclePolicy objects. See the example requests in the following section for more information.
     ///  This operation requires permissions for the elasticfilesystem:PutLifecycleConfiguration operation. To apply a LifecycleConfiguration object to an encrypted file system, you need the same Key Management Service permissions as when you created the encrypted file system.
     public func putLifecycleConfiguration(_ input: PutLifecycleConfigurationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<LifecycleConfigurationDescription> {
         return self.client.execute(operation: "PutLifecycleConfiguration", path: "/2015-02-01/file-systems/{FileSystemId}/lifecycle-configuration", httpMethod: .PUT, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -271,5 +272,267 @@ extension EFS {
     public init(from: EFS, patch: AWSServiceConfig.Patch) {
         self.client = from.client
         self.config = from.config.with(patch: patch)
+    }
+}
+
+// MARK: Paginators
+
+extension EFS {
+    ///  Returns the description of a specific Amazon EFS access point if the AccessPointId is provided.  If you provide an EFS FileSystemId, it returns descriptions of all access points for that file system.  You can provide either an AccessPointId or a FileSystemId in the request, but not both.  This operation requires permissions for the elasticfilesystem:DescribeAccessPoints action.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeAccessPointsPaginator<Result>(
+        _ input: DescribeAccessPointsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeAccessPointsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeAccessPoints,
+            inputKey: \DescribeAccessPointsRequest.nextToken,
+            outputKey: \DescribeAccessPointsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeAccessPointsPaginator(
+        _ input: DescribeAccessPointsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeAccessPointsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeAccessPoints,
+            inputKey: \DescribeAccessPointsRequest.nextToken,
+            outputKey: \DescribeAccessPointsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns the description of a specific Amazon EFS file system if either the file system CreationToken or the FileSystemId is provided. Otherwise, it returns descriptions of all file systems owned by the caller's Amazon Web Services account in the  Amazon Web Services Region of the endpoint that you're calling.
+    ///   When retrieving all file system descriptions, you can optionally specify the MaxItems parameter to limit the number of descriptions in a response. Currently, this number is automatically set to 10. If more file system descriptions remain, Amazon EFS returns a NextMarker, an opaque token, in the response. In this case, you should send a subsequent request with the Marker request parameter set to the value of NextMarker.
+    ///   To retrieve a list of your file system descriptions, this operation is used in an iterative process, where DescribeFileSystems is called first without the Marker and then the operation continues to call it with the Marker parameter set to the value of the NextMarker from the previous response until the response has no NextMarker.   The order of file systems returned in the response of one DescribeFileSystems call and the order of file systems returned across the responses of a multi-call iteration is unspecified.  This operation requires permissions for the elasticfilesystem:DescribeFileSystems action.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeFileSystemsPaginator<Result>(
+        _ input: DescribeFileSystemsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeFileSystemsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeFileSystems,
+            inputKey: \DescribeFileSystemsRequest.marker,
+            outputKey: \DescribeFileSystemsResponse.nextMarker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeFileSystemsPaginator(
+        _ input: DescribeFileSystemsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeFileSystemsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeFileSystems,
+            inputKey: \DescribeFileSystemsRequest.marker,
+            outputKey: \DescribeFileSystemsResponse.nextMarker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///   DEPRECATED - The DescribeTags action is deprecated and not maintained. To view tags associated with EFS resources, use the ListTagsForResource API action.  Returns the tags associated with a file system. The order of tags returned in the response of one DescribeTags call and the order of tags returned across the responses of a multiple-call iteration (when using pagination) is unspecified.  This operation requires permissions for the elasticfilesystem:DescribeTags action.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    @available(*, deprecated, message: "Use ListTagsForResource.")
+    public func describeTagsPaginator<Result>(
+        _ input: DescribeTagsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeTagsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeTags,
+            inputKey: \DescribeTagsRequest.marker,
+            outputKey: \DescribeTagsResponse.nextMarker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    @available(*, deprecated, message: "Use ListTagsForResource.")
+    public func describeTagsPaginator(
+        _ input: DescribeTagsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeTagsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeTags,
+            inputKey: \DescribeTagsRequest.marker,
+            outputKey: \DescribeTagsResponse.nextMarker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists all tags for a top-level EFS resource. You must provide the ID of the resource that you want to retrieve the tags for. This operation requires permissions for the elasticfilesystem:DescribeAccessPoints action.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listTagsForResourcePaginator<Result>(
+        _ input: ListTagsForResourceRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListTagsForResourceResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listTagsForResource,
+            inputKey: \ListTagsForResourceRequest.nextToken,
+            outputKey: \ListTagsForResourceResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listTagsForResourcePaginator(
+        _ input: ListTagsForResourceRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListTagsForResourceResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listTagsForResource,
+            inputKey: \ListTagsForResourceRequest.nextToken,
+            outputKey: \ListTagsForResourceResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension EFS.DescribeAccessPointsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> EFS.DescribeAccessPointsRequest {
+        return .init(
+            accessPointId: self.accessPointId,
+            fileSystemId: self.fileSystemId,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+extension EFS.DescribeFileSystemsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> EFS.DescribeFileSystemsRequest {
+        return .init(
+            creationToken: self.creationToken,
+            fileSystemId: self.fileSystemId,
+            marker: token,
+            maxItems: self.maxItems
+        )
+    }
+}
+
+extension EFS.DescribeTagsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> EFS.DescribeTagsRequest {
+        return .init(
+            fileSystemId: self.fileSystemId,
+            marker: token,
+            maxItems: self.maxItems
+        )
+    }
+}
+
+extension EFS.ListTagsForResourceRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> EFS.ListTagsForResourceRequest {
+        return .init(
+            maxResults: self.maxResults,
+            nextToken: token,
+            resourceId: self.resourceId
+        )
     }
 }

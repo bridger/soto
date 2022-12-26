@@ -157,3 +157,96 @@ extension ACM {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension ACM {
+    ///  Retrieves a list of certificate ARNs and domain names. You can request that only certificates that match a specific status be listed. You can also filter by specific attributes of the certificate. Default filtering returns only RSA_2048 certificates. For more information, see Filters.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listCertificatesPaginator<Result>(
+        _ input: ListCertificatesRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListCertificatesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listCertificates,
+            inputKey: \ListCertificatesRequest.nextToken,
+            outputKey: \ListCertificatesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listCertificatesPaginator(
+        _ input: ListCertificatesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListCertificatesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listCertificates,
+            inputKey: \ListCertificatesRequest.nextToken,
+            outputKey: \ListCertificatesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension ACM.ListCertificatesRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> ACM.ListCertificatesRequest {
+        return .init(
+            certificateStatuses: self.certificateStatuses,
+            includes: self.includes,
+            maxItems: self.maxItems,
+            nextToken: token,
+            sortBy: self.sortBy,
+            sortOrder: self.sortOrder
+        )
+    }
+}
+
+// MARK: Waiters
+
+extension ACM {
+    public func waitUntilCertificateValidated(
+        _ input: DescribeCertificateRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("certificate.domainValidationOptions[].validationStatus", expected: "SUCCESS")),
+                .init(state: .retry, matcher: try! JMESAnyPathMatcher("certificate.domainValidationOptions[].validationStatus", expected: "PENDING_VALIDATION")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("certificate.status", expected: "FAILED")),
+                .init(state: .failure, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+            ],
+            minDelayTime: .seconds(60),
+            command: self.describeCertificate
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}

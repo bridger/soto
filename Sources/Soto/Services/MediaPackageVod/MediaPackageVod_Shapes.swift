@@ -460,7 +460,7 @@ extension MediaPackageVod {
         public let minBufferTimeSeconds: Int?
         /// The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to "HBBTV_1_5", HbbTV 1.5 compliant output is enabled.
         public let profile: Profile?
-        /// The source of scte markers used. When set to SEGMENTS, the scte markers are sourced from the segments of the ingested content. When set to MANIFEST, the scte markers are sourced from the manifest of the ingested content.
+        /// The source of scte markers used. When set to SEGMENTS, the scte markers are sourced from the segments of the ingested content. When set to MANIFEST, the scte markers are sourced from the manifest of the ingested content. The MANIFEST value is compatible with source HLS playlists using the SCTE-35 Enhanced syntax (#EXT-OATCLS-SCTE35 tags). SCTE-35 Elemental and SCTE-35 Daterange syntaxes are not supported with this option.
         public let scteMarkersSource: ScteMarkersSource?
         public let streamSelection: StreamSelection?
 
@@ -706,6 +706,8 @@ extension MediaPackageVod {
     }
 
     public struct DescribePackagingGroupResponse: AWSDecodableShape {
+        /// The approximate asset count of the PackagingGroup.
+        public let approximateAssetCount: Int?
         /// The ARN of the PackagingGroup.
         public let arn: String?
         public let authorization: Authorization?
@@ -716,7 +718,8 @@ extension MediaPackageVod {
         public let id: String?
         public let tags: [String: String]?
 
-        public init(arn: String? = nil, authorization: Authorization? = nil, domainName: String? = nil, egressAccessLogs: EgressAccessLogs? = nil, id: String? = nil, tags: [String: String]? = nil) {
+        public init(approximateAssetCount: Int? = nil, arn: String? = nil, authorization: Authorization? = nil, domainName: String? = nil, egressAccessLogs: EgressAccessLogs? = nil, id: String? = nil, tags: [String: String]? = nil) {
+            self.approximateAssetCount = approximateAssetCount
             self.arn = arn
             self.authorization = authorization
             self.domainName = domainName
@@ -726,6 +729,7 @@ extension MediaPackageVod {
         }
 
         private enum CodingKeys: String, CodingKey {
+            case approximateAssetCount
             case arn
             case authorization
             case domainName
@@ -1125,6 +1129,8 @@ extension MediaPackageVod {
     }
 
     public struct PackagingGroup: AWSDecodableShape {
+        /// The approximate asset count of the PackagingGroup.
+        public let approximateAssetCount: Int?
         /// The ARN of the PackagingGroup.
         public let arn: String?
         public let authorization: Authorization?
@@ -1135,7 +1141,8 @@ extension MediaPackageVod {
         public let id: String?
         public let tags: [String: String]?
 
-        public init(arn: String? = nil, authorization: Authorization? = nil, domainName: String? = nil, egressAccessLogs: EgressAccessLogs? = nil, id: String? = nil, tags: [String: String]? = nil) {
+        public init(approximateAssetCount: Int? = nil, arn: String? = nil, authorization: Authorization? = nil, domainName: String? = nil, egressAccessLogs: EgressAccessLogs? = nil, id: String? = nil, tags: [String: String]? = nil) {
+            self.approximateAssetCount = approximateAssetCount
             self.arn = arn
             self.authorization = authorization
             self.domainName = domainName
@@ -1145,6 +1152,7 @@ extension MediaPackageVod {
         }
 
         private enum CodingKeys: String, CodingKey {
+            case approximateAssetCount
             case arn
             case authorization
             case domainName
@@ -1259,6 +1267,8 @@ extension MediaPackageVod {
     }
 
     public struct UpdatePackagingGroupResponse: AWSDecodableShape {
+        /// The approximate asset count of the PackagingGroup.
+        public let approximateAssetCount: Int?
         /// The ARN of the PackagingGroup.
         public let arn: String?
         public let authorization: Authorization?
@@ -1269,7 +1279,8 @@ extension MediaPackageVod {
         public let id: String?
         public let tags: [String: String]?
 
-        public init(arn: String? = nil, authorization: Authorization? = nil, domainName: String? = nil, egressAccessLogs: EgressAccessLogs? = nil, id: String? = nil, tags: [String: String]? = nil) {
+        public init(approximateAssetCount: Int? = nil, arn: String? = nil, authorization: Authorization? = nil, domainName: String? = nil, egressAccessLogs: EgressAccessLogs? = nil, id: String? = nil, tags: [String: String]? = nil) {
+            self.approximateAssetCount = approximateAssetCount
             self.arn = arn
             self.authorization = authorization
             self.domainName = domainName
@@ -1279,6 +1290,7 @@ extension MediaPackageVod {
         }
 
         private enum CodingKeys: String, CodingKey {
+            case approximateAssetCount
             case arn
             case authorization
             case domainName
@@ -1286,5 +1298,62 @@ extension MediaPackageVod {
             case id
             case tags
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for MediaPackageVod
+public struct MediaPackageVodErrorType: AWSErrorType {
+    enum Code: String {
+        case forbiddenException = "ForbiddenException"
+        case internalServerErrorException = "InternalServerErrorException"
+        case notFoundException = "NotFoundException"
+        case serviceUnavailableException = "ServiceUnavailableException"
+        case tooManyRequestsException = "TooManyRequestsException"
+        case unprocessableEntityException = "UnprocessableEntityException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize MediaPackageVod
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The client is not authorized to access the requested resource.
+    public static var forbiddenException: Self { .init(.forbiddenException) }
+    /// An unexpected error occurred.
+    public static var internalServerErrorException: Self { .init(.internalServerErrorException) }
+    /// The requested resource does not exist.
+    public static var notFoundException: Self { .init(.notFoundException) }
+    /// An unexpected error occurred.
+    public static var serviceUnavailableException: Self { .init(.serviceUnavailableException) }
+    /// The client has exceeded their resource or throttling limits.
+    public static var tooManyRequestsException: Self { .init(.tooManyRequestsException) }
+    /// The parameters sent in the request are not valid.
+    public static var unprocessableEntityException: Self { .init(.unprocessableEntityException) }
+}
+
+extension MediaPackageVodErrorType: Equatable {
+    public static func == (lhs: MediaPackageVodErrorType, rhs: MediaPackageVodErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension MediaPackageVodErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

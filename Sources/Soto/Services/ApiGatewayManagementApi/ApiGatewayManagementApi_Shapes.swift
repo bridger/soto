@@ -115,3 +115,54 @@ extension ApiGatewayManagementApi {
         private enum CodingKeys: CodingKey {}
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for ApiGatewayManagementApi
+public struct ApiGatewayManagementApiErrorType: AWSErrorType {
+    enum Code: String {
+        case forbiddenException = "ForbiddenException"
+        case goneException = "GoneException"
+        case limitExceededException = "LimitExceededException"
+        case payloadTooLargeException = "PayloadTooLargeException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize ApiGatewayManagementApi
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The caller is not authorized to invoke this operation.
+    public static var forbiddenException: Self { .init(.forbiddenException) }
+    /// The connection with the provided id no longer exists.
+    public static var goneException: Self { .init(.goneException) }
+    /// The client is sending more than the allowed number of requests per unit of time or the WebSocket client side buffer is full.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// The data has exceeded the maximum size allowed.
+    public static var payloadTooLargeException: Self { .init(.payloadTooLargeException) }
+}
+
+extension ApiGatewayManagementApiErrorType: Equatable {
+    public static func == (lhs: ApiGatewayManagementApiErrorType, rhs: ApiGatewayManagementApiErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension ApiGatewayManagementApiErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

@@ -169,4 +169,185 @@ extension SSMIncidents {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension SSMIncidents {
+    ///  Retrieves the resource policies attached to the specified response plan.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getResourcePoliciesPaginator(
+        _ input: GetResourcePoliciesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetResourcePoliciesInput, GetResourcePoliciesOutput> {
+        return .init(
+            input: input,
+            command: self.getResourcePolicies,
+            inputKey: \GetResourcePoliciesInput.nextToken,
+            outputKey: \GetResourcePoliciesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all incident records in your account. Use this command to retrieve the Amazon Resource Name (ARN) of the incident record you want to update.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listIncidentRecordsPaginator(
+        _ input: ListIncidentRecordsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListIncidentRecordsInput, ListIncidentRecordsOutput> {
+        return .init(
+            input: input,
+            command: self.listIncidentRecords,
+            inputKey: \ListIncidentRecordsInput.nextToken,
+            outputKey: \ListIncidentRecordsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List all related items for an incident record.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRelatedItemsPaginator(
+        _ input: ListRelatedItemsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRelatedItemsInput, ListRelatedItemsOutput> {
+        return .init(
+            input: input,
+            command: self.listRelatedItems,
+            inputKey: \ListRelatedItemsInput.nextToken,
+            outputKey: \ListRelatedItemsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists details about the replication set configured in your account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listReplicationSetsPaginator(
+        _ input: ListReplicationSetsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListReplicationSetsInput, ListReplicationSetsOutput> {
+        return .init(
+            input: input,
+            command: self.listReplicationSets,
+            inputKey: \ListReplicationSetsInput.nextToken,
+            outputKey: \ListReplicationSetsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all response plans in your account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listResponsePlansPaginator(
+        _ input: ListResponsePlansInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListResponsePlansInput, ListResponsePlansOutput> {
+        return .init(
+            input: input,
+            command: self.listResponsePlans,
+            inputKey: \ListResponsePlansInput.nextToken,
+            outputKey: \ListResponsePlansOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists timeline events for the specified incident record.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTimelineEventsPaginator(
+        _ input: ListTimelineEventsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTimelineEventsInput, ListTimelineEventsOutput> {
+        return .init(
+            input: input,
+            command: self.listTimelineEvents,
+            inputKey: \ListTimelineEventsInput.nextToken,
+            outputKey: \ListTimelineEventsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension SSMIncidents {
+    public func waitUntilWaitForReplicationSetActive(
+        _ input: GetReplicationSetInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("replicationSet.status", expected: "ACTIVE")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("replicationSet.status", expected: "CREATING")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("replicationSet.status", expected: "UPDATING")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("replicationSet.status", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(30),
+            maxDelayTime: .seconds(30),
+            command: self.getReplicationSet
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilWaitForReplicationSetDeleted(
+        _ input: GetReplicationSetInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("replicationSet.status", expected: "DELETING")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("replicationSet.status", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(30),
+            maxDelayTime: .seconds(30),
+            command: self.getReplicationSet
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

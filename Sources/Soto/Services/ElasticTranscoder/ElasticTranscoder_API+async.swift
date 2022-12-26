@@ -109,4 +109,120 @@ extension ElasticTranscoder {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElasticTranscoder {
+    ///  The ListJobsByPipeline operation gets a list of the jobs currently in a pipeline. Elastic Transcoder returns all of the jobs currently in the specified pipeline. The response body contains  one element for each job that satisfies the search criteria.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listJobsByPipelinePaginator(
+        _ input: ListJobsByPipelineRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListJobsByPipelineRequest, ListJobsByPipelineResponse> {
+        return .init(
+            input: input,
+            command: self.listJobsByPipeline,
+            inputKey: \ListJobsByPipelineRequest.pageToken,
+            outputKey: \ListJobsByPipelineResponse.nextPageToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  The ListJobsByStatus operation gets a list of jobs that have a specified status. The response  body contains one element for each job that satisfies the search criteria.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listJobsByStatusPaginator(
+        _ input: ListJobsByStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListJobsByStatusRequest, ListJobsByStatusResponse> {
+        return .init(
+            input: input,
+            command: self.listJobsByStatus,
+            inputKey: \ListJobsByStatusRequest.pageToken,
+            outputKey: \ListJobsByStatusResponse.nextPageToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  The ListPipelines operation gets a list of the pipelines associated with the current AWS account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPipelinesPaginator(
+        _ input: ListPipelinesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPipelinesRequest, ListPipelinesResponse> {
+        return .init(
+            input: input,
+            command: self.listPipelines,
+            inputKey: \ListPipelinesRequest.pageToken,
+            outputKey: \ListPipelinesResponse.nextPageToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  The ListPresets operation gets a list of the default presets included with Elastic Transcoder and the presets that  you've added in an AWS region.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPresetsPaginator(
+        _ input: ListPresetsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPresetsRequest, ListPresetsResponse> {
+        return .init(
+            input: input,
+            command: self.listPresets,
+            inputKey: \ListPresetsRequest.pageToken,
+            outputKey: \ListPresetsResponse.nextPageToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElasticTranscoder {
+    public func waitUntilJobComplete(
+        _ input: ReadJobRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("job.status", expected: "Complete")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("job.status", expected: "Canceled")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("job.status", expected: "Error")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.readJob
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

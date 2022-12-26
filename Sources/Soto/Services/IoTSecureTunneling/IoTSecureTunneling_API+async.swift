@@ -80,4 +80,33 @@ extension IoTSecureTunneling {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension IoTSecureTunneling {
+    ///  List all tunnels for an Amazon Web Services account. Tunnels are listed by creation time in
+    ///  			descending order, newer tunnels will be listed before older tunnels.
+    ///  		       Requires permission to access the ListTunnels action.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTunnelsPaginator(
+        _ input: ListTunnelsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTunnelsRequest, ListTunnelsResponse> {
+        return .init(
+            input: input,
+            command: self.listTunnels,
+            inputKey: \ListTunnelsRequest.nextToken,
+            outputKey: \ListTunnelsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

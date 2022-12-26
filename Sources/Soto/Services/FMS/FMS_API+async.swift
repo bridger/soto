@@ -214,4 +214,141 @@ extension FMS {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension FMS {
+    ///  Returns an array of AppsListDataSummary objects.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAppsListsPaginator(
+        _ input: ListAppsListsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAppsListsRequest, ListAppsListsResponse> {
+        return .init(
+            input: input,
+            command: self.listAppsLists,
+            inputKey: \ListAppsListsRequest.nextToken,
+            outputKey: \ListAppsListsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns an array of PolicyComplianceStatus objects. Use PolicyComplianceStatus to get a summary of which member accounts are protected by the specified policy.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listComplianceStatusPaginator(
+        _ input: ListComplianceStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListComplianceStatusRequest, ListComplianceStatusResponse> {
+        return .init(
+            input: input,
+            command: self.listComplianceStatus,
+            inputKey: \ListComplianceStatusRequest.nextToken,
+            outputKey: \ListComplianceStatusResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a MemberAccounts object that lists the member accounts in the administrator's Amazon Web Services organization. The ListMemberAccounts must be submitted by the account that is set as the Firewall Manager administrator.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMemberAccountsPaginator(
+        _ input: ListMemberAccountsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMemberAccountsRequest, ListMemberAccountsResponse> {
+        return .init(
+            input: input,
+            command: self.listMemberAccounts,
+            inputKey: \ListMemberAccountsRequest.nextToken,
+            outputKey: \ListMemberAccountsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns an array of PolicySummary objects.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPoliciesPaginator(
+        _ input: ListPoliciesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPoliciesRequest, ListPoliciesResponse> {
+        return .init(
+            input: input,
+            command: self.listPolicies,
+            inputKey: \ListPoliciesRequest.nextToken,
+            outputKey: \ListPoliciesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns an array of ProtocolsListDataSummary objects.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listProtocolsListsPaginator(
+        _ input: ListProtocolsListsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListProtocolsListsRequest, ListProtocolsListsResponse> {
+        return .init(
+            input: input,
+            command: self.listProtocolsLists,
+            inputKey: \ListProtocolsListsRequest.nextToken,
+            outputKey: \ListProtocolsListsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves a list of all of the third-party firewall policies that are associated with the third-party firewall administrator's account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listThirdPartyFirewallFirewallPoliciesPaginator(
+        _ input: ListThirdPartyFirewallFirewallPoliciesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListThirdPartyFirewallFirewallPoliciesRequest, ListThirdPartyFirewallFirewallPoliciesResponse> {
+        return .init(
+            input: input,
+            command: self.listThirdPartyFirewallFirewallPolicies,
+            inputKey: \ListThirdPartyFirewallFirewallPoliciesRequest.nextToken,
+            outputKey: \ListThirdPartyFirewallFirewallPoliciesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

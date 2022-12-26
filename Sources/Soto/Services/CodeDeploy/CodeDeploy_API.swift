@@ -321,3 +321,412 @@ extension CodeDeploy {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension CodeDeploy {
+    ///  Lists information about revisions for an application.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listApplicationRevisionsPaginator<Result>(
+        _ input: ListApplicationRevisionsInput,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListApplicationRevisionsOutput, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listApplicationRevisions,
+            inputKey: \ListApplicationRevisionsInput.nextToken,
+            outputKey: \ListApplicationRevisionsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listApplicationRevisionsPaginator(
+        _ input: ListApplicationRevisionsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListApplicationRevisionsOutput, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listApplicationRevisions,
+            inputKey: \ListApplicationRevisionsInput.nextToken,
+            outputKey: \ListApplicationRevisionsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists the applications registered with the IAM user or Amazon Web Services account.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listApplicationsPaginator<Result>(
+        _ input: ListApplicationsInput,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListApplicationsOutput, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listApplications,
+            inputKey: \ListApplicationsInput.nextToken,
+            outputKey: \ListApplicationsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listApplicationsPaginator(
+        _ input: ListApplicationsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListApplicationsOutput, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listApplications,
+            inputKey: \ListApplicationsInput.nextToken,
+            outputKey: \ListApplicationsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists the deployment configurations with the IAM user or Amazon Web Services account.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listDeploymentConfigsPaginator<Result>(
+        _ input: ListDeploymentConfigsInput,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListDeploymentConfigsOutput, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listDeploymentConfigs,
+            inputKey: \ListDeploymentConfigsInput.nextToken,
+            outputKey: \ListDeploymentConfigsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listDeploymentConfigsPaginator(
+        _ input: ListDeploymentConfigsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListDeploymentConfigsOutput, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listDeploymentConfigs,
+            inputKey: \ListDeploymentConfigsInput.nextToken,
+            outputKey: \ListDeploymentConfigsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists the deployment groups for an application registered with the IAM user or Amazon Web Services account.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listDeploymentGroupsPaginator<Result>(
+        _ input: ListDeploymentGroupsInput,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListDeploymentGroupsOutput, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listDeploymentGroups,
+            inputKey: \ListDeploymentGroupsInput.nextToken,
+            outputKey: \ListDeploymentGroupsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listDeploymentGroupsPaginator(
+        _ input: ListDeploymentGroupsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListDeploymentGroupsOutput, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listDeploymentGroups,
+            inputKey: \ListDeploymentGroupsInput.nextToken,
+            outputKey: \ListDeploymentGroupsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///   The newer BatchGetDeploymentTargets should be used instead because it works with all compute types. ListDeploymentInstances throws an exception if it is used with a compute platform other than EC2/On-premises or Lambda.   Lists the instance for a deployment associated with the IAM user or Amazon Web Services account.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    @available(*, deprecated, message: "This operation is deprecated, use ListDeploymentTargets instead.")
+    public func listDeploymentInstancesPaginator<Result>(
+        _ input: ListDeploymentInstancesInput,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListDeploymentInstancesOutput, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listDeploymentInstances,
+            inputKey: \ListDeploymentInstancesInput.nextToken,
+            outputKey: \ListDeploymentInstancesOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    @available(*, deprecated, message: "This operation is deprecated, use ListDeploymentTargets instead.")
+    public func listDeploymentInstancesPaginator(
+        _ input: ListDeploymentInstancesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListDeploymentInstancesOutput, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listDeploymentInstances,
+            inputKey: \ListDeploymentInstancesInput.nextToken,
+            outputKey: \ListDeploymentInstancesOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists the deployments in a deployment group for an application registered with the IAM user or Amazon Web Services account.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listDeploymentsPaginator<Result>(
+        _ input: ListDeploymentsInput,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListDeploymentsOutput, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listDeployments,
+            inputKey: \ListDeploymentsInput.nextToken,
+            outputKey: \ListDeploymentsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listDeploymentsPaginator(
+        _ input: ListDeploymentsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListDeploymentsOutput, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listDeployments,
+            inputKey: \ListDeploymentsInput.nextToken,
+            outputKey: \ListDeploymentsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension CodeDeploy.ListApplicationRevisionsInput: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> CodeDeploy.ListApplicationRevisionsInput {
+        return .init(
+            applicationName: self.applicationName,
+            deployed: self.deployed,
+            nextToken: token,
+            s3Bucket: self.s3Bucket,
+            s3KeyPrefix: self.s3KeyPrefix,
+            sortBy: self.sortBy,
+            sortOrder: self.sortOrder
+        )
+    }
+}
+
+extension CodeDeploy.ListApplicationsInput: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> CodeDeploy.ListApplicationsInput {
+        return .init(
+            nextToken: token
+        )
+    }
+}
+
+extension CodeDeploy.ListDeploymentConfigsInput: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> CodeDeploy.ListDeploymentConfigsInput {
+        return .init(
+            nextToken: token
+        )
+    }
+}
+
+extension CodeDeploy.ListDeploymentGroupsInput: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> CodeDeploy.ListDeploymentGroupsInput {
+        return .init(
+            applicationName: self.applicationName,
+            nextToken: token
+        )
+    }
+}
+
+extension CodeDeploy.ListDeploymentInstancesInput: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> CodeDeploy.ListDeploymentInstancesInput {
+        return .init(
+            deploymentId: self.deploymentId,
+            instanceStatusFilter: self.instanceStatusFilter,
+            instanceTypeFilter: self.instanceTypeFilter,
+            nextToken: token
+        )
+    }
+}
+
+extension CodeDeploy.ListDeploymentsInput: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> CodeDeploy.ListDeploymentsInput {
+        return .init(
+            applicationName: self.applicationName,
+            createTimeRange: self.createTimeRange,
+            deploymentGroupName: self.deploymentGroupName,
+            externalId: self.externalId,
+            includeOnlyStatuses: self.includeOnlyStatuses,
+            nextToken: token
+        )
+    }
+}
+
+// MARK: Waiters
+
+extension CodeDeploy {
+    public func waitUntilDeploymentSuccessful(
+        _ input: GetDeploymentInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("deploymentInfo.status", expected: "Succeeded")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("deploymentInfo.status", expected: "Failed")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("deploymentInfo.status", expected: "Stopped")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.getDeployment
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}

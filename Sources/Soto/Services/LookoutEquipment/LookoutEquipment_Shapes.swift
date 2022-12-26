@@ -80,9 +80,9 @@ extension LookoutEquipment {
     }
 
     public enum Monotonicity: String, CustomStringConvertible, Codable, _SotoSendable {
+        case `static` = "STATIC"
         case decreasing = "DECREASING"
         case increasing = "INCREASING"
-        case `static` = "STATIC"
         public var description: String { return self.rawValue }
     }
 
@@ -1979,12 +1979,15 @@ extension LookoutEquipment {
         public let modelName: String?
         ///  An opaque pagination token indicating where to continue the listing of inference schedulers.
         public let nextToken: String?
+        /// Specifies the current status of the inference schedulers to list.
+        public let status: InferenceSchedulerStatus?
 
-        public init(inferenceSchedulerNameBeginsWith: String? = nil, maxResults: Int? = nil, modelName: String? = nil, nextToken: String? = nil) {
+        public init(inferenceSchedulerNameBeginsWith: String? = nil, maxResults: Int? = nil, modelName: String? = nil, nextToken: String? = nil, status: InferenceSchedulerStatus? = nil) {
             self.inferenceSchedulerNameBeginsWith = inferenceSchedulerNameBeginsWith
             self.maxResults = maxResults
             self.modelName = modelName
             self.nextToken = nextToken
+            self.status = status
         }
 
         public func validate(name: String) throws {
@@ -2005,6 +2008,7 @@ extension LookoutEquipment {
             case maxResults = "MaxResults"
             case modelName = "ModelName"
             case nextToken = "NextToken"
+            case status = "Status"
         }
     }
 
@@ -2796,5 +2800,65 @@ extension LookoutEquipment {
             case faultCodes = "FaultCodes"
             case labelGroupName = "LabelGroupName"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for LookoutEquipment
+public struct LookoutEquipmentErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize LookoutEquipment
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The request could not be completed because you do not have access to the resource.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    ///  The request could not be completed due to a conflict with the current state of the target resource.
+    public static var conflictException: Self { .init(.conflictException) }
+    ///  Processing of the request has failed because of an unknown error, exception or failure.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    ///  The resource requested could not be found. Verify the resource ID and retry your request.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    ///  Resource limitations have been exceeded.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    ///  The input fails to satisfy constraints specified by Amazon Lookout for Equipment or a related AWS service that&#39;s being utilized.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension LookoutEquipmentErrorType: Equatable {
+    public static func == (lhs: LookoutEquipmentErrorType, rhs: LookoutEquipmentErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension LookoutEquipmentErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

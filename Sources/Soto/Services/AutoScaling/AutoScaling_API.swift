@@ -19,9 +19,7 @@
 
 /// Service object for interacting with AWS AutoScaling service.
 ///
-/// Amazon EC2 Auto Scaling
-///
-///   Amazon EC2 Auto Scaling is designed to automatically launch and terminate EC2 instances based on user-defined scaling policies, scheduled actions, and health checks. For more information, see the Amazon EC2 Auto Scaling User Guide and the Amazon EC2 Auto Scaling API Reference.
+/// Amazon EC2 Auto Scaling Amazon EC2 Auto Scaling is designed to automatically launch and terminate EC2 instances based on user-defined scaling policies, scheduled actions, and health checks. For more information, see the Amazon EC2 Auto Scaling User Guide and the Amazon EC2 Auto Scaling API Reference.
 public struct AutoScaling: AWSService {
     // MARK: Member variables
 
@@ -79,6 +77,11 @@ public struct AutoScaling: AWSService {
     ///  To attach an Application Load Balancer, Network Load Balancer, or Gateway Load Balancer, use the AttachLoadBalancerTargetGroups API operation instead.  Attaches one or more Classic Load Balancers to the specified Auto Scaling group. Amazon EC2 Auto Scaling registers the running instances with these Classic Load Balancers. To describe the load balancers for an Auto Scaling group, call the DescribeLoadBalancers API. To detach a load balancer from the Auto Scaling group, call the DetachLoadBalancers API. This operation is additive and does not detach existing Classic Load Balancers or target groups from the Auto Scaling group. For more information, see Use Elastic Load Balancing to distribute traffic across the instances in your Auto Scaling group in the Amazon EC2 Auto Scaling User Guide.
     public func attachLoadBalancers(_ input: AttachLoadBalancersType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<AttachLoadBalancersResultType> {
         return self.client.execute(operation: "AttachLoadBalancers", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    ///  Reserved for use with Amazon VPC Lattice, which is in preview and subject to change.  Do not use this API for production workloads. This API is also subject to change.  Attaches one or more traffic sources to the specified Auto Scaling group. To describe the traffic sources for an Auto Scaling group, call the DescribeTrafficSources API. To detach a traffic source from the Auto Scaling group, call the DetachTrafficSources API. This operation is additive and does not detach existing traffic sources from the Auto Scaling group.
+    public func attachTrafficSources(_ input: AttachTrafficSourcesType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<AttachTrafficSourcesResultType> {
+        return self.client.execute(operation: "AttachTrafficSources", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Deletes one or more scheduled actions for the specified Auto Scaling group.
@@ -201,7 +204,7 @@ public struct AutoScaling: AWSService {
         return self.client.execute(operation: "DescribeLifecycleHooks", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Gets information about the Elastic Load Balancing target groups for the specified Auto Scaling group. To determine the attachment status of the target group, use the State element in the response. When you attach a target group to an Auto Scaling group, the initial State value is Adding. The state transitions to Added after all Auto Scaling instances are registered with the target group. If Elastic Load Balancing health checks are enabled for the Auto Scaling group, the state transitions to InService after at least one Auto Scaling instance passes the health check. When the target group is in the InService state, Amazon EC2 Auto Scaling can terminate and replace any instances that are reported as unhealthy. If no registered instances pass the health checks, the target group doesn't enter the InService state.  Target groups also have an InService state if you attach them in the CreateAutoScalingGroup API call. If your target group state is InService, but it is not working properly, check the scaling activities by calling DescribeScalingActivities and take any corrective actions necessary. For help with failed health checks, see Troubleshooting Amazon EC2 Auto Scaling: Health checks in the Amazon EC2 Auto Scaling User Guide. For more information, see Use Elastic Load Balancing to distribute traffic across the instances in your Auto Scaling group in the Amazon EC2 Auto Scaling User Guide.
+    /// Gets information about the Elastic Load Balancing target groups for the specified Auto Scaling group. To determine the attachment status of the target group, use the State element in the response. When you attach a target group to an Auto Scaling group, the initial State value is Adding. The state transitions to Added after all Auto Scaling instances are registered with the target group. If Elastic Load Balancing health checks are enabled for the Auto Scaling group, the state transitions to InService after at least one Auto Scaling instance passes the health check. When the target group is in the InService state, Amazon EC2 Auto Scaling can terminate and replace any instances that are reported as unhealthy. If no registered instances pass the health checks, the target group doesn't enter the InService state.  Target groups also have an InService state if you attach them in the CreateAutoScalingGroup API call. If your target group state is InService, but it is not working properly, check the scaling activities by calling DescribeScalingActivities and take any corrective actions necessary. For help with failed health checks, see Troubleshooting Amazon EC2 Auto Scaling: Health checks in the Amazon EC2 Auto Scaling User Guide. For more information, see Use Elastic Load Balancing to distribute traffic across the instances in your Auto Scaling group in the Amazon EC2 Auto Scaling User Guide.   You can use this operation to describe target groups that were attached by using AttachLoadBalancerTargetGroups, but not for target groups that were attached by using AttachTrafficSources.
     public func describeLoadBalancerTargetGroups(_ input: DescribeLoadBalancerTargetGroupsRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DescribeLoadBalancerTargetGroupsResponse> {
         return self.client.execute(operation: "DescribeLoadBalancerTargetGroups", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -251,6 +254,11 @@ public struct AutoScaling: AWSService {
         return self.client.execute(operation: "DescribeTerminationPolicyTypes", path: "/", httpMethod: .POST, serviceConfig: self.config, logger: logger, on: eventLoop)
     }
 
+    ///  Reserved for use with Amazon VPC Lattice, which is in preview and subject to change.  Do not use this API for production workloads. This API is also subject to change.  Gets information about the traffic sources for the specified Auto Scaling group.
+    public func describeTrafficSources(_ input: DescribeTrafficSourcesRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DescribeTrafficSourcesResponse> {
+        return self.client.execute(operation: "DescribeTrafficSources", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Gets information about a warm pool and its instances. For more information, see Warm pools for Amazon EC2 Auto Scaling in the Amazon EC2 Auto Scaling User Guide.
     public func describeWarmPool(_ input: DescribeWarmPoolType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DescribeWarmPoolAnswer> {
         return self.client.execute(operation: "DescribeWarmPool", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -261,7 +269,7 @@ public struct AutoScaling: AWSService {
         return self.client.execute(operation: "DetachInstances", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Detaches one or more target groups from the specified Auto Scaling group. When you detach a target group, it enters the Removing state while deregistering the instances in the group. When all instances are deregistered, then you can no longer describe the target group using the DescribeLoadBalancerTargetGroups API call. The instances remain running.
+    /// Detaches one or more target groups from the specified Auto Scaling group. When you detach a target group, it enters the Removing state while deregistering the instances in the group. When all instances are deregistered, then you can no longer describe the target group using the DescribeLoadBalancerTargetGroups API call. The instances remain running.  You can use this operation to detach target groups that were attached by using AttachLoadBalancerTargetGroups, but not for target groups that were attached by using AttachTrafficSources.
     public func detachLoadBalancerTargetGroups(_ input: DetachLoadBalancerTargetGroupsType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DetachLoadBalancerTargetGroupsResultType> {
         return self.client.execute(operation: "DetachLoadBalancerTargetGroups", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -269,6 +277,11 @@ public struct AutoScaling: AWSService {
     /// Detaches one or more Classic Load Balancers from the specified Auto Scaling group. This operation detaches only Classic Load Balancers. If you have Application Load Balancers, Network Load Balancers, or Gateway Load Balancer, use the DetachLoadBalancerTargetGroups API instead. When you detach a load balancer, it enters the Removing state while deregistering the instances in the group. When all instances are deregistered, then you can no longer describe the load balancer using the DescribeLoadBalancers API call. The instances remain running.
     public func detachLoadBalancers(_ input: DetachLoadBalancersType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DetachLoadBalancersResultType> {
         return self.client.execute(operation: "DetachLoadBalancers", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    ///  Reserved for use with Amazon VPC Lattice, which is in preview and subject to change.  Do not use this API for production workloads. This API is also subject to change.  Detaches one or more traffic sources from the specified Auto Scaling group.
+    public func detachTrafficSources(_ input: DetachTrafficSourcesType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DetachTrafficSourcesResultType> {
+        return self.client.execute(operation: "DetachTrafficSources", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Disables group metrics collection for the specified Auto Scaling group.
@@ -378,5 +391,576 @@ extension AutoScaling {
     public init(from: AutoScaling, patch: AWSServiceConfig.Patch) {
         self.client = from.client
         self.config = from.config.with(patch: patch)
+    }
+}
+
+// MARK: Paginators
+
+extension AutoScaling {
+    ///  Gets information about the Auto Scaling groups in the account and Region. If you specify Auto Scaling group names, the output includes information for only the specified Auto Scaling groups. If you specify filters, the output includes information for only those Auto Scaling groups that meet the filter criteria. If you do not specify group names or filters, the output includes information for all Auto Scaling groups.  This operation also returns information about instances in Auto Scaling groups. To retrieve information about the instances in a warm pool, you must call the DescribeWarmPool API.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeAutoScalingGroupsPaginator<Result>(
+        _ input: AutoScalingGroupNamesType,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, AutoScalingGroupsType, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeAutoScalingGroups,
+            inputKey: \AutoScalingGroupNamesType.nextToken,
+            outputKey: \AutoScalingGroupsType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeAutoScalingGroupsPaginator(
+        _ input: AutoScalingGroupNamesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (AutoScalingGroupsType, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeAutoScalingGroups,
+            inputKey: \AutoScalingGroupNamesType.nextToken,
+            outputKey: \AutoScalingGroupsType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Gets information about the Auto Scaling instances in the account and Region.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeAutoScalingInstancesPaginator<Result>(
+        _ input: DescribeAutoScalingInstancesType,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, AutoScalingInstancesType, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeAutoScalingInstances,
+            inputKey: \DescribeAutoScalingInstancesType.nextToken,
+            outputKey: \AutoScalingInstancesType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeAutoScalingInstancesPaginator(
+        _ input: DescribeAutoScalingInstancesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (AutoScalingInstancesType, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeAutoScalingInstances,
+            inputKey: \DescribeAutoScalingInstancesType.nextToken,
+            outputKey: \AutoScalingInstancesType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Gets information about the launch configurations in the account and Region.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeLaunchConfigurationsPaginator<Result>(
+        _ input: LaunchConfigurationNamesType,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, LaunchConfigurationsType, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeLaunchConfigurations,
+            inputKey: \LaunchConfigurationNamesType.nextToken,
+            outputKey: \LaunchConfigurationsType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeLaunchConfigurationsPaginator(
+        _ input: LaunchConfigurationNamesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (LaunchConfigurationsType, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeLaunchConfigurations,
+            inputKey: \LaunchConfigurationNamesType.nextToken,
+            outputKey: \LaunchConfigurationsType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Gets information about the Amazon SNS notifications that are configured for one or more Auto Scaling groups.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeNotificationConfigurationsPaginator<Result>(
+        _ input: DescribeNotificationConfigurationsType,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeNotificationConfigurationsAnswer, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeNotificationConfigurations,
+            inputKey: \DescribeNotificationConfigurationsType.nextToken,
+            outputKey: \DescribeNotificationConfigurationsAnswer.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeNotificationConfigurationsPaginator(
+        _ input: DescribeNotificationConfigurationsType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeNotificationConfigurationsAnswer, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeNotificationConfigurations,
+            inputKey: \DescribeNotificationConfigurationsType.nextToken,
+            outputKey: \DescribeNotificationConfigurationsAnswer.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Gets information about the scaling policies in the account and Region.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describePoliciesPaginator<Result>(
+        _ input: DescribePoliciesType,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, PoliciesType, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describePolicies,
+            inputKey: \DescribePoliciesType.nextToken,
+            outputKey: \PoliciesType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describePoliciesPaginator(
+        _ input: DescribePoliciesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (PoliciesType, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describePolicies,
+            inputKey: \DescribePoliciesType.nextToken,
+            outputKey: \PoliciesType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Gets information about the scaling activities in the account and Region. When scaling events occur, you see a record of the scaling activity in the scaling activities. For more information, see Verifying a scaling activity for an Auto Scaling group in the Amazon EC2 Auto Scaling User Guide. If the scaling event succeeds, the value of the StatusCode element in the response is Successful. If an attempt to launch instances failed, the StatusCode value is Failed or Cancelled and the StatusMessage element in the response indicates the cause of the failure. For help interpreting the StatusMessage, see Troubleshooting Amazon EC2 Auto Scaling in the Amazon EC2 Auto Scaling User Guide.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeScalingActivitiesPaginator<Result>(
+        _ input: DescribeScalingActivitiesType,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ActivitiesType, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeScalingActivities,
+            inputKey: \DescribeScalingActivitiesType.nextToken,
+            outputKey: \ActivitiesType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeScalingActivitiesPaginator(
+        _ input: DescribeScalingActivitiesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ActivitiesType, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeScalingActivities,
+            inputKey: \DescribeScalingActivitiesType.nextToken,
+            outputKey: \ActivitiesType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Gets information about the scheduled actions that haven't run or that have not reached their end time. To describe the scaling activities for scheduled actions that have already run, call the DescribeScalingActivities API.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeScheduledActionsPaginator<Result>(
+        _ input: DescribeScheduledActionsType,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ScheduledActionsType, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeScheduledActions,
+            inputKey: \DescribeScheduledActionsType.nextToken,
+            outputKey: \ScheduledActionsType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeScheduledActionsPaginator(
+        _ input: DescribeScheduledActionsType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ScheduledActionsType, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeScheduledActions,
+            inputKey: \DescribeScheduledActionsType.nextToken,
+            outputKey: \ScheduledActionsType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Describes the specified tags. You can use filters to limit the results. For example, you can query for the tags for a specific Auto Scaling group. You can specify multiple values for a filter. A tag must match at least one of the specified values for it to be included in the results. You can also specify multiple filters. The result includes information for a particular tag only if it matches all the filters. If there's no match, no special message is returned. For more information, see Tag Auto Scaling groups and instances in the Amazon EC2 Auto Scaling User Guide.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeTagsPaginator<Result>(
+        _ input: DescribeTagsType,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, TagsType, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeTags,
+            inputKey: \DescribeTagsType.nextToken,
+            outputKey: \TagsType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeTagsPaginator(
+        _ input: DescribeTagsType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (TagsType, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeTags,
+            inputKey: \DescribeTagsType.nextToken,
+            outputKey: \TagsType.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension AutoScaling.AutoScalingGroupNamesType: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> AutoScaling.AutoScalingGroupNamesType {
+        return .init(
+            autoScalingGroupNames: self.autoScalingGroupNames,
+            filters: self.filters,
+            maxRecords: self.maxRecords,
+            nextToken: token
+        )
+    }
+}
+
+extension AutoScaling.DescribeAutoScalingInstancesType: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> AutoScaling.DescribeAutoScalingInstancesType {
+        return .init(
+            instanceIds: self.instanceIds,
+            maxRecords: self.maxRecords,
+            nextToken: token
+        )
+    }
+}
+
+extension AutoScaling.DescribeNotificationConfigurationsType: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> AutoScaling.DescribeNotificationConfigurationsType {
+        return .init(
+            autoScalingGroupNames: self.autoScalingGroupNames,
+            maxRecords: self.maxRecords,
+            nextToken: token
+        )
+    }
+}
+
+extension AutoScaling.DescribePoliciesType: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> AutoScaling.DescribePoliciesType {
+        return .init(
+            autoScalingGroupName: self.autoScalingGroupName,
+            maxRecords: self.maxRecords,
+            nextToken: token,
+            policyNames: self.policyNames,
+            policyTypes: self.policyTypes
+        )
+    }
+}
+
+extension AutoScaling.DescribeScalingActivitiesType: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> AutoScaling.DescribeScalingActivitiesType {
+        return .init(
+            activityIds: self.activityIds,
+            autoScalingGroupName: self.autoScalingGroupName,
+            includeDeletedGroups: self.includeDeletedGroups,
+            maxRecords: self.maxRecords,
+            nextToken: token
+        )
+    }
+}
+
+extension AutoScaling.DescribeScheduledActionsType: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> AutoScaling.DescribeScheduledActionsType {
+        return .init(
+            autoScalingGroupName: self.autoScalingGroupName,
+            endTime: self.endTime,
+            maxRecords: self.maxRecords,
+            nextToken: token,
+            scheduledActionNames: self.scheduledActionNames,
+            startTime: self.startTime
+        )
+    }
+}
+
+extension AutoScaling.DescribeTagsType: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> AutoScaling.DescribeTagsType {
+        return .init(
+            filters: self.filters,
+            maxRecords: self.maxRecords,
+            nextToken: token
+        )
+    }
+}
+
+extension AutoScaling.LaunchConfigurationNamesType: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> AutoScaling.LaunchConfigurationNamesType {
+        return .init(
+            launchConfigurationNames: self.launchConfigurationNames,
+            maxRecords: self.maxRecords,
+            nextToken: token
+        )
+    }
+}
+
+// MARK: Waiters
+
+extension AutoScaling {
+    public func waitUntilGroupExists(
+        _ input: AutoScalingGroupNamesType,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("length(autoScalingGroups) > `0`", expected: "true")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("length(autoScalingGroups) > `0`", expected: "false")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeAutoScalingGroups
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilGroupInService(
+        _ input: AutoScalingGroupNamesType,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("contains(autoScalingGroups[].[length(instances[?lifecycleState=='inService']) >= minSize][], `false`)", expected: "false")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("contains(autoScalingGroups[].[length(instances[?lifecycleState=='inService']) >= minSize][], `false`)", expected: "true")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeAutoScalingGroups
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilGroupNotExists(
+        _ input: AutoScalingGroupNamesType,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("length(autoScalingGroups) > `0`", expected: "false")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("length(autoScalingGroups) > `0`", expected: "true")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeAutoScalingGroups
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
     }
 }

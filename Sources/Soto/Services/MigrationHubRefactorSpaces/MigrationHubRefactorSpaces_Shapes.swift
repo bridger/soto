@@ -657,7 +657,7 @@ extension MigrationHubRefactorSpaces {
         public let name: String
         /// The tags to assign to the service. A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key-value pair..
         public let tags: [String: String]?
-        /// The configuration for the URL endpoint type.
+        /// The configuration for the URL endpoint type. When creating a route to a service, Refactor Spaces automatically resolves the address in the UrlEndpointInput object URL when the Domain Name System (DNS) time-to-live (TTL) expires, or every 60 seconds for TTLs less than 60 seconds.
         public let urlEndpoint: UrlEndpointInput?
         /// The ID of the VPC.
         public let vpcId: String?
@@ -1643,7 +1643,7 @@ extension MigrationHubRefactorSpaces {
     }
 
     public struct LambdaEndpointInput: AWSEncodableShape & AWSDecodableShape {
-        /// The Amazon Resource Name (ARN) of the Lambda endpoint.
+        /// The Amazon Resource Name (ARN) of the Lambda function or alias.
         public let arn: String
 
         public init(arn: String) {
@@ -1653,7 +1653,7 @@ extension MigrationHubRefactorSpaces {
         public func validate(name: String) throws {
             try self.validate(self.arn, name: "arn", parent: name, max: 2048)
             try self.validate(self.arn, name: "arn", parent: name, min: 1)
-            try self.validate(self.arn, name: "arn", parent: name, pattern: "^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:\n(\\$LATEST|[a-zA-Z0-9-_]+))?$")
+            try self.validate(self.arn, name: "arn", parent: name, pattern: "^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$")
         }
 
         private enum CodingKeys: String, CodingKey {
@@ -2363,5 +2363,68 @@ extension MigrationHubRefactorSpaces {
             case healthUrl = "HealthUrl"
             case url = "Url"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for MigrationHubRefactorSpaces
+public struct MigrationHubRefactorSpacesErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case invalidResourcePolicyException = "InvalidResourcePolicyException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize MigrationHubRefactorSpaces
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The user does not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// Updating or deleting a resource can cause an inconsistent state.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// An unexpected error occurred while processing the request.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The resource policy is not valid.
+    public static var invalidResourcePolicyException: Self { .init(.invalidResourcePolicyException) }
+    /// The request references a resource that does not exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The request would cause a service quota to be exceeded.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// Request was denied because the request was throttled.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input does not satisfy the constraints specified by an Amazon Web Service.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension MigrationHubRefactorSpacesErrorType: Equatable {
+    public static func == (lhs: MigrationHubRefactorSpacesErrorType, rhs: MigrationHubRefactorSpacesErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension MigrationHubRefactorSpacesErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

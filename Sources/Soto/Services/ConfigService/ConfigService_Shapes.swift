@@ -100,6 +100,12 @@ extension ConfigService {
         public var description: String { return self.rawValue }
     }
 
+    public enum EvaluationMode: String, CustomStringConvertible, Codable, _SotoSendable {
+        case detective = "DETECTIVE"
+        case proactive = "PROACTIVE"
+        public var description: String { return self.rawValue }
+    }
+
     public enum EventSource: String, CustomStringConvertible, Codable, _SotoSendable {
         case awsConfig = "aws.config"
         public var description: String { return self.rawValue }
@@ -221,10 +227,22 @@ extension ConfigService {
         public var description: String { return self.rawValue }
     }
 
+    public enum ResourceConfigurationSchemaType: String, CustomStringConvertible, Codable, _SotoSendable {
+        case cfnResourceSchema = "CFN_RESOURCE_SCHEMA"
+        public var description: String { return self.rawValue }
+    }
+
     public enum ResourceCountGroupKey: String, CustomStringConvertible, Codable, _SotoSendable {
         case accountId = "ACCOUNT_ID"
         case awsRegion = "AWS_REGION"
         case resourceType = "RESOURCE_TYPE"
+        public var description: String { return self.rawValue }
+    }
+
+    public enum ResourceEvaluationStatus: String, CustomStringConvertible, Codable, _SotoSendable {
+        case failed = "FAILED"
+        case inProgress = "IN_PROGRESS"
+        case succeeded = "SUCCEEDED"
         public var description: String { return self.rawValue }
     }
 
@@ -1155,6 +1173,8 @@ extension ConfigService {
         /// The description that you provide for the Config
         /// 			rule.
         public let description: String?
+        /// The modes the Config rule can be evaluated in. The valid values are distinct objects. By default, the value is Detective evaluation mode only.
+        public let evaluationModes: [EvaluationModeConfiguration]?
         /// A string, in JSON format, that is passed to the Config rule
         /// 			Lambda function.
         public let inputParameters: String?
@@ -1189,13 +1209,14 @@ extension ConfigService {
         /// 			resources.
         public let source: Source
 
-        public init(configRuleArn: String? = nil, configRuleId: String? = nil, configRuleName: String? = nil, configRuleState: ConfigRuleState? = nil, createdBy: String? = nil, description: String? = nil, inputParameters: String? = nil, maximumExecutionFrequency: MaximumExecutionFrequency? = nil, scope: Scope? = nil, source: Source) {
+        public init(configRuleArn: String? = nil, configRuleId: String? = nil, configRuleName: String? = nil, configRuleState: ConfigRuleState? = nil, createdBy: String? = nil, description: String? = nil, evaluationModes: [EvaluationModeConfiguration]? = nil, inputParameters: String? = nil, maximumExecutionFrequency: MaximumExecutionFrequency? = nil, scope: Scope? = nil, source: Source) {
             self.configRuleArn = configRuleArn
             self.configRuleId = configRuleId
             self.configRuleName = configRuleName
             self.configRuleState = configRuleState
             self.createdBy = createdBy
             self.description = description
+            self.evaluationModes = evaluationModes
             self.inputParameters = inputParameters
             self.maximumExecutionFrequency = maximumExecutionFrequency
             self.scope = scope
@@ -1226,6 +1247,7 @@ extension ConfigService {
             case configRuleState = "ConfigRuleState"
             case createdBy = "CreatedBy"
             case description = "Description"
+            case evaluationModes = "EvaluationModes"
             case inputParameters = "InputParameters"
             case maximumExecutionFrequency = "MaximumExecutionFrequency"
             case scope = "Scope"
@@ -2757,18 +2779,34 @@ extension ConfigService {
         }
     }
 
+    public struct DescribeConfigRulesFilters: AWSEncodableShape {
+        /// The mode of an evaluation. The valid values are Detective or Proactive.
+        public let evaluationMode: EvaluationMode?
+
+        public init(evaluationMode: EvaluationMode? = nil) {
+            self.evaluationMode = evaluationMode
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case evaluationMode = "EvaluationMode"
+        }
+    }
+
     public struct DescribeConfigRulesRequest: AWSEncodableShape {
         /// The names of the Config rules for which you want details.
         /// 			If you do not specify any names, Config returns details for all
         /// 			your rules.
         public let configRuleNames: [String]?
+        /// Returns a list of Detecive or Proactive Config rules. By default, this API returns an unfiltered list.
+        public let filters: DescribeConfigRulesFilters?
         /// The nextToken string returned on a previous page
         /// 			that you use to get the next page of results in a paginated
         /// 			response.
         public let nextToken: String?
 
-        public init(configRuleNames: [String]? = nil, nextToken: String? = nil) {
+        public init(configRuleNames: [String]? = nil, filters: DescribeConfigRulesFilters? = nil, nextToken: String? = nil) {
             self.configRuleNames = configRuleNames
+            self.filters = filters
             self.nextToken = nextToken
         }
 
@@ -2783,6 +2821,7 @@ extension ConfigService {
 
         private enum CodingKeys: String, CodingKey {
             case configRuleNames = "ConfigRuleNames"
+            case filters = "Filters"
             case nextToken = "NextToken"
         }
     }
@@ -3709,6 +3748,37 @@ extension ConfigService {
         }
     }
 
+    public struct EvaluationContext: AWSEncodableShape & AWSDecodableShape {
+        /// A unique EvaluationContextIdentifier ID for an EvaluationContext.
+        public let evaluationContextIdentifier: String?
+
+        public init(evaluationContextIdentifier: String? = nil) {
+            self.evaluationContextIdentifier = evaluationContextIdentifier
+        }
+
+        public func validate(name: String) throws {
+            try self.validate(self.evaluationContextIdentifier, name: "evaluationContextIdentifier", parent: name, max: 128)
+            try self.validate(self.evaluationContextIdentifier, name: "evaluationContextIdentifier", parent: name, min: 1)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case evaluationContextIdentifier = "EvaluationContextIdentifier"
+        }
+    }
+
+    public struct EvaluationModeConfiguration: AWSEncodableShape & AWSDecodableShape {
+        /// The mode of an evaluation. The valid values are Detective or Proactive.
+        public let mode: EvaluationMode?
+
+        public init(mode: EvaluationMode? = nil) {
+            self.mode = mode
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case mode = "Mode"
+        }
+    }
+
     public struct EvaluationResult: AWSDecodableShape {
         /// Supplementary information about how the evaluation determined
         /// 			the compliance.
@@ -3761,15 +3831,19 @@ extension ConfigService {
         /// 			configuration item change notification, or it can indicate when Config delivered the configuration snapshot, depending on which
         /// 			event triggered the evaluation.
         public let orderingTimestamp: Date?
+        /// A Unique ID for an evaluation result.
+        public let resourceEvaluationId: String?
 
-        public init(evaluationResultQualifier: EvaluationResultQualifier? = nil, orderingTimestamp: Date? = nil) {
+        public init(evaluationResultQualifier: EvaluationResultQualifier? = nil, orderingTimestamp: Date? = nil, resourceEvaluationId: String? = nil) {
             self.evaluationResultQualifier = evaluationResultQualifier
             self.orderingTimestamp = orderingTimestamp
+            self.resourceEvaluationId = resourceEvaluationId
         }
 
         private enum CodingKeys: String, CodingKey {
             case evaluationResultQualifier = "EvaluationResultQualifier"
             case orderingTimestamp = "OrderingTimestamp"
+            case resourceEvaluationId = "ResourceEvaluationId"
         }
     }
 
@@ -3777,21 +3851,42 @@ extension ConfigService {
         /// The name of the Config rule that was used in the
         /// 			evaluation.
         public let configRuleName: String?
+        /// The mode of an evaluation. The valid values are Detective or Proactive.
+        public let evaluationMode: EvaluationMode?
         /// The ID of the evaluated Amazon Web Services resource.
         public let resourceId: String?
         /// The type of Amazon Web Services resource that was evaluated.
         public let resourceType: String?
 
-        public init(configRuleName: String? = nil, resourceId: String? = nil, resourceType: String? = nil) {
+        public init(configRuleName: String? = nil, evaluationMode: EvaluationMode? = nil, resourceId: String? = nil, resourceType: String? = nil) {
             self.configRuleName = configRuleName
+            self.evaluationMode = evaluationMode
             self.resourceId = resourceId
             self.resourceType = resourceType
         }
 
         private enum CodingKeys: String, CodingKey {
             case configRuleName = "ConfigRuleName"
+            case evaluationMode = "EvaluationMode"
             case resourceId = "ResourceId"
             case resourceType = "ResourceType"
+        }
+    }
+
+    public struct EvaluationStatus: AWSDecodableShape {
+        /// An explanation for failed execution status.
+        public let failureReason: String?
+        /// The status of an execution. The valid values are In_Progress, Succeeded or Failed.
+        public let status: ResourceEvaluationStatus
+
+        public init(failureReason: String? = nil, status: ResourceEvaluationStatus) {
+            self.failureReason = failureReason
+            self.status = status
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case failureReason = "FailureReason"
+            case status = "Status"
         }
     }
 
@@ -4288,22 +4383,28 @@ extension ConfigService {
         /// 			that you use to get the next page of results in a paginated
         /// 			response.
         public let nextToken: String?
+        /// The unique ID of Amazon Web Services resource execution for which you want to retrieve evaluation results.
+        /// 		        You need to only provide either a ResourceEvaluationID or a ResourceID and ResourceType.
+        public let resourceEvaluationId: String?
         /// The ID of the Amazon Web Services resource for which you want compliance
         /// 			information.
-        public let resourceId: String
+        public let resourceId: String?
         /// The type of the Amazon Web Services resource for which you want compliance
         /// 			information.
-        public let resourceType: String
+        public let resourceType: String?
 
-        public init(complianceTypes: [ComplianceType]? = nil, nextToken: String? = nil, resourceId: String, resourceType: String) {
+        public init(complianceTypes: [ComplianceType]? = nil, nextToken: String? = nil, resourceEvaluationId: String? = nil, resourceId: String? = nil, resourceType: String? = nil) {
             self.complianceTypes = complianceTypes
             self.nextToken = nextToken
+            self.resourceEvaluationId = resourceEvaluationId
             self.resourceId = resourceId
             self.resourceType = resourceType
         }
 
         public func validate(name: String) throws {
             try self.validate(self.complianceTypes, name: "complianceTypes", parent: name, max: 3)
+            try self.validate(self.resourceEvaluationId, name: "resourceEvaluationId", parent: name, max: 128)
+            try self.validate(self.resourceEvaluationId, name: "resourceEvaluationId", parent: name, min: 1)
             try self.validate(self.resourceId, name: "resourceId", parent: name, max: 768)
             try self.validate(self.resourceId, name: "resourceId", parent: name, min: 1)
             try self.validate(self.resourceType, name: "resourceType", parent: name, max: 256)
@@ -4313,6 +4414,7 @@ extension ConfigService {
         private enum CodingKeys: String, CodingKey {
             case complianceTypes = "ComplianceTypes"
             case nextToken = "NextToken"
+            case resourceEvaluationId = "ResourceEvaluationId"
             case resourceId = "ResourceId"
             case resourceType = "ResourceType"
         }
@@ -4829,6 +4931,61 @@ extension ConfigService {
         }
     }
 
+    public struct GetResourceEvaluationSummaryRequest: AWSEncodableShape {
+        /// The unique ResourceEvaluationId of Amazon Web Services resource execution for which you want to retrieve the evaluation summary.
+        public let resourceEvaluationId: String
+
+        public init(resourceEvaluationId: String) {
+            self.resourceEvaluationId = resourceEvaluationId
+        }
+
+        public func validate(name: String) throws {
+            try self.validate(self.resourceEvaluationId, name: "resourceEvaluationId", parent: name, max: 128)
+            try self.validate(self.resourceEvaluationId, name: "resourceEvaluationId", parent: name, min: 1)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case resourceEvaluationId = "ResourceEvaluationId"
+        }
+    }
+
+    public struct GetResourceEvaluationSummaryResponse: AWSDecodableShape {
+        /// The compliance status of the resource evaluation summary.
+        public let compliance: ComplianceType?
+        /// Returns an EvaluationContext object.
+        public let evaluationContext: EvaluationContext?
+        /// Lists results of the mode that you requested to retrieve the resource evaluation summary. The valid values are Detective or Proactive.
+        public let evaluationMode: EvaluationMode?
+        /// The start timestamp when Config rule starts evaluating compliance for the provided resource details.
+        public let evaluationStartTimestamp: Date?
+        /// Returns an EvaluationStatus object.
+        public let evaluationStatus: EvaluationStatus?
+        /// Returns a ResourceDetails object.
+        public let resourceDetails: ResourceDetails?
+        /// The unique ResourceEvaluationId of Amazon Web Services resource execution for which you want to retrieve the evaluation summary.
+        public let resourceEvaluationId: String?
+
+        public init(compliance: ComplianceType? = nil, evaluationContext: EvaluationContext? = nil, evaluationMode: EvaluationMode? = nil, evaluationStartTimestamp: Date? = nil, evaluationStatus: EvaluationStatus? = nil, resourceDetails: ResourceDetails? = nil, resourceEvaluationId: String? = nil) {
+            self.compliance = compliance
+            self.evaluationContext = evaluationContext
+            self.evaluationMode = evaluationMode
+            self.evaluationStartTimestamp = evaluationStartTimestamp
+            self.evaluationStatus = evaluationStatus
+            self.resourceDetails = resourceDetails
+            self.resourceEvaluationId = resourceEvaluationId
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case compliance = "Compliance"
+            case evaluationContext = "EvaluationContext"
+            case evaluationMode = "EvaluationMode"
+            case evaluationStartTimestamp = "EvaluationStartTimestamp"
+            case evaluationStatus = "EvaluationStatus"
+            case resourceDetails = "ResourceDetails"
+            case resourceEvaluationId = "ResourceEvaluationId"
+        }
+    }
+
     public struct GetStoredQueryRequest: AWSEncodableShape {
         /// The name of the query.
         public let queryName: String
@@ -5059,6 +5216,51 @@ extension ConfigService {
         private enum CodingKeys: String, CodingKey {
             case nextToken
             case resourceIdentifiers
+        }
+    }
+
+    public struct ListResourceEvaluationsRequest: AWSEncodableShape {
+        /// Returns a ResourceEvaluationFilters object.
+        public let filters: ResourceEvaluationFilters?
+        /// The maximum number of evaluations returned on each page. The default is 10.
+        /// 			You cannot specify a number greater than 100. If you specify 0, Config uses the default.
+        public let limit: Int?
+        /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
+        public let nextToken: String?
+
+        public init(filters: ResourceEvaluationFilters? = nil, limit: Int? = nil, nextToken: String? = nil) {
+            self.filters = filters
+            self.limit = limit
+            self.nextToken = nextToken
+        }
+
+        public func validate(name: String) throws {
+            try self.filters?.validate(name: "\(name).filters")
+            try self.validate(self.limit, name: "limit", parent: name, max: 100)
+            try self.validate(self.limit, name: "limit", parent: name, min: 0)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case filters = "Filters"
+            case limit = "Limit"
+            case nextToken = "NextToken"
+        }
+    }
+
+    public struct ListResourceEvaluationsResponse: AWSDecodableShape {
+        /// The nextToken string returned on a previous page that you use to get the next page of results in a paginated response.
+        public let nextToken: String?
+        /// Returns a ResourceEvaluations object.
+        public let resourceEvaluations: [ResourceEvaluation]?
+
+        public init(nextToken: String? = nil, resourceEvaluations: [ResourceEvaluation]? = nil) {
+            self.nextToken = nextToken
+            self.resourceEvaluations = resourceEvaluations
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case nextToken = "NextToken"
+            case resourceEvaluations = "ResourceEvaluations"
         }
     }
 
@@ -6754,6 +6956,87 @@ extension ConfigService {
         }
     }
 
+    public struct ResourceDetails: AWSEncodableShape & AWSDecodableShape {
+        /// The resource definition to be evaluated as per the resource configuration schema type.
+        public let resourceConfiguration: String
+        /// The schema type of the resource configuration.
+        public let resourceConfigurationSchemaType: ResourceConfigurationSchemaType?
+        /// A unique resource ID for an evaluation.
+        public let resourceId: String
+        /// The type of resource being evaluated.
+        public let resourceType: String
+
+        public init(resourceConfiguration: String, resourceConfigurationSchemaType: ResourceConfigurationSchemaType? = nil, resourceId: String, resourceType: String) {
+            self.resourceConfiguration = resourceConfiguration
+            self.resourceConfigurationSchemaType = resourceConfigurationSchemaType
+            self.resourceId = resourceId
+            self.resourceType = resourceType
+        }
+
+        public func validate(name: String) throws {
+            try self.validate(self.resourceConfiguration, name: "resourceConfiguration", parent: name, max: 51200)
+            try self.validate(self.resourceConfiguration, name: "resourceConfiguration", parent: name, min: 1)
+            try self.validate(self.resourceId, name: "resourceId", parent: name, max: 768)
+            try self.validate(self.resourceId, name: "resourceId", parent: name, min: 1)
+            try self.validate(self.resourceType, name: "resourceType", parent: name, max: 256)
+            try self.validate(self.resourceType, name: "resourceType", parent: name, min: 1)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case resourceConfiguration = "ResourceConfiguration"
+            case resourceConfigurationSchemaType = "ResourceConfigurationSchemaType"
+            case resourceId = "ResourceId"
+            case resourceType = "ResourceType"
+        }
+    }
+
+    public struct ResourceEvaluation: AWSDecodableShape {
+        /// The mode of an evaluation. The valid values are Detective or Proactive.
+        public let evaluationMode: EvaluationMode?
+        /// The starting time of an execution.
+        public let evaluationStartTimestamp: Date?
+        /// The ResourceEvaluationId of a evaluation.
+        public let resourceEvaluationId: String?
+
+        public init(evaluationMode: EvaluationMode? = nil, evaluationStartTimestamp: Date? = nil, resourceEvaluationId: String? = nil) {
+            self.evaluationMode = evaluationMode
+            self.evaluationStartTimestamp = evaluationStartTimestamp
+            self.resourceEvaluationId = resourceEvaluationId
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case evaluationMode = "EvaluationMode"
+            case evaluationStartTimestamp = "EvaluationStartTimestamp"
+            case resourceEvaluationId = "ResourceEvaluationId"
+        }
+    }
+
+    public struct ResourceEvaluationFilters: AWSEncodableShape {
+        /// Filters evaluations for a given infrastructure deployment. For example: CFN Stack.
+        public let evaluationContextIdentifier: String?
+        /// Filters all resource evaluations results based on an evaluation mode. the valid value for this API is Proactive.
+        public let evaluationMode: EvaluationMode?
+        /// Returns a TimeWindow object.
+        public let timeWindow: TimeWindow?
+
+        public init(evaluationContextIdentifier: String? = nil, evaluationMode: EvaluationMode? = nil, timeWindow: TimeWindow? = nil) {
+            self.evaluationContextIdentifier = evaluationContextIdentifier
+            self.evaluationMode = evaluationMode
+            self.timeWindow = timeWindow
+        }
+
+        public func validate(name: String) throws {
+            try self.validate(self.evaluationContextIdentifier, name: "evaluationContextIdentifier", parent: name, max: 128)
+            try self.validate(self.evaluationContextIdentifier, name: "evaluationContextIdentifier", parent: name, min: 1)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case evaluationContextIdentifier = "EvaluationContextIdentifier"
+            case evaluationMode = "EvaluationMode"
+            case timeWindow = "TimeWindow"
+        }
+    }
+
     public struct ResourceFilters: AWSEncodableShape {
         /// The 12-digit source account ID.
         public let accountId: String?
@@ -7253,6 +7536,65 @@ extension ConfigService {
         }
     }
 
+    public struct StartResourceEvaluationRequest: AWSEncodableShape {
+        /// A client token is a unique, case-sensitive string of up to 64 ASCII characters.
+        /// 			To make an idempotent API request using one of these actions, specify a client token in the request.
+        /// 		        Avoid reusing the same client token for other API requests. If you retry
+        /// 				a request that completed successfully using the same client token and the same
+        /// 				parameters, the retry succeeds without performing any further actions. If you retry
+        /// 				a successful request using the same client token, but one or more of the parameters
+        /// 				are different, other than the Region or Availability Zone, the retry fails with an
+        /// 				IdempotentParameterMismatch error.
+        public let clientToken: String?
+        /// Returns an EvaluationContext object.
+        public let evaluationContext: EvaluationContext?
+        /// The mode of an evaluation. The valid value for this API is Proactive.
+        public let evaluationMode: EvaluationMode
+        /// The timeout for an evaluation. The default is 900 seconds. You cannot specify a number greater than 3600. If you specify 0, Config uses the default.
+        public let evaluationTimeout: Int?
+        /// Returns a ResourceDetails object.
+        public let resourceDetails: ResourceDetails
+
+        public init(clientToken: String? = nil, evaluationContext: EvaluationContext? = nil, evaluationMode: EvaluationMode, evaluationTimeout: Int? = nil, resourceDetails: ResourceDetails) {
+            self.clientToken = clientToken
+            self.evaluationContext = evaluationContext
+            self.evaluationMode = evaluationMode
+            self.evaluationTimeout = evaluationTimeout
+            self.resourceDetails = resourceDetails
+        }
+
+        public func validate(name: String) throws {
+            try self.validate(self.clientToken, name: "clientToken", parent: name, max: 256)
+            try self.validate(self.clientToken, name: "clientToken", parent: name, min: 64)
+            try self.evaluationContext?.validate(name: "\(name).evaluationContext")
+            try self.validate(self.evaluationTimeout, name: "evaluationTimeout", parent: name, max: 3600)
+            try self.validate(self.evaluationTimeout, name: "evaluationTimeout", parent: name, min: 0)
+            try self.resourceDetails.validate(name: "\(name).resourceDetails")
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case clientToken = "ClientToken"
+            case evaluationContext = "EvaluationContext"
+            case evaluationMode = "EvaluationMode"
+            case evaluationTimeout = "EvaluationTimeout"
+            case resourceDetails = "ResourceDetails"
+        }
+    }
+
+    public struct StartResourceEvaluationResponse: AWSDecodableShape {
+        /// A
+        /// 			unique ResourceEvaluationId that is associated with a single execution.
+        public let resourceEvaluationId: String?
+
+        public init(resourceEvaluationId: String? = nil) {
+            self.resourceEvaluationId = resourceEvaluationId
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case resourceEvaluationId = "ResourceEvaluationId"
+        }
+    }
+
     public struct StaticValue: AWSEncodableShape & AWSDecodableShape {
         /// A list of values. For example, the ARN of the assumed role.
         public let values: [String]
@@ -7470,6 +7812,23 @@ extension ConfigService {
         }
     }
 
+    public struct TimeWindow: AWSEncodableShape {
+        /// The end time of an execution. The end time must be after the start date.
+        public let endTime: Date?
+        /// The start time of an execution.
+        public let startTime: Date?
+
+        public init(endTime: Date? = nil, startTime: Date? = nil) {
+            self.endTime = endTime
+            self.startTime = startTime
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case endTime = "EndTime"
+            case startTime = "StartTime"
+        }
+    }
+
     public struct UntagResourceRequest: AWSEncodableShape {
         /// The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the supported resources are ConfigRule, ConfigurationAggregator and AggregatorAuthorization.
         public let resourceArn: String
@@ -7496,5 +7855,242 @@ extension ConfigService {
             case resourceArn = "ResourceArn"
             case tagKeys = "TagKeys"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for ConfigService
+public struct ConfigServiceErrorType: AWSErrorType {
+    enum Code: String {
+        case conformancePackTemplateValidationException = "ConformancePackTemplateValidationException"
+        case idempotentParameterMismatch = "IdempotentParameterMismatch"
+        case insufficientDeliveryPolicyException = "InsufficientDeliveryPolicyException"
+        case insufficientPermissionsException = "InsufficientPermissionsException"
+        case invalidConfigurationRecorderNameException = "InvalidConfigurationRecorderNameException"
+        case invalidDeliveryChannelNameException = "InvalidDeliveryChannelNameException"
+        case invalidExpressionException = "InvalidExpressionException"
+        case invalidLimitException = "InvalidLimitException"
+        case invalidNextTokenException = "InvalidNextTokenException"
+        case invalidParameterValueException = "InvalidParameterValueException"
+        case invalidRecordingGroupException = "InvalidRecordingGroupException"
+        case invalidResultTokenException = "InvalidResultTokenException"
+        case invalidRoleException = "InvalidRoleException"
+        case invalidS3KeyPrefixException = "InvalidS3KeyPrefixException"
+        case invalidS3KmsKeyArnException = "InvalidS3KmsKeyArnException"
+        case invalidSNSTopicARNException = "InvalidSNSTopicARNException"
+        case invalidTimeRangeException = "InvalidTimeRangeException"
+        case lastDeliveryChannelDeleteFailedException = "LastDeliveryChannelDeleteFailedException"
+        case limitExceededException = "LimitExceededException"
+        case maxActiveResourcesExceededException = "MaxActiveResourcesExceededException"
+        case maxNumberOfConfigRulesExceededException = "MaxNumberOfConfigRulesExceededException"
+        case maxNumberOfConfigurationRecordersExceededException = "MaxNumberOfConfigurationRecordersExceededException"
+        case maxNumberOfConformancePacksExceededException = "MaxNumberOfConformancePacksExceededException"
+        case maxNumberOfDeliveryChannelsExceededException = "MaxNumberOfDeliveryChannelsExceededException"
+        case maxNumberOfOrganizationConfigRulesExceededException = "MaxNumberOfOrganizationConfigRulesExceededException"
+        case maxNumberOfOrganizationConformancePacksExceededException = "MaxNumberOfOrganizationConformancePacksExceededException"
+        case maxNumberOfRetentionConfigurationsExceededException = "MaxNumberOfRetentionConfigurationsExceededException"
+        case noAvailableConfigurationRecorderException = "NoAvailableConfigurationRecorderException"
+        case noAvailableDeliveryChannelException = "NoAvailableDeliveryChannelException"
+        case noAvailableOrganizationException = "NoAvailableOrganizationException"
+        case noRunningConfigurationRecorderException = "NoRunningConfigurationRecorderException"
+        case noSuchBucketException = "NoSuchBucketException"
+        case noSuchConfigRuleException = "NoSuchConfigRuleException"
+        case noSuchConfigRuleInConformancePackException = "NoSuchConfigRuleInConformancePackException"
+        case noSuchConfigurationAggregatorException = "NoSuchConfigurationAggregatorException"
+        case noSuchConfigurationRecorderException = "NoSuchConfigurationRecorderException"
+        case noSuchConformancePackException = "NoSuchConformancePackException"
+        case noSuchDeliveryChannelException = "NoSuchDeliveryChannelException"
+        case noSuchOrganizationConfigRuleException = "NoSuchOrganizationConfigRuleException"
+        case noSuchOrganizationConformancePackException = "NoSuchOrganizationConformancePackException"
+        case noSuchRemediationConfigurationException = "NoSuchRemediationConfigurationException"
+        case noSuchRemediationExceptionException = "NoSuchRemediationExceptionException"
+        case noSuchRetentionConfigurationException = "NoSuchRetentionConfigurationException"
+        case organizationAccessDeniedException = "OrganizationAccessDeniedException"
+        case organizationAllFeaturesNotEnabledException = "OrganizationAllFeaturesNotEnabledException"
+        case organizationConformancePackTemplateValidationException = "OrganizationConformancePackTemplateValidationException"
+        case oversizedConfigurationItemException = "OversizedConfigurationItemException"
+        case remediationInProgressException = "RemediationInProgressException"
+        case resourceConcurrentModificationException = "ResourceConcurrentModificationException"
+        case resourceInUseException = "ResourceInUseException"
+        case resourceNotDiscoveredException = "ResourceNotDiscoveredException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case tooManyTagsException = "TooManyTagsException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize ConfigService
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You have specified a template that is invalid or supported.
+    public static var conformancePackTemplateValidationException: Self { .init(.conformancePackTemplateValidationException) }
+    /// Using the same client token with one or more different parameters. Specify a new client token with the parameter changes and try again.
+    public static var idempotentParameterMismatch: Self { .init(.idempotentParameterMismatch) }
+    /// Your Amazon S3 bucket policy does not permit Config to
+    /// 			write to it.
+    public static var insufficientDeliveryPolicyException: Self { .init(.insufficientDeliveryPolicyException) }
+    /// Indicates one of the following errors:
+    /// 		         For PutConfigRule, the rule cannot be created because the IAM role assigned to Config lacks permissions to perform the config:Put* action.   For PutConfigRule, the Lambda function cannot be invoked. Check the function ARN, and check the function&#39;s permissions.   For PutOrganizationConfigRule, organization Config rule cannot be created because you do not have permissions to call IAM GetRole action or create a service-linked role.   For PutConformancePack and PutOrganizationConformancePack, a conformance pack cannot be created because you do not have the following permissions:
+    /// 				             You do not have permission to call IAM GetRole action or create a service-linked role.   You do not have permission to read Amazon S3 bucket or call SSM:GetDocument.
+    ///
+    public static var insufficientPermissionsException: Self { .init(.insufficientPermissionsException) }
+    /// You have provided a configuration recorder name that is not
+    /// 			valid.
+    public static var invalidConfigurationRecorderNameException: Self { .init(.invalidConfigurationRecorderNameException) }
+    /// The specified delivery channel name is invalid.
+    public static var invalidDeliveryChannelNameException: Self { .init(.invalidDeliveryChannelNameException) }
+    /// The syntax of the query is incorrect.
+    public static var invalidExpressionException: Self { .init(.invalidExpressionException) }
+    /// The specified limit is outside the allowable range.
+    public static var invalidLimitException: Self { .init(.invalidLimitException) }
+    /// The specified next token is invalid. Specify the
+    /// 				nextToken string that was returned in the previous
+    /// 			response to get the next page of results.
+    public static var invalidNextTokenException: Self { .init(.invalidNextTokenException) }
+    /// One or more of the specified parameters are invalid. Verify
+    /// 			that your parameters are valid and try again.
+    public static var invalidParameterValueException: Self { .init(.invalidParameterValueException) }
+    /// Config throws an exception if the recording group does not contain a valid list of resource types. Invalid values might also be incorrectly formatted.
+    public static var invalidRecordingGroupException: Self { .init(.invalidRecordingGroupException) }
+    /// The specified ResultToken is invalid.
+    public static var invalidResultTokenException: Self { .init(.invalidResultTokenException) }
+    /// You have provided a null or empty role ARN.
+    public static var invalidRoleException: Self { .init(.invalidRoleException) }
+    /// The specified Amazon S3 key prefix is invalid.
+    public static var invalidS3KeyPrefixException: Self { .init(.invalidS3KeyPrefixException) }
+    /// The specified Amazon KMS Key ARN is invalid.
+    public static var invalidS3KmsKeyArnException: Self { .init(.invalidS3KmsKeyArnException) }
+    /// The specified Amazon SNS topic does not exist.
+    public static var invalidSNSTopicARNException: Self { .init(.invalidSNSTopicARNException) }
+    /// The specified time range is invalid. The earlier time is not
+    /// 			chronologically before the later time.
+    public static var invalidTimeRangeException: Self { .init(.invalidTimeRangeException) }
+    /// You cannot delete the delivery channel you specified because
+    /// 			the configuration recorder is running.
+    public static var lastDeliveryChannelDeleteFailedException: Self { .init(.lastDeliveryChannelDeleteFailedException) }
+    /// For StartConfigRulesEvaluation API, this exception
+    /// 			is thrown if an evaluation is in progress or if you call the StartConfigRulesEvaluation API more than once per
+    /// 			minute.
+    /// 		       For PutConfigurationAggregator API, this exception
+    /// 			is thrown if the number of accounts and aggregators exceeds the
+    /// 			limit.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// You have reached the limit of active custom resource types in your account. There is a limit of 100,000.
+    /// 			Delete unused resources using DeleteResourceConfig .
+    public static var maxActiveResourcesExceededException: Self { .init(.maxActiveResourcesExceededException) }
+    /// Failed to add the Config rule because the account already
+    /// 			contains the maximum number of 150 rules. Consider deleting any
+    /// 			deactivated rules before you add new rules.
+    public static var maxNumberOfConfigRulesExceededException: Self { .init(.maxNumberOfConfigRulesExceededException) }
+    /// You have reached the limit of the number of recorders you can
+    /// 			create.
+    public static var maxNumberOfConfigurationRecordersExceededException: Self { .init(.maxNumberOfConfigurationRecordersExceededException) }
+    /// You have reached the limit of the number of conformance packs you can create in an account. For more information, see  Service Limits in the Config Developer Guide.
+    public static var maxNumberOfConformancePacksExceededException: Self { .init(.maxNumberOfConformancePacksExceededException) }
+    /// You have reached the limit of the number of delivery channels
+    /// 			you can create.
+    public static var maxNumberOfDeliveryChannelsExceededException: Self { .init(.maxNumberOfDeliveryChannelsExceededException) }
+    /// You have reached the limit of the number of organization Config rules you can create. For more information, see see  Service Limits in the Config Developer Guide.
+    public static var maxNumberOfOrganizationConfigRulesExceededException: Self { .init(.maxNumberOfOrganizationConfigRulesExceededException) }
+    /// You have reached the limit of the number of organization conformance packs you can create in an account. For more information, see  Service Limits in the Config Developer Guide.
+    public static var maxNumberOfOrganizationConformancePacksExceededException: Self { .init(.maxNumberOfOrganizationConformancePacksExceededException) }
+    /// Failed to add the retention configuration because a retention configuration with that name already exists.
+    public static var maxNumberOfRetentionConfigurationsExceededException: Self { .init(.maxNumberOfRetentionConfigurationsExceededException) }
+    /// There are no configuration recorders available to provide the
+    /// 			role needed to describe your resources. Create a configuration
+    /// 			recorder.
+    public static var noAvailableConfigurationRecorderException: Self { .init(.noAvailableConfigurationRecorderException) }
+    /// There is no delivery channel available to record
+    /// 			configurations.
+    public static var noAvailableDeliveryChannelException: Self { .init(.noAvailableDeliveryChannelException) }
+    /// Organization is no longer available.
+    public static var noAvailableOrganizationException: Self { .init(.noAvailableOrganizationException) }
+    /// There is no configuration recorder running.
+    public static var noRunningConfigurationRecorderException: Self { .init(.noRunningConfigurationRecorderException) }
+    /// The specified Amazon S3 bucket does not exist.
+    public static var noSuchBucketException: Self { .init(.noSuchBucketException) }
+    /// The Config rule in the request is invalid. Verify that the rule is an Config Custom Policy rule, that the rule name is correct, and that valid Amazon Resouce Names (ARNs) are used before trying again.
+    public static var noSuchConfigRuleException: Self { .init(.noSuchConfigRuleException) }
+    /// Config rule that you passed in the filter does not exist.
+    public static var noSuchConfigRuleInConformancePackException: Self { .init(.noSuchConfigRuleInConformancePackException) }
+    /// You have specified a configuration aggregator that does not exist.
+    public static var noSuchConfigurationAggregatorException: Self { .init(.noSuchConfigurationAggregatorException) }
+    /// You have specified a configuration recorder that does not
+    /// 			exist.
+    public static var noSuchConfigurationRecorderException: Self { .init(.noSuchConfigurationRecorderException) }
+    /// You specified one or more conformance packs that do not exist.
+    public static var noSuchConformancePackException: Self { .init(.noSuchConformancePackException) }
+    /// You have specified a delivery channel that does not
+    /// 			exist.
+    public static var noSuchDeliveryChannelException: Self { .init(.noSuchDeliveryChannelException) }
+    /// The Config rule in the request is invalid. Verify that the rule is an organization Config Custom Policy rule, that the rule name is correct, and that valid Amazon Resouce Names (ARNs) are used before trying again.
+    public static var noSuchOrganizationConfigRuleException: Self { .init(.noSuchOrganizationConfigRuleException) }
+    /// Config organization conformance pack that you passed in the filter does not exist.
+    /// 		       For DeleteOrganizationConformancePack, you tried to delete an organization conformance pack that does not exist.
+    public static var noSuchOrganizationConformancePackException: Self { .init(.noSuchOrganizationConformancePackException) }
+    /// You specified an Config rule without a remediation configuration.
+    public static var noSuchRemediationConfigurationException: Self { .init(.noSuchRemediationConfigurationException) }
+    /// You tried to delete a remediation exception that does not exist.
+    public static var noSuchRemediationExceptionException: Self { .init(.noSuchRemediationExceptionException) }
+    /// You have specified a retention configuration that does not exist.
+    public static var noSuchRetentionConfigurationException: Self { .init(.noSuchRetentionConfigurationException) }
+    /// For PutConfigurationAggregator API, you can see this exception for the following reasons:
+    /// 		         No permission to call EnableAWSServiceAccess API   The configuration aggregator cannot be updated because your Amazon Web Services Organization management account or the delegated administrator role changed.
+    /// 				Delete this aggregator and create a new one with the current Amazon Web Services Organization.   The configuration aggregator is associated with a previous Amazon Web Services Organization and Config cannot aggregate data with current Amazon Web Services Organization.
+    /// 				Delete this aggregator and create a new one with the current Amazon Web Services Organization.   You are not a registered delegated administrator for Config with permissions to call ListDelegatedAdministrators API.
+    /// 			Ensure that the management account registers delagated administrator for Config service principle name before the delegated administrator creates an aggregator.
+    /// 		       For all OrganizationConfigRule and OrganizationConformancePack APIs, Config throws an exception if APIs are called from member accounts. All APIs must be called from organization management account.
+    public static var organizationAccessDeniedException: Self { .init(.organizationAccessDeniedException) }
+    /// Config resource cannot be created because your organization does not have all features enabled.
+    public static var organizationAllFeaturesNotEnabledException: Self { .init(.organizationAllFeaturesNotEnabledException) }
+    /// You have specified a template that is invalid or supported.
+    public static var organizationConformancePackTemplateValidationException: Self { .init(.organizationConformancePackTemplateValidationException) }
+    /// The configuration item size is outside the allowable range.
+    public static var oversizedConfigurationItemException: Self { .init(.oversizedConfigurationItemException) }
+    /// Remediation action is in progress. You can either cancel execution in Amazon Web Services Systems Manager or wait and try again later.
+    public static var remediationInProgressException: Self { .init(.remediationInProgressException) }
+    /// Two users are trying to modify the same query at the same time. Wait for a moment and try again.
+    public static var resourceConcurrentModificationException: Self { .init(.resourceConcurrentModificationException) }
+    /// You see this exception in the following cases:
+    /// 		         For DeleteConfigRule, Config is deleting this rule. Try your request again later.   For DeleteConfigRule, the rule is deleting your evaluation results. Try your request again later.   For DeleteConfigRule, a remediation action is associated with the rule and Config cannot delete this rule. Delete the remediation action associated with the rule before deleting the rule and try your request again later.   For PutConfigOrganizationRule, organization Config rule deletion is in progress. Try your request again later.   For DeleteOrganizationConfigRule, organization Config rule creation is in progress. Try your request again later.   For PutConformancePack and PutOrganizationConformancePack, a conformance pack creation, update, and deletion is in progress. Try your request again later.   For DeleteConformancePack, a conformance pack creation, update, and deletion is in progress. Try your request again later.
+    public static var resourceInUseException: Self { .init(.resourceInUseException) }
+    /// You have specified a resource that is either unknown or has not
+    /// 			been discovered.
+    public static var resourceNotDiscoveredException: Self { .init(.resourceNotDiscoveredException) }
+    /// You have specified a resource that does not exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// You have reached the limit of the number of tags you can use.
+    /// 			For more information, see  Service Limits in the Config Developer Guide.
+    public static var tooManyTagsException: Self { .init(.tooManyTagsException) }
+    /// The requested action is invalid.
+    /// 		       For PutStoredQuery, you will see this exception if there are missing required fields or if the input value fails the validation, or if you are trying to create more than 300 queries.
+    /// 		       For GetStoredQuery, ListStoredQuery, and DeleteStoredQuery you will see this exception if there are missing required fields or if the input value fails the validation.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension ConfigServiceErrorType: Equatable {
+    public static func == (lhs: ConfigServiceErrorType, rhs: ConfigServiceErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension ConfigServiceErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

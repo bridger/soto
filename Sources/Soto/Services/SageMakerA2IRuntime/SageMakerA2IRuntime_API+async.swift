@@ -49,4 +49,31 @@ extension SageMakerA2IRuntime {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension SageMakerA2IRuntime {
+    ///  Returns information about human loops, given the specified parameters. If a human loop was deleted, it will not be included.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listHumanLoopsPaginator(
+        _ input: ListHumanLoopsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListHumanLoopsRequest, ListHumanLoopsResponse> {
+        return .init(
+            input: input,
+            command: self.listHumanLoops,
+            inputKey: \ListHumanLoopsRequest.nextToken,
+            outputKey: \ListHumanLoopsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

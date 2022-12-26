@@ -1875,3 +1875,51 @@ extension EMRContainers {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for EMRContainers
+public struct EMRContainersErrorType: AWSErrorType {
+    enum Code: String {
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize EMRContainers
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// This is an internal server exception.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The specified resource was not found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// There are invalid parameters in the client request.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension EMRContainersErrorType: Equatable {
+    public static func == (lhs: EMRContainersErrorType, rhs: EMRContainersErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension EMRContainersErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

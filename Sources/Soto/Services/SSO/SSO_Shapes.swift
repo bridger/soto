@@ -231,3 +231,54 @@ extension SSO {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for SSO
+public struct SSOErrorType: AWSErrorType {
+    enum Code: String {
+        case invalidRequestException = "InvalidRequestException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case tooManyRequestsException = "TooManyRequestsException"
+        case unauthorizedException = "UnauthorizedException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize SSO
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Indicates that a problem occurred with the input to the request. For example, a required parameter might be missing or out of range.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// The specified resource doesn&#39;t exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// Indicates that the request is being made too frequently and is more than what the server can handle.
+    public static var tooManyRequestsException: Self { .init(.tooManyRequestsException) }
+    /// Indicates that the request is not authorized. This can happen due to an invalid access token in the request.
+    public static var unauthorizedException: Self { .init(.unauthorizedException) }
+}
+
+extension SSOErrorType: Equatable {
+    public static func == (lhs: SSOErrorType, rhs: SSOErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension SSOErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

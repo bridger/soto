@@ -349,4 +349,75 @@ extension WorkSpaces {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension WorkSpaces {
+    ///  Retrieves a list that describes the available WorkSpace bundles. You can filter the results using either bundle ID or owner, but not both.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeWorkspaceBundlesPaginator(
+        _ input: DescribeWorkspaceBundlesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeWorkspaceBundlesRequest, DescribeWorkspaceBundlesResult> {
+        return .init(
+            input: input,
+            command: self.describeWorkspaceBundles,
+            inputKey: \DescribeWorkspaceBundlesRequest.nextToken,
+            outputKey: \DescribeWorkspaceBundlesResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the available directories that are registered with Amazon WorkSpaces.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeWorkspaceDirectoriesPaginator(
+        _ input: DescribeWorkspaceDirectoriesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeWorkspaceDirectoriesRequest, DescribeWorkspaceDirectoriesResult> {
+        return .init(
+            input: input,
+            command: self.describeWorkspaceDirectories,
+            inputKey: \DescribeWorkspaceDirectoriesRequest.nextToken,
+            outputKey: \DescribeWorkspaceDirectoriesResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the specified WorkSpaces. You can filter the results by using the bundle identifier, directory identifier, or owner, but you can specify only one filter at a time.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeWorkspacesPaginator(
+        _ input: DescribeWorkspacesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeWorkspacesRequest, DescribeWorkspacesResult> {
+        return .init(
+            input: input,
+            command: self.describeWorkspaces,
+            inputKey: \DescribeWorkspacesRequest.nextToken,
+            outputKey: \DescribeWorkspacesResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

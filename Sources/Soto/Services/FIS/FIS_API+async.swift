@@ -104,4 +104,97 @@ extension FIS {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension FIS {
+    ///  Lists the available FIS actions.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listActionsPaginator(
+        _ input: ListActionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListActionsRequest, ListActionsResponse> {
+        return .init(
+            input: input,
+            command: self.listActions,
+            inputKey: \ListActionsRequest.nextToken,
+            outputKey: \ListActionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists your experiment templates.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listExperimentTemplatesPaginator(
+        _ input: ListExperimentTemplatesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListExperimentTemplatesRequest, ListExperimentTemplatesResponse> {
+        return .init(
+            input: input,
+            command: self.listExperimentTemplates,
+            inputKey: \ListExperimentTemplatesRequest.nextToken,
+            outputKey: \ListExperimentTemplatesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists your experiments.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listExperimentsPaginator(
+        _ input: ListExperimentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListExperimentsRequest, ListExperimentsResponse> {
+        return .init(
+            input: input,
+            command: self.listExperiments,
+            inputKey: \ListExperimentsRequest.nextToken,
+            outputKey: \ListExperimentsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the target resource types.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTargetResourceTypesPaginator(
+        _ input: ListTargetResourceTypesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTargetResourceTypesRequest, ListTargetResourceTypesResponse> {
+        return .init(
+            input: input,
+            command: self.listTargetResourceTypes,
+            inputKey: \ListTargetResourceTypesRequest.nextToken,
+            outputKey: \ListTargetResourceTypesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

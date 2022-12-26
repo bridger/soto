@@ -59,6 +59,7 @@ public struct SSO: AWSService {
             apiVersion: "2019-06-10",
             endpoint: endpoint,
             serviceEndpoints: [
+                "af-south-1": "portal.sso.af-south-1.amazonaws.com",
                 "ap-east-1": "portal.sso.ap-east-1.amazonaws.com",
                 "ap-northeast-1": "portal.sso.ap-northeast-1.amazonaws.com",
                 "ap-northeast-2": "portal.sso.ap-northeast-2.amazonaws.com",
@@ -66,6 +67,7 @@ public struct SSO: AWSService {
                 "ap-south-1": "portal.sso.ap-south-1.amazonaws.com",
                 "ap-southeast-1": "portal.sso.ap-southeast-1.amazonaws.com",
                 "ap-southeast-2": "portal.sso.ap-southeast-2.amazonaws.com",
+                "ap-southeast-3": "portal.sso.ap-southeast-3.amazonaws.com",
                 "ca-central-1": "portal.sso.ca-central-1.amazonaws.com",
                 "eu-central-1": "portal.sso.eu-central-1.amazonaws.com",
                 "eu-north-1": "portal.sso.eu-north-1.amazonaws.com",
@@ -79,6 +81,7 @@ public struct SSO: AWSService {
                 "us-east-2": "portal.sso.us-east-2.amazonaws.com",
                 "us-gov-east-1": "portal.sso.us-gov-east-1.amazonaws.com",
                 "us-gov-west-1": "portal.sso.us-gov-west-1.amazonaws.com",
+                "us-west-1": "portal.sso.us-west-1.amazonaws.com",
                 "us-west-2": "portal.sso.us-west-2.amazonaws.com"
             ],
             errorType: SSOErrorType.self,
@@ -119,5 +122,136 @@ extension SSO {
     public init(from: SSO, patch: AWSServiceConfig.Patch) {
         self.client = from.client
         self.config = from.config.with(patch: patch)
+    }
+}
+
+// MARK: Paginators
+
+extension SSO {
+    ///  Lists all roles that are assigned to the user for a given AWS account.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listAccountRolesPaginator<Result>(
+        _ input: ListAccountRolesRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListAccountRolesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listAccountRoles,
+            inputKey: \ListAccountRolesRequest.nextToken,
+            outputKey: \ListAccountRolesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listAccountRolesPaginator(
+        _ input: ListAccountRolesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListAccountRolesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listAccountRoles,
+            inputKey: \ListAccountRolesRequest.nextToken,
+            outputKey: \ListAccountRolesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists all AWS accounts assigned to the user. These AWS accounts are assigned by the administrator of the account. For more information, see Assign User Access in the IAM Identity Center User Guide. This operation returns a paginated response.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listAccountsPaginator<Result>(
+        _ input: ListAccountsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListAccountsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listAccounts,
+            inputKey: \ListAccountsRequest.nextToken,
+            outputKey: \ListAccountsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listAccountsPaginator(
+        _ input: ListAccountsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListAccountsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listAccounts,
+            inputKey: \ListAccountsRequest.nextToken,
+            outputKey: \ListAccountsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension SSO.ListAccountRolesRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> SSO.ListAccountRolesRequest {
+        return .init(
+            accessToken: self.accessToken,
+            accountId: self.accountId,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+extension SSO.ListAccountsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> SSO.ListAccountsRequest {
+        return .init(
+            accessToken: self.accessToken,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
     }
 }

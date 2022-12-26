@@ -1337,3 +1337,51 @@ extension Health {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for Health
+public struct HealthErrorType: AWSErrorType {
+    enum Code: String {
+        case concurrentModificationException = "ConcurrentModificationException"
+        case invalidPaginationToken = "InvalidPaginationToken"
+        case unsupportedLocale = "UnsupportedLocale"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Health
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    ///  EnableHealthServiceAccessForOrganization is already in progress. Wait for the action to complete before trying again. To get the current status, use the DescribeHealthServiceStatusForOrganization operation.
+    public static var concurrentModificationException: Self { .init(.concurrentModificationException) }
+    /// The specified pagination token (nextToken) is not valid.
+    public static var invalidPaginationToken: Self { .init(.invalidPaginationToken) }
+    /// The specified locale is not supported.
+    public static var unsupportedLocale: Self { .init(.unsupportedLocale) }
+}
+
+extension HealthErrorType: Equatable {
+    public static func == (lhs: HealthErrorType, rhs: HealthErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension HealthErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

@@ -159,4 +159,141 @@ extension SSMContacts {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension SSMContacts {
+    ///  Lists all contact channels for the specified contact.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listContactChannelsPaginator(
+        _ input: ListContactChannelsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListContactChannelsRequest, ListContactChannelsResult> {
+        return .init(
+            input: input,
+            command: self.listContactChannels,
+            inputKey: \ListContactChannelsRequest.nextToken,
+            outputKey: \ListContactChannelsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all contacts and escalation plans in Incident Manager.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listContactsPaginator(
+        _ input: ListContactsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListContactsRequest, ListContactsResult> {
+        return .init(
+            input: input,
+            command: self.listContacts,
+            inputKey: \ListContactsRequest.nextToken,
+            outputKey: \ListContactsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all engagements that have happened in an incident.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEngagementsPaginator(
+        _ input: ListEngagementsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEngagementsRequest, ListEngagementsResult> {
+        return .init(
+            input: input,
+            command: self.listEngagements,
+            inputKey: \ListEngagementsRequest.nextToken,
+            outputKey: \ListEngagementsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all of the engagements to contact channels that have been acknowledged.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPageReceiptsPaginator(
+        _ input: ListPageReceiptsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPageReceiptsRequest, ListPageReceiptsResult> {
+        return .init(
+            input: input,
+            command: self.listPageReceipts,
+            inputKey: \ListPageReceiptsRequest.nextToken,
+            outputKey: \ListPageReceiptsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the engagements to a contact's contact channels.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPagesByContactPaginator(
+        _ input: ListPagesByContactRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPagesByContactRequest, ListPagesByContactResult> {
+        return .init(
+            input: input,
+            command: self.listPagesByContact,
+            inputKey: \ListPagesByContactRequest.nextToken,
+            outputKey: \ListPagesByContactResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the engagements to contact channels that occurred by engaging a contact.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPagesByEngagementPaginator(
+        _ input: ListPagesByEngagementRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPagesByEngagementRequest, ListPagesByEngagementResult> {
+        return .init(
+            input: input,
+            command: self.listPagesByEngagement,
+            inputKey: \ListPagesByEngagementRequest.nextToken,
+            outputKey: \ListPagesByEngagementResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

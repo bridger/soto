@@ -3397,3 +3397,63 @@ extension IoTAnalytics {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for IoTAnalytics
+public struct IoTAnalyticsErrorType: AWSErrorType {
+    enum Code: String {
+        case internalFailureException = "InternalFailureException"
+        case invalidRequestException = "InvalidRequestException"
+        case limitExceededException = "LimitExceededException"
+        case resourceAlreadyExistsException = "ResourceAlreadyExistsException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceUnavailableException = "ServiceUnavailableException"
+        case throttlingException = "ThrottlingException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize IoTAnalytics
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// There was an internal failure.
+    public static var internalFailureException: Self { .init(.internalFailureException) }
+    /// The request was not valid.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// The command caused an internal limit to be exceeded.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// A resource with the same name already exists.
+    public static var resourceAlreadyExistsException: Self { .init(.resourceAlreadyExistsException) }
+    /// A resource with the specified name could not be found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The service is temporarily unavailable.
+    public static var serviceUnavailableException: Self { .init(.serviceUnavailableException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+}
+
+extension IoTAnalyticsErrorType: Equatable {
+    public static func == (lhs: IoTAnalyticsErrorType, rhs: IoTAnalyticsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension IoTAnalyticsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

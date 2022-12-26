@@ -177,4 +177,170 @@ extension MachineLearning {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MachineLearning {
+    ///  Returns a list of BatchPrediction operations that match the search criteria in the request.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeBatchPredictionsPaginator(
+        _ input: DescribeBatchPredictionsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeBatchPredictionsInput, DescribeBatchPredictionsOutput> {
+        return .init(
+            input: input,
+            command: self.describeBatchPredictions,
+            inputKey: \DescribeBatchPredictionsInput.nextToken,
+            outputKey: \DescribeBatchPredictionsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of DataSource that match the search criteria in the request.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDataSourcesPaginator(
+        _ input: DescribeDataSourcesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDataSourcesInput, DescribeDataSourcesOutput> {
+        return .init(
+            input: input,
+            command: self.describeDataSources,
+            inputKey: \DescribeDataSourcesInput.nextToken,
+            outputKey: \DescribeDataSourcesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of DescribeEvaluations that match the search criteria in the request.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEvaluationsPaginator(
+        _ input: DescribeEvaluationsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEvaluationsInput, DescribeEvaluationsOutput> {
+        return .init(
+            input: input,
+            command: self.describeEvaluations,
+            inputKey: \DescribeEvaluationsInput.nextToken,
+            outputKey: \DescribeEvaluationsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of MLModel that match the search criteria in the request.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeMLModelsPaginator(
+        _ input: DescribeMLModelsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeMLModelsInput, DescribeMLModelsOutput> {
+        return .init(
+            input: input,
+            command: self.describeMLModels,
+            inputKey: \DescribeMLModelsInput.nextToken,
+            outputKey: \DescribeMLModelsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MachineLearning {
+    public func waitUntilBatchPredictionAvailable(
+        _ input: DescribeBatchPredictionsInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("results[].status", expected: "COMPLETED")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("results[].status", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeBatchPredictions
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDataSourceAvailable(
+        _ input: DescribeDataSourcesInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("results[].status", expected: "COMPLETED")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("results[].status", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDataSources
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilEvaluationAvailable(
+        _ input: DescribeEvaluationsInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("results[].status", expected: "COMPLETED")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("results[].status", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeEvaluations
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilMLModelAvailable(
+        _ input: DescribeMLModelsInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("results[].status", expected: "COMPLETED")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("results[].status", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeMLModels
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

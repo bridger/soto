@@ -23,7 +23,7 @@ import SotoCore
 extension EFS {
     // MARK: Async API Calls
 
-    /// Creates an EFS access point. An access point is an application-specific view into an EFS file system that applies an operating system user and group, and a file system path, to any file system request made through the access point. The operating system user and group override any identity information provided by the NFS client. The file system path is exposed as the access point's root directory. Applications using the access point can only access data in the application's own directory and any subdirectories. To learn more, see Mounting a file system using EFS access points. This operation requires permissions for the elasticfilesystem:CreateAccessPoint action.
+    /// Creates an EFS access point. An access point is an application-specific view into an EFS file system that applies an operating system user and group, and a file system path, to any file system request made through the access point. The operating system user and group override any identity information provided by the NFS client. The file system path is exposed as the access point's root directory. Applications using the access point can only access data in the application's own directory and any subdirectories. To learn more, see Mounting a file system using EFS access points.  If multiple requests to create access points on the same file system are sent in quick succession, and the file system is near the limit of 120 access points, you may experience a throttling response for these requests. This  is to ensure that the file system does not exceed the stated access point limit.  This operation requires permissions for the elasticfilesystem:CreateAccessPoint action.
     public func createAccessPoint(_ input: CreateAccessPointRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> AccessPointDescription {
         return try await self.client.execute(operation: "CreateAccessPoint", path: "/2015-02-01/access-points", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -171,7 +171,7 @@ extension EFS {
         return try await self.client.execute(operation: "PutFileSystemPolicy", path: "/2015-02-01/file-systems/{FileSystemId}/policy", httpMethod: .PUT, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Use this action to manage EFS lifecycle management and intelligent tiering. A  LifecycleConfiguration consists of one or more LifecyclePolicy objects that  define the following:    EFS Lifecycle management - When Amazon EFS  automatically transitions files in a file system into the lower-cost Infrequent Access (IA) storage class. To enable EFS Lifecycle management, set the value of TransitionToIA to one of the available options.    EFS Intelligent tiering - When Amazon EFS  automatically transitions files from IA back into the file system's primary storage class (Standard or One Zone Standard. To enable EFS Intelligent Tiering, set the value of TransitionToPrimaryStorageClass to AFTER_1_ACCESS.    For more information, see EFS Lifecycle Management.       Each Amazon EFS file system supports one lifecycle configuration, which applies to all files in the file system. If a LifecycleConfiguration object already exists for the specified file system, a PutLifecycleConfiguration call modifies the existing configuration. A PutLifecycleConfiguration call with an empty LifecyclePolicies array in the request body deletes any existing LifecycleConfiguration and turns off lifecycle management and intelligent tiering for the file system.     In the request, specify the following:    The ID for the file system for which you are enabling, disabling, or modifying lifecycle management  and intelligent tiering.   A LifecyclePolicies array of LifecyclePolicy objects that define when files are moved into IA storage, and when they are moved back to Standard storage.   Amazon EFS requires that each LifecyclePolicy  object have only have a single transition, so the LifecyclePolicies array needs to be structured with separate  LifecyclePolicy objects. See the example requests in the following section for more information.
+    /// Use this action to manage EFS lifecycle management and EFS Intelligent-Tiering. A LifecycleConfiguration consists of one or more LifecyclePolicy objects that define the following:    EFS Lifecycle management - When Amazon EFS automatically transitions files in a file system into the lower-cost EFS Infrequent Access (IA) storage class. To enable EFS Lifecycle management, set the value of TransitionToIA to one of the available options.    EFS Intelligent-Tiering - When Amazon EFS automatically transitions files from IA back into the file system's primary storage class (EFS Standard or EFS One Zone Standard). To enable EFS Intelligent-Tiering, set the value of TransitionToPrimaryStorageClass to AFTER_1_ACCESS.    For more information, see EFS Lifecycle Management.       Each Amazon EFS file system supports one lifecycle configuration, which applies to all files in the file system. If a LifecycleConfiguration object already exists for the specified file system, a PutLifecycleConfiguration call modifies the existing configuration. A PutLifecycleConfiguration call with an empty LifecyclePolicies array in the request body deletes any existing LifecycleConfiguration and turns off lifecycle management and EFS Intelligent-Tiering for the file system.     In the request, specify the following:    The ID for the file system for which you are enabling, disabling, or modifying lifecycle management and EFS Intelligent-Tiering.   A LifecyclePolicies array of LifecyclePolicy objects that define when files are moved into IA storage, and when they are moved back to Standard storage.   Amazon EFS requires that each LifecyclePolicy  object have only have a single transition, so the LifecyclePolicies array needs to be structured with separate  LifecyclePolicy objects. See the example requests in the following section for more information.
     ///  This operation requires permissions for the elasticfilesystem:PutLifecycleConfiguration operation. To apply a LifecycleConfiguration object to an encrypted file system, you need the same Key Management Service permissions as when you created the encrypted file system.
     public func putLifecycleConfiguration(_ input: PutLifecycleConfigurationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> LifecycleConfigurationDescription {
         return try await self.client.execute(operation: "PutLifecycleConfiguration", path: "/2015-02-01/file-systems/{FileSystemId}/lifecycle-configuration", httpMethod: .PUT, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -190,6 +190,102 @@ extension EFS {
     /// Updates the throughput mode or the amount of provisioned throughput of an existing file system.
     public func updateFileSystem(_ input: UpdateFileSystemRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> FileSystemDescription {
         return try await self.client.execute(operation: "UpdateFileSystem", path: "/2015-02-01/file-systems/{FileSystemId}", httpMethod: .PUT, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension EFS {
+    ///  Returns the description of a specific Amazon EFS access point if the AccessPointId is provided.  If you provide an EFS FileSystemId, it returns descriptions of all access points for that file system.  You can provide either an AccessPointId or a FileSystemId in the request, but not both.  This operation requires permissions for the elasticfilesystem:DescribeAccessPoints action.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeAccessPointsPaginator(
+        _ input: DescribeAccessPointsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeAccessPointsRequest, DescribeAccessPointsResponse> {
+        return .init(
+            input: input,
+            command: self.describeAccessPoints,
+            inputKey: \DescribeAccessPointsRequest.nextToken,
+            outputKey: \DescribeAccessPointsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the description of a specific Amazon EFS file system if either the file system CreationToken or the FileSystemId is provided. Otherwise, it returns descriptions of all file systems owned by the caller's Amazon Web Services account in the  Amazon Web Services Region of the endpoint that you're calling.
+    ///   When retrieving all file system descriptions, you can optionally specify the MaxItems parameter to limit the number of descriptions in a response. Currently, this number is automatically set to 10. If more file system descriptions remain, Amazon EFS returns a NextMarker, an opaque token, in the response. In this case, you should send a subsequent request with the Marker request parameter set to the value of NextMarker.
+    ///   To retrieve a list of your file system descriptions, this operation is used in an iterative process, where DescribeFileSystems is called first without the Marker and then the operation continues to call it with the Marker parameter set to the value of the NextMarker from the previous response until the response has no NextMarker.   The order of file systems returned in the response of one DescribeFileSystems call and the order of file systems returned across the responses of a multi-call iteration is unspecified.  This operation requires permissions for the elasticfilesystem:DescribeFileSystems action.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeFileSystemsPaginator(
+        _ input: DescribeFileSystemsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeFileSystemsRequest, DescribeFileSystemsResponse> {
+        return .init(
+            input: input,
+            command: self.describeFileSystems,
+            inputKey: \DescribeFileSystemsRequest.marker,
+            outputKey: \DescribeFileSystemsResponse.nextMarker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///   DEPRECATED - The DescribeTags action is deprecated and not maintained. To view tags associated with EFS resources, use the ListTagsForResource API action.  Returns the tags associated with a file system. The order of tags returned in the response of one DescribeTags call and the order of tags returned across the responses of a multiple-call iteration (when using pagination) is unspecified.  This operation requires permissions for the elasticfilesystem:DescribeTags action.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    @available(*, deprecated, message: "Use ListTagsForResource.")
+    public func describeTagsPaginator(
+        _ input: DescribeTagsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeTagsRequest, DescribeTagsResponse> {
+        return .init(
+            input: input,
+            command: self.describeTags,
+            inputKey: \DescribeTagsRequest.marker,
+            outputKey: \DescribeTagsResponse.nextMarker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all tags for a top-level EFS resource. You must provide the ID of the resource that you want to retrieve the tags for. This operation requires permissions for the elasticfilesystem:DescribeAccessPoints action.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTagsForResourcePaginator(
+        _ input: ListTagsForResourceRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTagsForResourceRequest, ListTagsForResourceResponse> {
+        return .init(
+            input: input,
+            command: self.listTagsForResource,
+            inputKey: \ListTagsForResourceRequest.nextToken,
+            outputKey: \ListTagsForResourceResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

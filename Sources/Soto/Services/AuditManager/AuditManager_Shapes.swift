@@ -4652,3 +4652,60 @@ extension AuditManager {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for AuditManager
+public struct AuditManagerErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize AuditManager
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    ///  Your account isn&#39;t registered with Audit Manager. Check the delegated administrator setup on the Audit Manager settings page, and try again.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    ///  An internal service error occurred during the processing of your request. Try again later.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    ///  The resource that&#39;s specified in the request can&#39;t be found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// You&#39;ve reached your account quota for this resource type. To perform the requested action, delete some existing resources or request a quota increase from the Service Quotas console. For a list of Audit Manager service quotas, see Quotas and restrictions for Audit Manager.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    ///  The request has invalid or missing parameters.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension AuditManagerErrorType: Equatable {
+    public static func == (lhs: AuditManagerErrorType, rhs: AuditManagerErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension AuditManagerErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

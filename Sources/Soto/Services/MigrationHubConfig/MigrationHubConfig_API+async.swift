@@ -39,4 +39,31 @@ extension MigrationHubConfig {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MigrationHubConfig {
+    ///  This API permits filtering on the ControlId and HomeRegion fields.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeHomeRegionControlsPaginator(
+        _ input: DescribeHomeRegionControlsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeHomeRegionControlsRequest, DescribeHomeRegionControlsResult> {
+        return .init(
+            input: input,
+            command: self.describeHomeRegionControls,
+            inputKey: \DescribeHomeRegionControlsRequest.nextToken,
+            outputKey: \DescribeHomeRegionControlsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

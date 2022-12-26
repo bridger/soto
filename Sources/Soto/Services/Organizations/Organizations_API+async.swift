@@ -23,7 +23,7 @@ import SotoCore
 extension Organizations {
     // MARK: Async API Calls
 
-    /// Sends a response to the originator of a handshake agreeing to the action proposed by the handshake request. This operation can be called only by the following principals when they also have the relevant IAM permissions:    Invitation to join or Approve all features request handshakes: only a principal from the member account. The user who calls the API for an invitation to join must have the organizations:AcceptHandshake permission. If you enabled all features in the organization, the user must also have the iam:CreateServiceLinkedRole permission so that Organizations can create the required service-linked role named AWSServiceRoleForOrganizations. For more information, see Organizations and Service-Linked Roles in the Organizations User Guide.    Enable all features final confirmation handshake: only a principal from the management account. For more information about invitations, see Inviting an Amazon Web Services account to join your organization in the Organizations User Guide. For more information about requests to enable all features in the organization, see Enabling all features in your organization in the Organizations User Guide.    After you accept a handshake, it continues to appear in the results of relevant APIs for only 30 days. After that, it's deleted.
+    /// Sends a response to the originator of a handshake agreeing to the action proposed by the handshake request. You can only call this operation by the following principals when they also have the relevant IAM permissions:    Invitation to join or Approve all features request handshakes: only a principal from the member account. The user who calls the API for an invitation to join must have the organizations:AcceptHandshake permission. If you enabled all features in the organization, the user must also have the iam:CreateServiceLinkedRole permission so that Organizations can create the required service-linked role named AWSServiceRoleForOrganizations. For more information, see Organizations and Service-Linked Roles in the Organizations User Guide.    Enable all features final confirmation handshake: only a principal from the management account. For more information about invitations, see Inviting an Amazon Web Services account to join your organization in the Organizations User Guide. For more information about requests to enable all features in the organization, see Enabling all features in your organization in the Organizations User Guide.    After you accept a handshake, it continues to appear in the results of relevant APIs for only 30 days. After that, it's deleted.
     public func acceptHandshake(_ input: AcceptHandshakeRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> AcceptHandshakeResponse {
         return try await self.client.execute(operation: "AcceptHandshake", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -43,7 +43,7 @@ extension Organizations {
         return try await self.client.execute(operation: "CloseAccount", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Creates an Amazon Web Services account that is automatically a member of the organization whose credentials made the request. This is an asynchronous request that Amazon Web Services performs in the background. Because CreateAccount operates asynchronously, it can return a successful completion message even though account initialization might still be in progress. You might need to wait a few minutes before you can successfully access the account. To check the status of the request, do one of the following:   Use the Id member of the CreateAccountStatus response element from this operation to provide as a parameter to the DescribeCreateAccountStatus operation.   Check the CloudTrail log for the CreateAccountResult event. For information on using CloudTrail with Organizations, see Logging and monitoring in Organizations in the Organizations User Guide.    The user who calls the API to create an account must have the organizations:CreateAccount permission. If you enabled all features in the organization, Organizations creates the required service-linked role named AWSServiceRoleForOrganizations. For more information, see Organizations and Service-Linked Roles in the Organizations User Guide. If the request includes tags, then the requester must have the organizations:TagResource permission. Organizations preconfigures the new member account with a role (named OrganizationAccountAccessRole by default) that grants users in the management account administrator permissions in the new member account. Principals in the management account can assume the role. Organizations clones the company name and address information for the new account from the organization's management account. This operation can be called only from the organization's management account. For more information about creating accounts, see Creating an Amazon Web Services account in Your Organization in the Organizations User Guide.     When you create an account in an organization using the Organizations console, API, or CLI commands, the information required for the account to operate as a standalone account, such as a payment method and signing the end user license agreement (EULA) is not automatically collected. If you must remove an account from your organization later, you can do so only after you provide the missing information. Follow the steps at  To leave an organization as a member account in the Organizations User Guide.   If you get an exception that indicates that you exceeded your account limits for the organization, contact Amazon Web Services Support.   If you get an exception that indicates that the operation failed because your organization is still initializing, wait one hour and then try again. If the error persists, contact Amazon Web Services Support.   Using CreateAccount to create multiple temporary accounts isn't recommended. You can only close an account from the Billing and Cost Management console, and you must be signed in as the root user. For information on the requirements and process for closing an account, see Closing an Amazon Web Services account in the Organizations User Guide.     When you create a member account with this operation, you can choose whether to create the account with the IAM User and Role Access to Billing Information switch enabled. If you enable it, IAM users and roles that have appropriate permissions can view billing information for the account. If you disable it, only the account root user can access billing information. For information about how to disable this switch for an account, see Granting Access to Your Billing Information and Tools.
+    /// Creates an Amazon Web Services account that is automatically a member of the organization whose credentials made the request. This is an asynchronous request that Amazon Web Services performs in the background. Because CreateAccount operates asynchronously, it can return a successful completion message even though account initialization might still be in progress. You might need to wait a few minutes before you can successfully access the account. To check the status of the request, do one of the following:   Use the Id value of the CreateAccountStatus response element from this operation to provide as a parameter to the DescribeCreateAccountStatus operation.   Check the CloudTrail log for the CreateAccountResult event. For information on using CloudTrail with Organizations, see Logging and monitoring in Organizations in the Organizations User Guide.    The user who calls the API to create an account must have the organizations:CreateAccount permission. If you enabled all features in the organization, Organizations creates the required service-linked role named AWSServiceRoleForOrganizations. For more information, see Organizations and Service-Linked Roles in the Organizations User Guide. If the request includes tags, then the requester must have the organizations:TagResource permission. Organizations preconfigures the new member account with a role (named OrganizationAccountAccessRole by default) that grants users in the management account administrator permissions in the new member account. Principals in the management account can assume the role. Organizations clones the company name and address information for the new account from the organization's management account. This operation can be called only from the organization's management account. For more information about creating accounts, see Creating an Amazon Web Services account in Your Organization in the Organizations User Guide.     When you create an account in an organization using the Organizations console, API, or CLI commands, the information required for the account to operate as a standalone account, such as a payment method and signing the end user license agreement (EULA) is not automatically collected. If you must remove an account from your organization later, you can do so only after you provide the missing information. Follow the steps at  To leave an organization as a member account in the Organizations User Guide.   If you get an exception that indicates that you exceeded your account limits for the organization, contact Amazon Web Services Support.   If you get an exception that indicates that the operation failed because your organization is still initializing, wait one hour and then try again. If the error persists, contact Amazon Web Services Support.   Using CreateAccount to create multiple temporary accounts isn't recommended. You can only close an account from the Billing and Cost Management console, and you must be signed in as the root user. For information on the requirements and process for closing an account, see Closing an Amazon Web Services account in the Organizations User Guide.     When you create a member account with this operation, you can choose whether to create the account with the IAM User and Role Access to Billing Information switch enabled. If you enable it, IAM users and roles that have appropriate permissions can view billing information for the account. If you disable it, only the account root user can access billing information. For information about how to disable this switch for an account, see Granting Access to Your Billing Information and Tools.
     public func createAccount(_ input: CreateAccountRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> CreateAccountResponse {
         return try await self.client.execute(operation: "CreateAccount", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -86,6 +86,11 @@ extension Organizations {
     /// Deletes the specified policy from your organization. Before you perform this operation, you must first detach the policy from all organizational units (OUs), roots, and accounts. This operation can be called only from the organization's management account.
     public func deletePolicy(_ input: DeletePolicyRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws {
         return try await self.client.execute(operation: "DeletePolicy", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Deletes the resource policy from your organization. You can only call this operation from the organization's management account.
+    public func deleteResourcePolicy(logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws {
+        return try await self.client.execute(operation: "DeleteResourcePolicy", path: "/", httpMethod: .POST, serviceConfig: self.config, logger: logger, on: eventLoop)
     }
 
     /// Removes the specified member Amazon Web Services account as a delegated administrator for the specified Amazon Web Services service.  Deregistering a delegated administrator can have unintended impacts on the functionality of the enabled Amazon Web Services service. See the documentation for the enabled service before you deregister a delegated administrator so that you understand any potential impacts.  You can run this action only for Amazon Web Services services that support this feature. For a current list of services that support it, see the column Supports  Delegated Administrator in the table at Amazon Web Services Services that you can use with  Organizations in the Organizations User Guide.  This operation can be called only from the organization's management account.
@@ -133,6 +138,11 @@ extension Organizations {
         return try await self.client.execute(operation: "DescribePolicy", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    /// Retrieves information about a resource policy. You can only call this operation from the organization's management account or by a member account that is a delegated administrator for an AWS service.
+    public func describeResourcePolicy(logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DescribeResourcePolicyResponse {
+        return try await self.client.execute(operation: "DescribeResourcePolicy", path: "/", httpMethod: .POST, serviceConfig: self.config, logger: logger, on: eventLoop)
+    }
+
     /// Detaches a policy from a target root, organizational unit (OU), or account.  If the policy being detached is a service control policy (SCP), the changes to permissions for Identity and Access Management (IAM) users and roles in affected accounts are immediate.  Every root, OU, and account must have at least one SCP attached. If you want to replace the default FullAWSAccess policy with an SCP that limits the permissions that can be delegated, you must attach the replacement SCP before you can remove the default SCP. This is the authorization strategy of an "allow list". If you instead attach a second SCP and leave the FullAWSAccess SCP still attached, and specify "Effect": "Deny" in the second SCP to override the "Effect": "Allow" in the FullAWSAccess policy (or any other attached SCP), you're using the authorization strategy of a "deny list". This operation can be called only from the organization's management account.
     public func detachPolicy(_ input: DetachPolicyRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws {
         return try await self.client.execute(operation: "DetachPolicy", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -148,7 +158,7 @@ extension Organizations {
         return try await self.client.execute(operation: "DisablePolicyType", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Enables the integration of an Amazon Web Services service (the service that is specified by ServicePrincipal) with Organizations. When you enable integration, you allow the specified service to create a service-linked role in all the accounts in your organization. This allows the service to perform operations on your behalf in your organization and its accounts.  We recommend that you enable integration between Organizations and the specified Amazon Web Services service by using the console or commands that are provided by the specified service. Doing so ensures that the service is aware that it can create the resources that are required for the integration. How the service creates those resources in the organization's accounts depends on that service. For more information, see the documentation for the other Amazon Web Services service.  For more information about enabling services to integrate with Organizations, see Integrating Organizations with Other Amazon Web Services Services in the Organizations User Guide.  This operation can be called only from the organization's management account and only if the organization has enabled all features.
+    /// Enables the integration of an Amazon Web Services service (the service that is specified by ServicePrincipal) with Organizations. When you enable integration, you allow the specified service to create a service-linked role in all the accounts in your organization. This allows the service to perform operations on your behalf in your organization and its accounts.  We recommend that you enable integration between Organizations and the specified Amazon Web Services service by using the console or commands that are provided by the specified service. Doing so ensures that the service is aware that it can create the resources that are required for the integration. How the service creates those resources in the organization's accounts depends on that service. For more information, see the documentation for the other Amazon Web Services service.  For more information about enabling services to integrate with Organizations, see Integrating Organizations with Other Amazon Web Services Services in the Organizations User Guide.  You can only call this operation from the organization's management account and only if the organization has enabled all features.
     public func enableAWSServiceAccess(_ input: EnableAWSServiceAccessRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws {
         return try await self.client.execute(operation: "EnableAWSServiceAccess", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -321,6 +331,11 @@ extension Organizations {
         return try await self.client.execute(operation: "MoveAccount", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    /// Creates or updates a resource policy. You can only call this operation from the organization's management account.
+    public func putResourcePolicy(_ input: PutResourcePolicyRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> PutResourcePolicyResponse {
+        return try await self.client.execute(operation: "PutResourcePolicy", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Enables the specified member account to administer the Organizations features of the specified Amazon Web Services service. It grants read-only access to Organizations service data. The account still requires IAM permissions to access and administer the Amazon Web Services service. You can run this action only for Amazon Web Services services that support this feature. For a current list of services that support it, see the column Supports  Delegated Administrator in the table at Amazon Web Services Services that you can use with  Organizations in the Organizations User Guide.  This operation can be called only from the organization's management account.
     public func registerDelegatedAdministrator(_ input: RegisterDelegatedAdministratorRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws {
         return try await self.client.execute(operation: "RegisterDelegatedAdministrator", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -349,6 +364,426 @@ extension Organizations {
     /// Updates an existing policy with a new name, description, or content. If you don't supply any parameter, that value remains unchanged. You can't change a policy's type. This operation can be called only from the organization's management account.
     public func updatePolicy(_ input: UpdatePolicyRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdatePolicyResponse {
         return try await self.client.execute(operation: "UpdatePolicy", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Organizations {
+    ///  Returns a list of the Amazon Web Services services that you enabled to integrate with your organization. After a service on this list creates the resources that it requires for the integration, it can perform operations on your organization and its accounts. For more information about integrating other services with Organizations, including the list of services that currently work with Organizations, see Integrating Organizations with Other Amazon Web Services Services in the Organizations User Guide.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAWSServiceAccessForOrganizationPaginator(
+        _ input: ListAWSServiceAccessForOrganizationRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAWSServiceAccessForOrganizationRequest, ListAWSServiceAccessForOrganizationResponse> {
+        return .init(
+            input: input,
+            command: self.listAWSServiceAccessForOrganization,
+            inputKey: \ListAWSServiceAccessForOrganizationRequest.nextToken,
+            outputKey: \ListAWSServiceAccessForOrganizationResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all the accounts in the organization. To request only the accounts in a specified root or organizational unit (OU), use the ListAccountsForParent operation instead.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAccountsPaginator(
+        _ input: ListAccountsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAccountsRequest, ListAccountsResponse> {
+        return .init(
+            input: input,
+            command: self.listAccounts,
+            inputKey: \ListAccountsRequest.nextToken,
+            outputKey: \ListAccountsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the accounts in an organization that are contained by the specified target root or organizational unit (OU). If you specify the root, you get a list of all the accounts that aren't in any OU. If you specify an OU, you get a list of all the accounts in only that OU and not in any child OUs. To get a list of all accounts in the organization, use the ListAccounts operation.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAccountsForParentPaginator(
+        _ input: ListAccountsForParentRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAccountsForParentRequest, ListAccountsForParentResponse> {
+        return .init(
+            input: input,
+            command: self.listAccountsForParent,
+            inputKey: \ListAccountsForParentRequest.nextToken,
+            outputKey: \ListAccountsForParentResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all of the organizational units (OUs) or accounts that are contained in the specified parent OU or root. This operation, along with ListParents enables you to traverse the tree structure that makes up this root.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listChildrenPaginator(
+        _ input: ListChildrenRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListChildrenRequest, ListChildrenResponse> {
+        return .init(
+            input: input,
+            command: self.listChildren,
+            inputKey: \ListChildrenRequest.nextToken,
+            outputKey: \ListChildrenResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the account creation requests that match the specified status that is currently being tracked for the organization.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listCreateAccountStatusPaginator(
+        _ input: ListCreateAccountStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListCreateAccountStatusRequest, ListCreateAccountStatusResponse> {
+        return .init(
+            input: input,
+            command: self.listCreateAccountStatus,
+            inputKey: \ListCreateAccountStatusRequest.nextToken,
+            outputKey: \ListCreateAccountStatusResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the Amazon Web Services accounts that are designated as delegated administrators in this organization. This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDelegatedAdministratorsPaginator(
+        _ input: ListDelegatedAdministratorsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDelegatedAdministratorsRequest, ListDelegatedAdministratorsResponse> {
+        return .init(
+            input: input,
+            command: self.listDelegatedAdministrators,
+            inputKey: \ListDelegatedAdministratorsRequest.nextToken,
+            outputKey: \ListDelegatedAdministratorsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the Amazon Web Services services for which the specified account is a delegated administrator. This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDelegatedServicesForAccountPaginator(
+        _ input: ListDelegatedServicesForAccountRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDelegatedServicesForAccountRequest, ListDelegatedServicesForAccountResponse> {
+        return .init(
+            input: input,
+            command: self.listDelegatedServicesForAccount,
+            inputKey: \ListDelegatedServicesForAccountRequest.nextToken,
+            outputKey: \ListDelegatedServicesForAccountResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the current handshakes that are associated with the account of the requesting user. Handshakes that are ACCEPTED, DECLINED, CANCELED, or EXPIRED appear in the results of this API for only 30 days after changing to that state. After that, they're deleted and no longer accessible.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called from any account in the organization.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listHandshakesForAccountPaginator(
+        _ input: ListHandshakesForAccountRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListHandshakesForAccountRequest, ListHandshakesForAccountResponse> {
+        return .init(
+            input: input,
+            command: self.listHandshakesForAccount,
+            inputKey: \ListHandshakesForAccountRequest.nextToken,
+            outputKey: \ListHandshakesForAccountResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the handshakes that are associated with the organization that the requesting user is part of. The ListHandshakesForOrganization operation returns a list of handshake structures. Each structure contains details and status about a handshake. Handshakes that are ACCEPTED, DECLINED, CANCELED, or EXPIRED appear in the results of this API for only 30 days after changing to that state. After that, they're deleted and no longer accessible.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listHandshakesForOrganizationPaginator(
+        _ input: ListHandshakesForOrganizationRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListHandshakesForOrganizationRequest, ListHandshakesForOrganizationResponse> {
+        return .init(
+            input: input,
+            command: self.listHandshakesForOrganization,
+            inputKey: \ListHandshakesForOrganizationRequest.nextToken,
+            outputKey: \ListHandshakesForOrganizationResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the organizational units (OUs) in a parent organizational unit or root.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listOrganizationalUnitsForParentPaginator(
+        _ input: ListOrganizationalUnitsForParentRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListOrganizationalUnitsForParentRequest, ListOrganizationalUnitsForParentResponse> {
+        return .init(
+            input: input,
+            command: self.listOrganizationalUnitsForParent,
+            inputKey: \ListOrganizationalUnitsForParentRequest.nextToken,
+            outputKey: \ListOrganizationalUnitsForParentResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the root or organizational units (OUs) that serve as the immediate parent of the specified child OU or account. This operation, along with ListChildren enables you to traverse the tree structure that makes up this root.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.  In the current release, a child can have only a single parent.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listParentsPaginator(
+        _ input: ListParentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListParentsRequest, ListParentsResponse> {
+        return .init(
+            input: input,
+            command: self.listParents,
+            inputKey: \ListParentsRequest.nextToken,
+            outputKey: \ListParentsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves the list of all policies in an organization of a specified type.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPoliciesPaginator(
+        _ input: ListPoliciesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPoliciesRequest, ListPoliciesResponse> {
+        return .init(
+            input: input,
+            command: self.listPolicies,
+            inputKey: \ListPoliciesRequest.nextToken,
+            outputKey: \ListPoliciesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the policies that are directly attached to the specified target root, organizational unit (OU), or account. You must specify the policy type that you want included in the returned list.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPoliciesForTargetPaginator(
+        _ input: ListPoliciesForTargetRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPoliciesForTargetRequest, ListPoliciesForTargetResponse> {
+        return .init(
+            input: input,
+            command: self.listPoliciesForTarget,
+            inputKey: \ListPoliciesForTargetRequest.nextToken,
+            outputKey: \ListPoliciesForTargetResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the roots that are defined in the current organization.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.  Policy types can be enabled and disabled in roots. This is distinct from whether they're available in the organization. When you enable all features, you make policy types available for use in that organization. Individual policy types can then be enabled and disabled in a root. To see the availability of a policy type in an organization, use DescribeOrganization.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRootsPaginator(
+        _ input: ListRootsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRootsRequest, ListRootsResponse> {
+        return .init(
+            input: input,
+            command: self.listRoots,
+            inputKey: \ListRootsRequest.nextToken,
+            outputKey: \ListRootsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists tags that are attached to the specified resource. You can attach tags to the following resources in Organizations.   Amazon Web Services account   Organization root   Organizational unit (OU)   Policy (any type)   This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTagsForResourcePaginator(
+        _ input: ListTagsForResourceRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTagsForResourceRequest, ListTagsForResourceResponse> {
+        return .init(
+            input: input,
+            command: self.listTagsForResource,
+            inputKey: \ListTagsForResourceRequest.nextToken,
+            outputKey: \ListTagsForResourceResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all the roots, organizational units (OUs), and accounts that the specified policy is attached to.  Always check the NextToken response parameter
+    ///  for a null value when calling a List* operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null  only
+    ///  when there are no more results to display.  This operation can be called only from the organization's
+    ///  management account or by a member account that is a delegated administrator for an Amazon Web Services service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTargetsForPolicyPaginator(
+        _ input: ListTargetsForPolicyRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTargetsForPolicyRequest, ListTargetsForPolicyResponse> {
+        return .init(
+            input: input,
+            command: self.listTargetsForPolicy,
+            inputKey: \ListTargetsForPolicyRequest.nextToken,
+            outputKey: \ListTargetsForPolicyResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

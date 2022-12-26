@@ -966,3 +966,54 @@ extension SavingsPlans {
         public init() {}
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for SavingsPlans
+public struct SavingsPlansErrorType: AWSErrorType {
+    enum Code: String {
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize SavingsPlans
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// An unexpected error occurred.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The specified resource was not found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// A service quota has been exceeded.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// One of the input parameters is not valid.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension SavingsPlansErrorType: Equatable {
+    public static func == (lhs: SavingsPlansErrorType, rhs: SavingsPlansErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension SavingsPlansErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

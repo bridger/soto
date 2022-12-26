@@ -1512,3 +1512,62 @@ extension Schemas {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for Schemas
+public struct SchemasErrorType: AWSErrorType {
+    enum Code: String {
+        case badRequestException = "BadRequestException"
+        case conflictException = "ConflictException"
+        case forbiddenException = "ForbiddenException"
+        case goneException = "GoneException"
+        case internalServerErrorException = "InternalServerErrorException"
+        case notFoundException = "NotFoundException"
+        case preconditionFailedException = "PreconditionFailedException"
+        case serviceUnavailableException = "ServiceUnavailableException"
+        case tooManyRequestsException = "TooManyRequestsException"
+        case unauthorizedException = "UnauthorizedException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Schemas
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    public static var badRequestException: Self { .init(.badRequestException) }
+    public static var conflictException: Self { .init(.conflictException) }
+    public static var forbiddenException: Self { .init(.forbiddenException) }
+    public static var goneException: Self { .init(.goneException) }
+    public static var internalServerErrorException: Self { .init(.internalServerErrorException) }
+    public static var notFoundException: Self { .init(.notFoundException) }
+    public static var preconditionFailedException: Self { .init(.preconditionFailedException) }
+    public static var serviceUnavailableException: Self { .init(.serviceUnavailableException) }
+    public static var tooManyRequestsException: Self { .init(.tooManyRequestsException) }
+    public static var unauthorizedException: Self { .init(.unauthorizedException) }
+}
+
+extension SchemasErrorType: Equatable {
+    public static func == (lhs: SchemasErrorType, rhs: SchemasErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension SchemasErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

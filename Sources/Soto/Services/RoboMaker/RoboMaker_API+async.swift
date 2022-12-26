@@ -324,4 +324,254 @@ extension RoboMaker {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension RoboMaker {
+    ///  Returns a list of deployment jobs for a fleet. You can optionally provide filters to retrieve specific deployment jobs.  This API will no longer be supported as of May 2, 2022. Use it to remove resources that were created for Deployment Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    @available(*, deprecated, message: "Support for the AWS RoboMaker application deployment feature has ended. For additional information, see https://docs.aws.amazon.com/robomaker/latest/dg/fleets.html.")
+    public func listDeploymentJobsPaginator(
+        _ input: ListDeploymentJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDeploymentJobsRequest, ListDeploymentJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listDeploymentJobs,
+            inputKey: \ListDeploymentJobsRequest.nextToken,
+            outputKey: \ListDeploymentJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of fleets. You can optionally provide filters to retrieve specific fleets.  This API will no longer be supported as of May 2, 2022. Use it to remove resources that were created for Deployment Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    @available(*, deprecated, message: "Support for the AWS RoboMaker application deployment feature has ended. For additional information, see https://docs.aws.amazon.com/robomaker/latest/dg/fleets.html.")
+    public func listFleetsPaginator(
+        _ input: ListFleetsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFleetsRequest, ListFleetsResponse> {
+        return .init(
+            input: input,
+            command: self.listFleets,
+            inputKey: \ListFleetsRequest.nextToken,
+            outputKey: \ListFleetsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of robot application. You can optionally provide filters to retrieve specific robot applications.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRobotApplicationsPaginator(
+        _ input: ListRobotApplicationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRobotApplicationsRequest, ListRobotApplicationsResponse> {
+        return .init(
+            input: input,
+            command: self.listRobotApplications,
+            inputKey: \ListRobotApplicationsRequest.nextToken,
+            outputKey: \ListRobotApplicationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of robots. You can optionally provide filters to retrieve specific robots.  This API will no longer be supported as of May 2, 2022. Use it to remove resources that were created for Deployment Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    @available(*, deprecated, message: "Support for the AWS RoboMaker application deployment feature has ended. For additional information, see https://docs.aws.amazon.com/robomaker/latest/dg/fleets.html.")
+    public func listRobotsPaginator(
+        _ input: ListRobotsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRobotsRequest, ListRobotsResponse> {
+        return .init(
+            input: input,
+            command: self.listRobots,
+            inputKey: \ListRobotsRequest.nextToken,
+            outputKey: \ListRobotsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of simulation applications. You can optionally provide filters to retrieve specific simulation applications.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSimulationApplicationsPaginator(
+        _ input: ListSimulationApplicationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSimulationApplicationsRequest, ListSimulationApplicationsResponse> {
+        return .init(
+            input: input,
+            command: self.listSimulationApplications,
+            inputKey: \ListSimulationApplicationsRequest.nextToken,
+            outputKey: \ListSimulationApplicationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list simulation job batches. You can optionally provide filters to retrieve specific simulation batch jobs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSimulationJobBatchesPaginator(
+        _ input: ListSimulationJobBatchesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSimulationJobBatchesRequest, ListSimulationJobBatchesResponse> {
+        return .init(
+            input: input,
+            command: self.listSimulationJobBatches,
+            inputKey: \ListSimulationJobBatchesRequest.nextToken,
+            outputKey: \ListSimulationJobBatchesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of simulation jobs. You can optionally provide filters to retrieve specific simulation jobs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSimulationJobsPaginator(
+        _ input: ListSimulationJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSimulationJobsRequest, ListSimulationJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listSimulationJobs,
+            inputKey: \ListSimulationJobsRequest.nextToken,
+            outputKey: \ListSimulationJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists world export jobs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorldExportJobsPaginator(
+        _ input: ListWorldExportJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorldExportJobsRequest, ListWorldExportJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listWorldExportJobs,
+            inputKey: \ListWorldExportJobsRequest.nextToken,
+            outputKey: \ListWorldExportJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists world generator jobs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorldGenerationJobsPaginator(
+        _ input: ListWorldGenerationJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorldGenerationJobsRequest, ListWorldGenerationJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listWorldGenerationJobs,
+            inputKey: \ListWorldGenerationJobsRequest.nextToken,
+            outputKey: \ListWorldGenerationJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists world templates.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorldTemplatesPaginator(
+        _ input: ListWorldTemplatesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorldTemplatesRequest, ListWorldTemplatesResponse> {
+        return .init(
+            input: input,
+            command: self.listWorldTemplates,
+            inputKey: \ListWorldTemplatesRequest.nextToken,
+            outputKey: \ListWorldTemplatesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists worlds.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorldsPaginator(
+        _ input: ListWorldsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorldsRequest, ListWorldsResponse> {
+        return .init(
+            input: input,
+            command: self.listWorlds,
+            inputKey: \ListWorldsRequest.nextToken,
+            outputKey: \ListWorldsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

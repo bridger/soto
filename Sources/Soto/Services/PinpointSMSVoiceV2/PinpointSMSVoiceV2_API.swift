@@ -55,6 +55,12 @@ public struct PinpointSMSVoiceV2: AWSService {
             serviceProtocol: .json(version: "1.0"),
             apiVersion: "2022-03-31",
             endpoint: endpoint,
+            serviceEndpoints: [
+                "fips-ca-central-1": "sms-voice-fips.ca-central-1.amazonaws.com",
+                "fips-us-east-1": "sms-voice-fips.us-east-1.amazonaws.com",
+                "fips-us-gov-west-1": "sms-voice-fips.us-gov-west-1.amazonaws.com",
+                "fips-us-west-2": "sms-voice-fips.us-west-2.amazonaws.com"
+            ],
             errorType: PinpointSMSVoiceV2ErrorType.self,
             timeout: timeout,
             byteBufferAllocator: byteBufferAllocator,

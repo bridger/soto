@@ -85,7 +85,7 @@ public struct Grafana: AWSService {
         return self.client.execute(operation: "CreateWorkspace", path: "/workspaces", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Creates an API key for the workspace.  This key can be used to authenticate  requests sent to the workspace's HTTP API.  See  https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html  for available APIs and example requests.
+    /// Creates a Grafana API key for the workspace.  This key can be used to  authenticate requests sent to the workspace's HTTP API. See https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html for available APIs and example requests.
     public func createWorkspaceApiKey(_ input: CreateWorkspaceApiKeyRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<CreateWorkspaceApiKeyResponse> {
         return self.client.execute(operation: "CreateWorkspaceApiKey", path: "/workspaces/{workspaceId}/apikeys", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -95,7 +95,7 @@ public struct Grafana: AWSService {
         return self.client.execute(operation: "DeleteWorkspace", path: "/workspaces/{workspaceId}", httpMethod: .DELETE, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Deletes an API key for a workspace.
+    /// Deletes a Grafana API key for the workspace.
     public func deleteWorkspaceApiKey(_ input: DeleteWorkspaceApiKeyRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DeleteWorkspaceApiKeyResponse> {
         return self.client.execute(operation: "DeleteWorkspaceApiKey", path: "/workspaces/{workspaceId}/apikeys/{keyName}", httpMethod: .DELETE, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -108,6 +108,11 @@ public struct Grafana: AWSService {
     /// Displays information about the authentication methods used in one Amazon Managed Grafana workspace.
     public func describeWorkspaceAuthentication(_ input: DescribeWorkspaceAuthenticationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DescribeWorkspaceAuthenticationResponse> {
         return self.client.execute(operation: "DescribeWorkspaceAuthentication", path: "/workspaces/{workspaceId}/authentication", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Gets the current configuration string for the given workspace.
+    public func describeWorkspaceConfiguration(_ input: DescribeWorkspaceConfigurationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DescribeWorkspaceConfigurationResponse> {
+        return self.client.execute(operation: "DescribeWorkspaceConfiguration", path: "/workspaces/{workspaceId}/configuration", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Removes the Grafana Enterprise license from a workspace.
@@ -145,7 +150,7 @@ public struct Grafana: AWSService {
         return self.client.execute(operation: "UpdatePermissions", path: "/workspaces/{workspaceId}/permissions", httpMethod: .PATCH, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Modifies an existing Amazon Managed Grafana workspace. If you use this operation and omit any  optional parameters, the existing values of those parameters are not changed. To modify the user authentication methods that the workspace uses, such as SAML or Amazon Web Services SSO,  use UpdateWorkspaceAuthentication. To modify which users in the workspace have the Admin and Editor Grafana roles,  use UpdatePermissions.
+    /// Modifies an existing Amazon Managed Grafana workspace. If you use this operation and omit any  optional parameters, the existing values of those parameters are not changed. To modify the user authentication methods that the workspace uses, such as SAML or IAM Identity Center,  use UpdateWorkspaceAuthentication. To modify which users in the workspace have the Admin and Editor Grafana roles,  use UpdatePermissions.
     public func updateWorkspace(_ input: UpdateWorkspaceRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<UpdateWorkspaceResponse> {
         return self.client.execute(operation: "UpdateWorkspace", path: "/workspaces/{workspaceId}", httpMethod: .PUT, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -153,6 +158,11 @@ public struct Grafana: AWSService {
     /// Use this operation to define the identity provider (IdP) that this workspace authenticates users from, using SAML. You can also map SAML assertion attributes to workspace user information and define which groups in the assertion attribute are to have the Admin and Editor roles in the workspace.
     public func updateWorkspaceAuthentication(_ input: UpdateWorkspaceAuthenticationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<UpdateWorkspaceAuthenticationResponse> {
         return self.client.execute(operation: "UpdateWorkspaceAuthentication", path: "/workspaces/{workspaceId}/authentication", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Updates the configuration string for the given workspace
+    public func updateWorkspaceConfiguration(_ input: UpdateWorkspaceConfigurationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<UpdateWorkspaceConfigurationResponse> {
+        return self.client.execute(operation: "UpdateWorkspaceConfiguration", path: "/workspaces/{workspaceId}/configuration", httpMethod: .PUT, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 }
 
@@ -162,5 +172,137 @@ extension Grafana {
     public init(from: Grafana, patch: AWSServiceConfig.Patch) {
         self.client = from.client
         self.config = from.config.with(patch: patch)
+    }
+}
+
+// MARK: Paginators
+
+extension Grafana {
+    ///  Lists the users and groups who have the Grafana Admin and  Editor roles in this workspace. If you use this  operation without specifying userId or groupId, the operation returns the roles of all users and groups. If you specify a userId or a groupId, only the roles for that user or group are returned. If you do this, you can specify only one userId or  one groupId.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listPermissionsPaginator<Result>(
+        _ input: ListPermissionsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListPermissionsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listPermissions,
+            inputKey: \ListPermissionsRequest.nextToken,
+            outputKey: \ListPermissionsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listPermissionsPaginator(
+        _ input: ListPermissionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListPermissionsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listPermissions,
+            inputKey: \ListPermissionsRequest.nextToken,
+            outputKey: \ListPermissionsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of Amazon Managed Grafana workspaces in the account, with some information about each workspace. For more complete information about one workspace, use DescribeWorkspace.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listWorkspacesPaginator<Result>(
+        _ input: ListWorkspacesRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListWorkspacesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listWorkspaces,
+            inputKey: \ListWorkspacesRequest.nextToken,
+            outputKey: \ListWorkspacesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listWorkspacesPaginator(
+        _ input: ListWorkspacesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListWorkspacesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listWorkspaces,
+            inputKey: \ListWorkspacesRequest.nextToken,
+            outputKey: \ListWorkspacesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension Grafana.ListPermissionsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Grafana.ListPermissionsRequest {
+        return .init(
+            groupId: self.groupId,
+            maxResults: self.maxResults,
+            nextToken: token,
+            userId: self.userId,
+            userType: self.userType,
+            workspaceId: self.workspaceId
+        )
+    }
+}
+
+extension Grafana.ListWorkspacesRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Grafana.ListWorkspacesRequest {
+        return .init(
+            maxResults: self.maxResults,
+            nextToken: token
+        )
     }
 }

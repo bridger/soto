@@ -4747,3 +4747,48 @@ extension Greengrass {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for Greengrass
+public struct GreengrassErrorType: AWSErrorType {
+    enum Code: String {
+        case badRequestException = "BadRequestException"
+        case internalServerErrorException = "InternalServerErrorException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Greengrass
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// General error information.
+    public static var badRequestException: Self { .init(.badRequestException) }
+    /// General error information.
+    public static var internalServerErrorException: Self { .init(.internalServerErrorException) }
+}
+
+extension GreengrassErrorType: Equatable {
+    public static func == (lhs: GreengrassErrorType, rhs: GreengrassErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension GreengrassErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

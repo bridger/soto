@@ -47,7 +47,7 @@ extension SecretsManager {
     // MARK: Shapes
 
     public struct CancelRotateSecretRequest: AWSEncodableShape {
-        /// The ARN or name of the secret.  For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN.
+        /// The ARN or name of the secret. For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN.
         public let secretId: String
 
         public init(secretId: String) {
@@ -96,7 +96,7 @@ extension SecretsManager {
         public let forceOverwriteReplicaSecret: Bool?
         /// The ARN, key ID, or alias of the KMS key that Secrets Manager uses to encrypt the secret value in the secret. An alias is always prefixed by alias/,  for example alias/aws/secretsmanager. For more information, see About aliases. To use a KMS key in a different account, use the key ARN or the alias ARN. If you don't specify this value, then Secrets Manager uses the key aws/secretsmanager.  If that key doesn't yet exist, then Secrets Manager creates it for you automatically the first time it  encrypts the secret value. If the secret is in a different Amazon Web Services account from the credentials calling the API, then  you can't use aws/secretsmanager to encrypt the secret, and you must create  and use a customer managed KMS key.
         public let kmsKeyId: String?
-        /// The name of the new secret. The secret name can contain ASCII letters, numbers, and the following characters: /_+=.@-  Do not end your secret name with a hyphen followed by six characters. If you do so, you risk confusion and unexpected results when searching for a secret by partial ARN. Secrets Manager automatically adds a hyphen and six random characters after the secret name at the end of the ARN.
+        /// The name of the new secret. The secret name can contain ASCII letters, numbers, and the following characters: /_+=.@- Do not end your secret name with a hyphen followed by six characters. If you do so, you risk confusion and unexpected results when searching for a secret by partial ARN. Secrets Manager automatically adds a hyphen and six random characters after the secret name at the end of the ARN.
         public let name: String
         /// The binary data to encrypt and store in the new version of the secret. We recommend that you store your binary data in a file and then pass the contents of the file as a parameter. Either SecretString or SecretBinary must have a value, but not both. This parameter is not available in the Secrets Manager console.
         public let secretBinary: AWSBase64Data?
@@ -604,7 +604,7 @@ extension SecretsManager {
     public struct ListSecretsRequest: AWSEncodableShape {
         /// The filters to apply to the list of secrets.
         public let filters: [Filter]?
-        /// The number of results to include in the response.  If there are more results available, in the response, Secrets Manager includes NextToken.  To get the next results, call ListSecrets again with the value from  NextToken.
+        /// The number of results to include in the response. If there are more results available, in the response, Secrets Manager includes NextToken.  To get the next results, call ListSecrets again with the value from  NextToken.
         public let maxResults: Int?
         /// A token that indicates where the output should continue from, if a  previous call did not show all results. To get the next results, call ListSecrets again  with this value.
         public let nextToken: String?
@@ -704,7 +704,7 @@ extension SecretsManager {
         public let clientRequestToken: String?
         /// The binary data to encrypt and store in the new version of the secret. To use this parameter in the command-line tools, we recommend that you store your binary data in a file and then pass the contents of the file as a parameter.  You must include SecretBinary or SecretString, but not both. You can't access this value from the Secrets Manager console.
         public let secretBinary: AWSBase64Data?
-        /// The ARN or name of the secret to add a new version to. For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN.  If the secret doesn't already exist, use CreateSecret instead.
+        /// The ARN or name of the secret to add a new version to. For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN. If the secret doesn't already exist, use CreateSecret instead.
         public let secretId: String
         /// The text to encrypt and store in the new version of the secret.  You must include SecretBinary or SecretString, but not both. We recommend you create the secret string as JSON key/value pairs, as shown in the example.
         public let secretString: String?
@@ -951,9 +951,9 @@ extension SecretsManager {
     public struct RotateSecretRequest: AWSEncodableShape {
         /// A unique identifier for the new version of the secret that helps ensure idempotency. Secrets Manager uses this value to prevent the accidental creation of duplicate versions if there are failures and retries during rotation. This value becomes the VersionId of the new version. If you use the Amazon Web Services CLI or one of the Amazon Web Services SDK to call this operation, then you can leave this parameter empty. The CLI or SDK generates a random UUID for you and includes that in the request for this parameter. If you don't use the SDK and instead generate a raw HTTP request to the Secrets Manager service endpoint, then you must generate a ClientRequestToken yourself for new versions and include that value in the request. You only need to specify this value if you implement your own retry logic and you want to ensure that Secrets Manager doesn't attempt to create a secret version twice. We recommend that you generate a UUID-type value to ensure uniqueness within the specified secret.
         public let clientRequestToken: String?
-        /// Specifies whether to rotate the secret immediately or wait until the next scheduled rotation window.  The rotation schedule is defined in RotateSecretRequest$RotationRules. If you don't immediately rotate the secret, Secrets Manager tests the rotation configuration by running the   testSecret  step of the Lambda rotation function. The test creates an AWSPENDING version of the secret and then removes it. If you don't specify this value, then by default, Secrets Manager rotates the secret immediately.
+        /// Specifies whether to rotate the secret immediately or wait until the next scheduled rotation window.  The rotation schedule is defined in RotateSecretRequest$RotationRules. For secrets that use a Lambda rotation function to rotate, if you don't immediately rotate the secret, Secrets Manager tests the rotation configuration by running the   testSecret  step of the Lambda rotation function. The test creates an AWSPENDING version of the secret and then removes it. If you don't specify this value, then by default, Secrets Manager rotates the secret immediately.
         public let rotateImmediately: Bool?
-        /// The ARN of the Lambda rotation function that can rotate the secret.
+        /// For secrets that use a Lambda rotation function to rotate, the ARN of the Lambda rotation function.  For secrets that use managed rotation, omit this field. For more information, see Managed rotation in the Secrets Manager User Guide.
         public let rotationLambdaARN: String?
         /// A structure that defines the rotation configuration for this secret.
         public let rotationRules: RotationRulesType?
@@ -1196,10 +1196,9 @@ extension SecretsManager {
     }
 
     public struct TagResourceRequest: AWSEncodableShape {
-        /// The identifier for the secret to attach tags to. You can specify either the Amazon Resource Name (ARN) or the friendly name of the secret.  For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN.
+        /// The identifier for the secret to attach tags to. You can specify either the Amazon Resource Name (ARN) or the friendly name of the secret. For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN.
         public let secretId: String
-        /// The tags to attach to the secret as a JSON text string argument. Each element in the list consists of a Key and a Value.
-        ///  For storing multiple values, we recommend that you use a JSON text  string argument and specify key/value pairs. For more information, see Specifying parameter values for the Amazon Web Services CLI in the Amazon Web Services CLI User Guide.
+        /// The tags to attach to the secret as a JSON text string argument. Each element in the list consists of a Key and a Value. For storing multiple values, we recommend that you use a JSON text  string argument and specify key/value pairs. For more information, see Specifying parameter values for the Amazon Web Services CLI in the Amazon Web Services CLI User Guide.
         public let tags: [Tag]
 
         public init(secretId: String, tags: [Tag]) {
@@ -1256,7 +1255,7 @@ extension SecretsManager {
         public let kmsKeyId: String?
         /// The binary data to encrypt and store in the new version of the secret. We recommend that you store your binary data in a file and then pass the contents of the file as a parameter.  Either SecretBinary or SecretString must have a value, but not both. You can't access this parameter in the Secrets Manager console.
         public let secretBinary: AWSBase64Data?
-        /// The ARN or name of the secret.  For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN.
+        /// The ARN or name of the secret. For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN.
         public let secretId: String
         /// The text data to encrypt and store in the new version of the secret. We recommend you use a JSON structure of key/value pairs for your secret value.  Either SecretBinary or SecretString must have a value, but not both.
         public let secretString: String?
@@ -1317,7 +1316,7 @@ extension SecretsManager {
         public let moveToVersionId: String?
         /// The ID of the version that the staging label is to be removed from. If the staging label you are trying to attach to one version is already attached to a different version, then you must include this parameter and specify the version that the label is to be removed from. If the label is attached and you either do not specify this parameter, or the version ID does not match, then the operation fails.
         public let removeFromVersionId: String?
-        /// The ARN or the name of the secret with the version and staging labelsto modify.  For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN.
+        /// The ARN or the name of the secret with the version and staging labelsto modify. For an ARN, we recommend that you specify a complete ARN rather  than a partial ARN. See Finding a secret from a partial ARN.
         public let secretId: String
         /// The staging label to add to this version.
         public let versionStage: String
@@ -1421,5 +1420,80 @@ extension SecretsManager {
             case checkName = "CheckName"
             case errorMessage = "ErrorMessage"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for SecretsManager
+public struct SecretsManagerErrorType: AWSErrorType {
+    enum Code: String {
+        case decryptionFailure = "DecryptionFailure"
+        case encryptionFailure = "EncryptionFailure"
+        case internalServiceError = "InternalServiceError"
+        case invalidNextTokenException = "InvalidNextTokenException"
+        case invalidParameterException = "InvalidParameterException"
+        case invalidRequestException = "InvalidRequestException"
+        case limitExceededException = "LimitExceededException"
+        case malformedPolicyDocumentException = "MalformedPolicyDocumentException"
+        case preconditionNotMetException = "PreconditionNotMetException"
+        case publicPolicyException = "PublicPolicyException"
+        case resourceExistsException = "ResourceExistsException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize SecretsManager
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Secrets Manager can&#39;t decrypt the protected secret text using the provided KMS key.
+    public static var decryptionFailure: Self { .init(.decryptionFailure) }
+    /// Secrets Manager can&#39;t encrypt the protected secret text using the provided KMS key. Check that the KMS key is available, enabled, and not in an invalid state. For more information, see Key state: Effect on your KMS key.
+    public static var encryptionFailure: Self { .init(.encryptionFailure) }
+    /// An error occurred on the server side.
+    public static var internalServiceError: Self { .init(.internalServiceError) }
+    /// The NextToken value is invalid.
+    public static var invalidNextTokenException: Self { .init(.invalidNextTokenException) }
+    /// The parameter name or value is invalid.
+    public static var invalidParameterException: Self { .init(.invalidParameterException) }
+    /// A parameter value is not valid for the current state of the resource. Possible causes:   The secret is scheduled for deletion.   You tried to enable rotation on a secret that doesn&#39;t already have a Lambda function ARN configured and you didn&#39;t include such an ARN as a parameter in this call.    The secret is managed by another service, and you must use that service to update it.  For more information, see Secrets managed by other Amazon Web Services services.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// The request failed because it would exceed one of the Secrets Manager quotas.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// The resource policy has syntax errors.
+    public static var malformedPolicyDocumentException: Self { .init(.malformedPolicyDocumentException) }
+    /// The request failed because you did not complete all the prerequisite steps.
+    public static var preconditionNotMetException: Self { .init(.preconditionNotMetException) }
+    /// The BlockPublicPolicy parameter is set to true, and the resource policy did not prevent broad access to the secret.
+    public static var publicPolicyException: Self { .init(.publicPolicyException) }
+    /// A resource with the ID you requested already exists.
+    public static var resourceExistsException: Self { .init(.resourceExistsException) }
+    /// Secrets Manager can&#39;t find the resource that you asked for.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+}
+
+extension SecretsManagerErrorType: Equatable {
+    public static func == (lhs: SecretsManagerErrorType, rhs: SecretsManagerErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension SecretsManagerErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

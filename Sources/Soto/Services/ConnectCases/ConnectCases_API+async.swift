@@ -169,4 +169,207 @@ extension ConnectCases {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ConnectCases {
+    ///  Returns information about a specific case if it exists.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getCasePaginator(
+        _ input: GetCaseRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetCaseRequest, GetCaseResponse> {
+        return .init(
+            input: input,
+            command: self.getCase,
+            inputKey: \GetCaseRequest.nextToken,
+            outputKey: \GetCaseResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists cases for a given contact.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listCasesForContactPaginator(
+        _ input: ListCasesForContactRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListCasesForContactRequest, ListCasesForContactResponse> {
+        return .init(
+            input: input,
+            command: self.listCasesForContact,
+            inputKey: \ListCasesForContactRequest.nextToken,
+            outputKey: \ListCasesForContactResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all cases domains in the Amazon Web Services account. Each list item is a condensed summary object of the domain.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDomainsPaginator(
+        _ input: ListDomainsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDomainsRequest, ListDomainsResponse> {
+        return .init(
+            input: input,
+            command: self.listDomains,
+            inputKey: \ListDomainsRequest.nextToken,
+            outputKey: \ListDomainsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all of the field options for a field identifier in the domain.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFieldOptionsPaginator(
+        _ input: ListFieldOptionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFieldOptionsRequest, ListFieldOptionsResponse> {
+        return .init(
+            input: input,
+            command: self.listFieldOptions,
+            inputKey: \ListFieldOptionsRequest.nextToken,
+            outputKey: \ListFieldOptionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all fields in a Cases domain.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFieldsPaginator(
+        _ input: ListFieldsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFieldsRequest, ListFieldsResponse> {
+        return .init(
+            input: input,
+            command: self.listFields,
+            inputKey: \ListFieldsRequest.nextToken,
+            outputKey: \ListFieldsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all layouts in the given cases domain. Each list item is a condensed summary object of the layout.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listLayoutsPaginator(
+        _ input: ListLayoutsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListLayoutsRequest, ListLayoutsResponse> {
+        return .init(
+            input: input,
+            command: self.listLayouts,
+            inputKey: \ListLayoutsRequest.nextToken,
+            outputKey: \ListLayoutsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all of the templates in a Cases domain. Each list item is a condensed summary object of the template.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTemplatesPaginator(
+        _ input: ListTemplatesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTemplatesRequest, ListTemplatesResponse> {
+        return .init(
+            input: input,
+            command: self.listTemplates,
+            inputKey: \ListTemplatesRequest.nextToken,
+            outputKey: \ListTemplatesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Searches for cases within their associated Cases domain. Search results are returned as a paginated list of abridged case documents.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func searchCasesPaginator(
+        _ input: SearchCasesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SearchCasesRequest, SearchCasesResponse> {
+        return .init(
+            input: input,
+            command: self.searchCases,
+            inputKey: \SearchCasesRequest.nextToken,
+            outputKey: \SearchCasesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Searches for related items that are associated with a case.  If no filters are provided, this returns all related items associated with a case.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func searchRelatedItemsPaginator(
+        _ input: SearchRelatedItemsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SearchRelatedItemsRequest, SearchRelatedItemsResponse> {
+        return .init(
+            input: input,
+            command: self.searchRelatedItems,
+            inputKey: \SearchRelatedItemsRequest.nextToken,
+            outputKey: \SearchRelatedItemsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

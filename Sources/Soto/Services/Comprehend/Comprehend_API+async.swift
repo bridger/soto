@@ -53,7 +53,7 @@ extension Comprehend {
         return try await self.client.execute(operation: "BatchDetectTargetedSentiment", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Creates a new document classification request to analyze a single document in real-time, using a previously created and trained custom model and an endpoint.
+    /// Creates a new document classification request to analyze a single document in real-time, using a previously created and trained custom model and an endpoint. You can input plain text or you can upload a single-page input document (text, PDF, Word, or image).  If the system detects errors while processing a page in the input document,  the API response includes an entry in Errors that describes the errors. If the system detects a document-level error in your input document, the API returns an  InvalidRequestException error response.       For details about this exception, see  Errors in semi-structured documents in the Comprehend Developer Guide.
     public func classifyDocument(_ input: ClassifyDocumentRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ClassifyDocumentResponse {
         return try await self.client.execute(operation: "ClassifyDocument", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -168,7 +168,7 @@ extension Comprehend {
         return try await self.client.execute(operation: "DetectDominantLanguage", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Inspects text for named entities, and returns information about them. For more information, about named entities, see Entities in the Comprehend Developer Guide.
+    /// Detects named entities in input text when you use the pre-trained model.  Detects custom entities if you have a custom entity recognition model.   When detecting named entities using the pre-trained model, use plain text as the input. For more information about named entities, see Entities in the Comprehend Developer Guide. When you use a custom entity recognition model,  you can input plain text or you can upload a single-page input document (text, PDF, Word, or image).  If the system detects errors while processing a page in the input document, the API response  includes an entry in Errors for each error.  If the system detects a document-level error in your input document, the API returns an  InvalidRequestException error response.       For details about this exception, see  Errors in semi-structured documents in the Comprehend Developer Guide.
     public func detectEntities(_ input: DetectEntitiesRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DetectEntitiesResponse {
         return try await self.client.execute(operation: "DetectEntities", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -386,6 +386,319 @@ extension Comprehend {
     /// Updates information about the specified endpoint. For information about endpoints, see Managing endpoints.
     public func updateEndpoint(_ input: UpdateEndpointRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateEndpointResponse {
         return try await self.client.execute(operation: "UpdateEndpoint", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Comprehend {
+    ///  Gets a list of the documentation classification jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDocumentClassificationJobsPaginator(
+        _ input: ListDocumentClassificationJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDocumentClassificationJobsRequest, ListDocumentClassificationJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listDocumentClassificationJobs,
+            inputKey: \ListDocumentClassificationJobsRequest.nextToken,
+            outputKey: \ListDocumentClassificationJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of summaries of the document classifiers that you have created
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDocumentClassifierSummariesPaginator(
+        _ input: ListDocumentClassifierSummariesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDocumentClassifierSummariesRequest, ListDocumentClassifierSummariesResponse> {
+        return .init(
+            input: input,
+            command: self.listDocumentClassifierSummaries,
+            inputKey: \ListDocumentClassifierSummariesRequest.nextToken,
+            outputKey: \ListDocumentClassifierSummariesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of the document classifiers that you have created.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDocumentClassifiersPaginator(
+        _ input: ListDocumentClassifiersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDocumentClassifiersRequest, ListDocumentClassifiersResponse> {
+        return .init(
+            input: input,
+            command: self.listDocumentClassifiers,
+            inputKey: \ListDocumentClassifiersRequest.nextToken,
+            outputKey: \ListDocumentClassifiersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of the dominant language detection jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDominantLanguageDetectionJobsPaginator(
+        _ input: ListDominantLanguageDetectionJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDominantLanguageDetectionJobsRequest, ListDominantLanguageDetectionJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listDominantLanguageDetectionJobs,
+            inputKey: \ListDominantLanguageDetectionJobsRequest.nextToken,
+            outputKey: \ListDominantLanguageDetectionJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of all existing endpoints that you've created. For information about endpoints, see Managing endpoints.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEndpointsPaginator(
+        _ input: ListEndpointsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEndpointsRequest, ListEndpointsResponse> {
+        return .init(
+            input: input,
+            command: self.listEndpoints,
+            inputKey: \ListEndpointsRequest.nextToken,
+            outputKey: \ListEndpointsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of the entity detection jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEntitiesDetectionJobsPaginator(
+        _ input: ListEntitiesDetectionJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEntitiesDetectionJobsRequest, ListEntitiesDetectionJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listEntitiesDetectionJobs,
+            inputKey: \ListEntitiesDetectionJobsRequest.nextToken,
+            outputKey: \ListEntitiesDetectionJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of summaries for the entity recognizers that you have created.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEntityRecognizerSummariesPaginator(
+        _ input: ListEntityRecognizerSummariesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEntityRecognizerSummariesRequest, ListEntityRecognizerSummariesResponse> {
+        return .init(
+            input: input,
+            command: self.listEntityRecognizerSummaries,
+            inputKey: \ListEntityRecognizerSummariesRequest.nextToken,
+            outputKey: \ListEntityRecognizerSummariesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of the properties of all entity recognizers that you created, including recognizers currently in training. Allows you to filter the list of recognizers based on criteria such as status and submission time. This call returns up to 500 entity recognizers in the list, with a default number of 100 recognizers in the list. The results of this list are not in any particular order. Please get the list and sort locally if needed.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEntityRecognizersPaginator(
+        _ input: ListEntityRecognizersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEntityRecognizersRequest, ListEntityRecognizersResponse> {
+        return .init(
+            input: input,
+            command: self.listEntityRecognizers,
+            inputKey: \ListEntityRecognizersRequest.nextToken,
+            outputKey: \ListEntityRecognizersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of the events detection jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEventsDetectionJobsPaginator(
+        _ input: ListEventsDetectionJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEventsDetectionJobsRequest, ListEventsDetectionJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listEventsDetectionJobs,
+            inputKey: \ListEventsDetectionJobsRequest.nextToken,
+            outputKey: \ListEventsDetectionJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Get a list of key phrase detection jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listKeyPhrasesDetectionJobsPaginator(
+        _ input: ListKeyPhrasesDetectionJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListKeyPhrasesDetectionJobsRequest, ListKeyPhrasesDetectionJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listKeyPhrasesDetectionJobs,
+            inputKey: \ListKeyPhrasesDetectionJobsRequest.nextToken,
+            outputKey: \ListKeyPhrasesDetectionJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of the PII entity detection jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPiiEntitiesDetectionJobsPaginator(
+        _ input: ListPiiEntitiesDetectionJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPiiEntitiesDetectionJobsRequest, ListPiiEntitiesDetectionJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listPiiEntitiesDetectionJobs,
+            inputKey: \ListPiiEntitiesDetectionJobsRequest.nextToken,
+            outputKey: \ListPiiEntitiesDetectionJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of sentiment detection jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSentimentDetectionJobsPaginator(
+        _ input: ListSentimentDetectionJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSentimentDetectionJobsRequest, ListSentimentDetectionJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listSentimentDetectionJobs,
+            inputKey: \ListSentimentDetectionJobsRequest.nextToken,
+            outputKey: \ListSentimentDetectionJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of targeted sentiment detection jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTargetedSentimentDetectionJobsPaginator(
+        _ input: ListTargetedSentimentDetectionJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTargetedSentimentDetectionJobsRequest, ListTargetedSentimentDetectionJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listTargetedSentimentDetectionJobs,
+            inputKey: \ListTargetedSentimentDetectionJobsRequest.nextToken,
+            outputKey: \ListTargetedSentimentDetectionJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of the topic detection jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTopicsDetectionJobsPaginator(
+        _ input: ListTopicsDetectionJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTopicsDetectionJobsRequest, ListTopicsDetectionJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listTopicsDetectionJobs,
+            inputKey: \ListTopicsDetectionJobsRequest.nextToken,
+            outputKey: \ListTopicsDetectionJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

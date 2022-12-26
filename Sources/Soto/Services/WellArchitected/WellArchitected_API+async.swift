@@ -234,4 +234,273 @@ extension WellArchitected {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension WellArchitected {
+    ///  List of answers.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAnswersPaginator(
+        _ input: ListAnswersInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAnswersInput, ListAnswersOutput> {
+        return .init(
+            input: input,
+            command: self.listAnswers,
+            inputKey: \ListAnswersInput.nextToken,
+            outputKey: \ListAnswersOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List of Trusted Advisor check details by account related to the workload.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listCheckDetailsPaginator(
+        _ input: ListCheckDetailsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListCheckDetailsInput, ListCheckDetailsOutput> {
+        return .init(
+            input: input,
+            command: self.listCheckDetails,
+            inputKey: \ListCheckDetailsInput.nextToken,
+            outputKey: \ListCheckDetailsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List of Trusted Advisor checks summarized for all accounts related to the workload.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listCheckSummariesPaginator(
+        _ input: ListCheckSummariesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListCheckSummariesInput, ListCheckSummariesOutput> {
+        return .init(
+            input: input,
+            command: self.listCheckSummaries,
+            inputKey: \ListCheckSummariesInput.nextToken,
+            outputKey: \ListCheckSummariesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List lens review improvements.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listLensReviewImprovementsPaginator(
+        _ input: ListLensReviewImprovementsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListLensReviewImprovementsInput, ListLensReviewImprovementsOutput> {
+        return .init(
+            input: input,
+            command: self.listLensReviewImprovements,
+            inputKey: \ListLensReviewImprovementsInput.nextToken,
+            outputKey: \ListLensReviewImprovementsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List lens reviews.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listLensReviewsPaginator(
+        _ input: ListLensReviewsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListLensReviewsInput, ListLensReviewsOutput> {
+        return .init(
+            input: input,
+            command: self.listLensReviews,
+            inputKey: \ListLensReviewsInput.nextToken,
+            outputKey: \ListLensReviewsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the lens shares associated with the lens.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listLensSharesPaginator(
+        _ input: ListLensSharesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListLensSharesInput, ListLensSharesOutput> {
+        return .init(
+            input: input,
+            command: self.listLensShares,
+            inputKey: \ListLensSharesInput.nextToken,
+            outputKey: \ListLensSharesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the available lenses.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listLensesPaginator(
+        _ input: ListLensesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListLensesInput, ListLensesOutput> {
+        return .init(
+            input: input,
+            command: self.listLenses,
+            inputKey: \ListLensesInput.nextToken,
+            outputKey: \ListLensesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List all milestones for an existing workload.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMilestonesPaginator(
+        _ input: ListMilestonesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMilestonesInput, ListMilestonesOutput> {
+        return .init(
+            input: input,
+            command: self.listMilestones,
+            inputKey: \ListMilestonesInput.nextToken,
+            outputKey: \ListMilestonesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List lens notifications.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listNotificationsPaginator(
+        _ input: ListNotificationsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListNotificationsInput, ListNotificationsOutput> {
+        return .init(
+            input: input,
+            command: self.listNotifications,
+            inputKey: \ListNotificationsInput.nextToken,
+            outputKey: \ListNotificationsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List  the workload invitations.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listShareInvitationsPaginator(
+        _ input: ListShareInvitationsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListShareInvitationsInput, ListShareInvitationsOutput> {
+        return .init(
+            input: input,
+            command: self.listShareInvitations,
+            inputKey: \ListShareInvitationsInput.nextToken,
+            outputKey: \ListShareInvitationsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the workload shares associated with the workload.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorkloadSharesPaginator(
+        _ input: ListWorkloadSharesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorkloadSharesInput, ListWorkloadSharesOutput> {
+        return .init(
+            input: input,
+            command: self.listWorkloadShares,
+            inputKey: \ListWorkloadSharesInput.nextToken,
+            outputKey: \ListWorkloadSharesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List workloads. Paginated.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorkloadsPaginator(
+        _ input: ListWorkloadsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorkloadsInput, ListWorkloadsOutput> {
+        return .init(
+            input: input,
+            command: self.listWorkloads,
+            inputKey: \ListWorkloadsInput.nextToken,
+            outputKey: \ListWorkloadsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

@@ -326,4 +326,435 @@ extension MediaLive {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MediaLive {
+    ///  Get a channel schedule
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeSchedulePaginator(
+        _ input: DescribeScheduleRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeScheduleRequest, DescribeScheduleResponse> {
+        return .init(
+            input: input,
+            command: self.describeSchedule,
+            inputKey: \DescribeScheduleRequest.nextToken,
+            outputKey: \DescribeScheduleResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Produces list of channels that have been created
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listChannelsPaginator(
+        _ input: ListChannelsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListChannelsRequest, ListChannelsResponse> {
+        return .init(
+            input: input,
+            command: self.listChannels,
+            inputKey: \ListChannelsRequest.nextToken,
+            outputKey: \ListChannelsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List input devices that are currently being transferred. List input devices that you are transferring from your AWS account or input devices that another AWS account is transferring to you.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listInputDeviceTransfersPaginator(
+        _ input: ListInputDeviceTransfersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListInputDeviceTransfersRequest, ListInputDeviceTransfersResponse> {
+        return .init(
+            input: input,
+            command: self.listInputDeviceTransfers,
+            inputKey: \ListInputDeviceTransfersRequest.nextToken,
+            outputKey: \ListInputDeviceTransfersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List input devices
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listInputDevicesPaginator(
+        _ input: ListInputDevicesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListInputDevicesRequest, ListInputDevicesResponse> {
+        return .init(
+            input: input,
+            command: self.listInputDevices,
+            inputKey: \ListInputDevicesRequest.nextToken,
+            outputKey: \ListInputDevicesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Produces a list of Input Security Groups for an account
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listInputSecurityGroupsPaginator(
+        _ input: ListInputSecurityGroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListInputSecurityGroupsRequest, ListInputSecurityGroupsResponse> {
+        return .init(
+            input: input,
+            command: self.listInputSecurityGroups,
+            inputKey: \ListInputSecurityGroupsRequest.nextToken,
+            outputKey: \ListInputSecurityGroupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Produces list of inputs that have been created
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listInputsPaginator(
+        _ input: ListInputsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListInputsRequest, ListInputsResponse> {
+        return .init(
+            input: input,
+            command: self.listInputs,
+            inputKey: \ListInputsRequest.nextToken,
+            outputKey: \ListInputsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the programs that currently exist for a specific multiplex.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMultiplexProgramsPaginator(
+        _ input: ListMultiplexProgramsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMultiplexProgramsRequest, ListMultiplexProgramsResponse> {
+        return .init(
+            input: input,
+            command: self.listMultiplexPrograms,
+            inputKey: \ListMultiplexProgramsRequest.nextToken,
+            outputKey: \ListMultiplexProgramsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieve a list of the existing multiplexes.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMultiplexesPaginator(
+        _ input: ListMultiplexesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMultiplexesRequest, ListMultiplexesResponse> {
+        return .init(
+            input: input,
+            command: self.listMultiplexes,
+            inputKey: \ListMultiplexesRequest.nextToken,
+            outputKey: \ListMultiplexesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List offerings available for purchase.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listOfferingsPaginator(
+        _ input: ListOfferingsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListOfferingsRequest, ListOfferingsResponse> {
+        return .init(
+            input: input,
+            command: self.listOfferings,
+            inputKey: \ListOfferingsRequest.nextToken,
+            outputKey: \ListOfferingsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List purchased reservations.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listReservationsPaginator(
+        _ input: ListReservationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListReservationsRequest, ListReservationsResponse> {
+        return .init(
+            input: input,
+            command: self.listReservations,
+            inputKey: \ListReservationsRequest.nextToken,
+            outputKey: \ListReservationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MediaLive {
+    public func waitUntilChannelCreated(
+        _ input: DescribeChannelRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "IDLE")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "CREATING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("state", expected: "CREATE_FAILED")),
+            ],
+            minDelayTime: .seconds(3),
+            command: self.describeChannel
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilChannelDeleted(
+        _ input: DescribeChannelRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "DELETED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "DELETING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeChannel
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilChannelRunning(
+        _ input: DescribeChannelRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "RUNNING")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "STARTING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeChannel
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilChannelStopped(
+        _ input: DescribeChannelRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "IDLE")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "STOPPING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeChannel
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilInputAttached(
+        _ input: DescribeInputRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "ATTACHED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "DETACHED")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeInput
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilInputDeleted(
+        _ input: DescribeInputRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "DELETED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "DELETING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeInput
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilInputDetached(
+        _ input: DescribeInputRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "DETACHED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "CREATING")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "ATTACHED")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeInput
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilMultiplexCreated(
+        _ input: DescribeMultiplexRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "IDLE")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "CREATING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("state", expected: "CREATE_FAILED")),
+            ],
+            minDelayTime: .seconds(3),
+            command: self.describeMultiplex
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilMultiplexDeleted(
+        _ input: DescribeMultiplexRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "DELETED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "DELETING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeMultiplex
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilMultiplexRunning(
+        _ input: DescribeMultiplexRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "RUNNING")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "STARTING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeMultiplex
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilMultiplexStopped(
+        _ input: DescribeMultiplexRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("state", expected: "IDLE")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("state", expected: "STOPPING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerErrorException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeMultiplex
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

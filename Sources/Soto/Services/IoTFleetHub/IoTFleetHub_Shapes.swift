@@ -429,3 +429,60 @@ extension IoTFleetHub {
         public init() {}
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for IoTFleetHub
+public struct IoTFleetHubErrorType: AWSErrorType {
+    enum Code: String {
+        case conflictException = "ConflictException"
+        case internalFailureException = "InternalFailureException"
+        case invalidRequestException = "InvalidRequestException"
+        case limitExceededException = "LimitExceededException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case throttlingException = "ThrottlingException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize IoTFleetHub
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The request conflicts with the current state of the resource.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// An unexpected error has occurred.
+    public static var internalFailureException: Self { .init(.internalFailureException) }
+    /// The request is not valid.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// A limit has been exceeded.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// The specified resource does not exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The rate exceeds the limit.
+    public static var throttlingException: Self { .init(.throttlingException) }
+}
+
+extension IoTFleetHubErrorType: Equatable {
+    public static func == (lhs: IoTFleetHubErrorType, rhs: IoTFleetHubErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension IoTFleetHubErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

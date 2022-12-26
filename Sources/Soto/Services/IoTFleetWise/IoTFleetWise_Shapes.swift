@@ -283,6 +283,18 @@ extension IoTFleetWise {
         /// The scientific unit for the actuator.
         public let unit: String?
 
+        public init(allowedValues: [String]? = nil, dataType: NodeDataType, description: String? = nil, fullyQualifiedName: String, max: Double? = nil, min: Double? = nil, unit: String? = nil) {
+            self.allowedValues = allowedValues
+            self.assignedValue = nil
+            self.dataType = dataType
+            self.description = description
+            self.fullyQualifiedName = fullyQualifiedName
+            self.max = max
+            self.min = min
+            self.unit = unit
+        }
+
+        @available(*, deprecated, message: "Members assignedValue have been deprecated")
         public init(allowedValues: [String]? = nil, assignedValue: String? = nil, dataType: NodeDataType, description: String? = nil, fullyQualifiedName: String, max: Double? = nil, min: Double? = nil, unit: String? = nil) {
             self.allowedValues = allowedValues
             self.assignedValue = assignedValue
@@ -365,6 +377,19 @@ extension IoTFleetWise {
         /// The scientific unit for the attribute.
         public let unit: String?
 
+        public init(allowedValues: [String]? = nil, dataType: NodeDataType, defaultValue: String? = nil, description: String? = nil, fullyQualifiedName: String, max: Double? = nil, min: Double? = nil, unit: String? = nil) {
+            self.allowedValues = allowedValues
+            self.assignedValue = nil
+            self.dataType = dataType
+            self.defaultValue = defaultValue
+            self.description = description
+            self.fullyQualifiedName = fullyQualifiedName
+            self.max = max
+            self.min = min
+            self.unit = unit
+        }
+
+        @available(*, deprecated, message: "Members assignedValue have been deprecated")
         public init(allowedValues: [String]? = nil, assignedValue: String? = nil, dataType: NodeDataType, defaultValue: String? = nil, description: String? = nil, fullyQualifiedName: String, max: Double? = nil, min: Double? = nil, unit: String? = nil) {
             self.allowedValues = allowedValues
             self.assignedValue = assignedValue
@@ -3963,5 +3988,74 @@ extension IoTFleetWise {
         private enum CodingKeys: String, CodingKey {
             case canDbc
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for IoTFleetWise
+public struct IoTFleetWiseErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case decoderManifestValidationException = "DecoderManifestValidationException"
+        case internalServerException = "InternalServerException"
+        case invalidNodeException = "InvalidNodeException"
+        case invalidSignalsException = "InvalidSignalsException"
+        case limitExceededException = "LimitExceededException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize IoTFleetWise
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You don&#39;t have sufficient permission to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// The request has conflicting operations. This can occur if you&#39;re trying to perform more than one operation on the same resource at the same time.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// The request couldn&#39;t be completed because it contains signal decoders with one or more validation errors.
+    public static var decoderManifestValidationException: Self { .init(.decoderManifestValidationException) }
+    /// The request couldn&#39;t be completed because the server temporarily failed.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The specified node type doesn&#39;t match the expected node type for a node. You can specify the node type as branch, sensor, actuator, or attribute.
+    public static var invalidNodeException: Self { .init(.invalidNodeException) }
+    /// The request couldn&#39;t be completed because it contains signals that aren&#39;t valid.
+    public static var invalidSignalsException: Self { .init(.invalidSignalsException) }
+    /// A service quota was exceeded.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// The resource wasn&#39;t found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The request couldn&#39;t be completed due to throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input fails to satisfy the constraints specified by an Amazon Web Services service.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension IoTFleetWiseErrorType: Equatable {
+    public static func == (lhs: IoTFleetWiseErrorType, rhs: IoTFleetWiseErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension IoTFleetWiseErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

@@ -178,4 +178,142 @@ extension Schemas {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Schemas {
+    ///  List the discoverers.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDiscoverersPaginator(
+        _ input: ListDiscoverersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDiscoverersRequest, ListDiscoverersResponse> {
+        return .init(
+            input: input,
+            command: self.listDiscoverers,
+            inputKey: \ListDiscoverersRequest.nextToken,
+            outputKey: \ListDiscoverersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the registries.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRegistriesPaginator(
+        _ input: ListRegistriesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRegistriesRequest, ListRegistriesResponse> {
+        return .init(
+            input: input,
+            command: self.listRegistries,
+            inputKey: \ListRegistriesRequest.nextToken,
+            outputKey: \ListRegistriesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Provides a list of the schema versions and related information.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSchemaVersionsPaginator(
+        _ input: ListSchemaVersionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSchemaVersionsRequest, ListSchemaVersionsResponse> {
+        return .init(
+            input: input,
+            command: self.listSchemaVersions,
+            inputKey: \ListSchemaVersionsRequest.nextToken,
+            outputKey: \ListSchemaVersionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the schemas.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSchemasPaginator(
+        _ input: ListSchemasRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSchemasRequest, ListSchemasResponse> {
+        return .init(
+            input: input,
+            command: self.listSchemas,
+            inputKey: \ListSchemasRequest.nextToken,
+            outputKey: \ListSchemasResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Search the schemas
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func searchSchemasPaginator(
+        _ input: SearchSchemasRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SearchSchemasRequest, SearchSchemasResponse> {
+        return .init(
+            input: input,
+            command: self.searchSchemas,
+            inputKey: \SearchSchemasRequest.nextToken,
+            outputKey: \SearchSchemasResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Schemas {
+    public func waitUntilCodeBindingExists(
+        _ input: DescribeCodeBindingRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("status", expected: "CREATE_COMPLETE")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("status", expected: "CREATE_IN_PROGRESS")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("status", expected: "CREATE_FAILED")),
+                .init(state: .failure, matcher: AWSErrorCodeMatcher("NotFoundException")),
+            ],
+            command: self.describeCodeBinding
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

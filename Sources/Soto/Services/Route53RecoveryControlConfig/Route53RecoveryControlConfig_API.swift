@@ -190,3 +190,439 @@ extension Route53RecoveryControlConfig {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension Route53RecoveryControlConfig {
+    ///  Returns an array of all Amazon Route 53 health checks associated with a specific routing control.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listAssociatedRoute53HealthChecksPaginator<Result>(
+        _ input: ListAssociatedRoute53HealthChecksRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListAssociatedRoute53HealthChecksResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listAssociatedRoute53HealthChecks,
+            inputKey: \ListAssociatedRoute53HealthChecksRequest.nextToken,
+            outputKey: \ListAssociatedRoute53HealthChecksResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listAssociatedRoute53HealthChecksPaginator(
+        _ input: ListAssociatedRoute53HealthChecksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListAssociatedRoute53HealthChecksResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listAssociatedRoute53HealthChecks,
+            inputKey: \ListAssociatedRoute53HealthChecksRequest.nextToken,
+            outputKey: \ListAssociatedRoute53HealthChecksResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns an array of all the clusters in an account.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listClustersPaginator<Result>(
+        _ input: ListClustersRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListClustersResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listClusters,
+            inputKey: \ListClustersRequest.nextToken,
+            outputKey: \ListClustersResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listClustersPaginator(
+        _ input: ListClustersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListClustersResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listClusters,
+            inputKey: \ListClustersRequest.nextToken,
+            outputKey: \ListClustersResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns an array of control panels in an account or in a cluster.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listControlPanelsPaginator<Result>(
+        _ input: ListControlPanelsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListControlPanelsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listControlPanels,
+            inputKey: \ListControlPanelsRequest.nextToken,
+            outputKey: \ListControlPanelsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listControlPanelsPaginator(
+        _ input: ListControlPanelsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListControlPanelsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listControlPanels,
+            inputKey: \ListControlPanelsRequest.nextToken,
+            outputKey: \ListControlPanelsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns an array of routing controls for a control panel. A routing control is an Amazon Route 53 Application Recovery Controller construct that has one of two states: ON and OFF. You can map the routing control state to the state of an Amazon Route 53 health check, which can be used to control routing.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listRoutingControlsPaginator<Result>(
+        _ input: ListRoutingControlsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListRoutingControlsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listRoutingControls,
+            inputKey: \ListRoutingControlsRequest.nextToken,
+            outputKey: \ListRoutingControlsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listRoutingControlsPaginator(
+        _ input: ListRoutingControlsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListRoutingControlsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listRoutingControls,
+            inputKey: \ListRoutingControlsRequest.nextToken,
+            outputKey: \ListRoutingControlsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  List the safety rules (the assertion rules and gating rules) that you've defined for the routing controls in a control panel.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listSafetyRulesPaginator<Result>(
+        _ input: ListSafetyRulesRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListSafetyRulesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listSafetyRules,
+            inputKey: \ListSafetyRulesRequest.nextToken,
+            outputKey: \ListSafetyRulesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listSafetyRulesPaginator(
+        _ input: ListSafetyRulesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListSafetyRulesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listSafetyRules,
+            inputKey: \ListSafetyRulesRequest.nextToken,
+            outputKey: \ListSafetyRulesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension Route53RecoveryControlConfig.ListAssociatedRoute53HealthChecksRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Route53RecoveryControlConfig.ListAssociatedRoute53HealthChecksRequest {
+        return .init(
+            maxResults: self.maxResults,
+            nextToken: token,
+            routingControlArn: self.routingControlArn
+        )
+    }
+}
+
+extension Route53RecoveryControlConfig.ListClustersRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Route53RecoveryControlConfig.ListClustersRequest {
+        return .init(
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+extension Route53RecoveryControlConfig.ListControlPanelsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Route53RecoveryControlConfig.ListControlPanelsRequest {
+        return .init(
+            clusterArn: self.clusterArn,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+extension Route53RecoveryControlConfig.ListRoutingControlsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Route53RecoveryControlConfig.ListRoutingControlsRequest {
+        return .init(
+            controlPanelArn: self.controlPanelArn,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+extension Route53RecoveryControlConfig.ListSafetyRulesRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Route53RecoveryControlConfig.ListSafetyRulesRequest {
+        return .init(
+            controlPanelArn: self.controlPanelArn,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+// MARK: Waiters
+
+extension Route53RecoveryControlConfig {
+    /// Wait until a cluster is created
+    public func waitUntilClusterCreated(
+        _ input: DescribeClusterRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("cluster.status", expected: "DEPLOYED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("cluster.status", expected: "PENDING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeCluster
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait for a cluster to be deleted
+    public func waitUntilClusterDeleted(
+        _ input: DescribeClusterRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("cluster.status", expected: "PENDING_DELETION")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeCluster
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until a control panel is created
+    public func waitUntilControlPanelCreated(
+        _ input: DescribeControlPanelRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("controlPanel.status", expected: "DEPLOYED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("controlPanel.status", expected: "PENDING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeControlPanel
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until a control panel is deleted
+    public func waitUntilControlPanelDeleted(
+        _ input: DescribeControlPanelRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("controlPanel.status", expected: "PENDING_DELETION")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeControlPanel
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until a routing control is created
+    public func waitUntilRoutingControlCreated(
+        _ input: DescribeRoutingControlRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("routingControl.status", expected: "DEPLOYED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("routingControl.status", expected: "PENDING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeRoutingControl
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait for a routing control to be deleted
+    public func waitUntilRoutingControlDeleted(
+        _ input: DescribeRoutingControlRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("routingControl.status", expected: "PENDING_DELETION")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeRoutingControl
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}

@@ -229,4 +229,180 @@ extension ECR {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ECR {
+    ///  Returns the scan findings for the specified image.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeImageScanFindingsPaginator(
+        _ input: DescribeImageScanFindingsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeImageScanFindingsRequest, DescribeImageScanFindingsResponse> {
+        return .init(
+            input: input,
+            command: self.describeImageScanFindings,
+            inputKey: \DescribeImageScanFindingsRequest.nextToken,
+            outputKey: \DescribeImageScanFindingsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns metadata about the images in a repository.  Beginning with Docker version 1.9, the Docker client compresses image layers before pushing them to a V2 Docker registry. The output of the docker images command shows the uncompressed image size, so it may return a larger image size than the image sizes returned by DescribeImages.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeImagesPaginator(
+        _ input: DescribeImagesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeImagesRequest, DescribeImagesResponse> {
+        return .init(
+            input: input,
+            command: self.describeImages,
+            inputKey: \DescribeImagesRequest.nextToken,
+            outputKey: \DescribeImagesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the pull through cache rules for a registry.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describePullThroughCacheRulesPaginator(
+        _ input: DescribePullThroughCacheRulesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribePullThroughCacheRulesRequest, DescribePullThroughCacheRulesResponse> {
+        return .init(
+            input: input,
+            command: self.describePullThroughCacheRules,
+            inputKey: \DescribePullThroughCacheRulesRequest.nextToken,
+            outputKey: \DescribePullThroughCacheRulesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes image repositories in a registry.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeRepositoriesPaginator(
+        _ input: DescribeRepositoriesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeRepositoriesRequest, DescribeRepositoriesResponse> {
+        return .init(
+            input: input,
+            command: self.describeRepositories,
+            inputKey: \DescribeRepositoriesRequest.nextToken,
+            outputKey: \DescribeRepositoriesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves the results of the lifecycle policy preview request for the specified repository.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getLifecyclePolicyPreviewPaginator(
+        _ input: GetLifecyclePolicyPreviewRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetLifecyclePolicyPreviewRequest, GetLifecyclePolicyPreviewResponse> {
+        return .init(
+            input: input,
+            command: self.getLifecyclePolicyPreview,
+            inputKey: \GetLifecyclePolicyPreviewRequest.nextToken,
+            outputKey: \GetLifecyclePolicyPreviewResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all the image IDs for the specified repository. You can filter images based on whether or not they are tagged by using the tagStatus filter and specifying either TAGGED, UNTAGGED or ANY. For example, you can filter your results to return only UNTAGGED images and then pipe that result to a BatchDeleteImage operation to delete them. Or, you can filter your results to return only TAGGED images to list all of the tags in your repository.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listImagesPaginator(
+        _ input: ListImagesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListImagesRequest, ListImagesResponse> {
+        return .init(
+            input: input,
+            command: self.listImages,
+            inputKey: \ListImagesRequest.nextToken,
+            outputKey: \ListImagesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ECR {
+    public func waitUntilImageScanComplete(
+        _ input: DescribeImageScanFindingsRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("imageScanStatus.status", expected: "COMPLETE")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("imageScanStatus.status", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeImageScanFindings
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilLifecyclePolicyPreviewComplete(
+        _ input: GetLifecyclePolicyPreviewRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("status", expected: "COMPLETE")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("status", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.getLifecyclePolicyPreview
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

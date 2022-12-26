@@ -3138,3 +3138,45 @@ extension MediaTailor {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for MediaTailor
+public struct MediaTailorErrorType: AWSErrorType {
+    enum Code: String {
+        case badRequestException = "BadRequestException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize MediaTailor
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// A request contains unexpected data.
+    public static var badRequestException: Self { .init(.badRequestException) }
+}
+
+extension MediaTailorErrorType: Equatable {
+    public static func == (lhs: MediaTailorErrorType, rhs: MediaTailorErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension MediaTailorErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

@@ -1766,3 +1766,60 @@ extension MQ {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for MQ
+public struct MQErrorType: AWSErrorType {
+    enum Code: String {
+        case badRequestException = "BadRequestException"
+        case conflictException = "ConflictException"
+        case forbiddenException = "ForbiddenException"
+        case internalServerErrorException = "InternalServerErrorException"
+        case notFoundException = "NotFoundException"
+        case unauthorizedException = "UnauthorizedException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize MQ
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Returns information about an error.
+    public static var badRequestException: Self { .init(.badRequestException) }
+    /// Returns information about an error.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// Returns information about an error.
+    public static var forbiddenException: Self { .init(.forbiddenException) }
+    /// Returns information about an error.
+    public static var internalServerErrorException: Self { .init(.internalServerErrorException) }
+    /// Returns information about an error.
+    public static var notFoundException: Self { .init(.notFoundException) }
+    /// Returns information about an error.
+    public static var unauthorizedException: Self { .init(.unauthorizedException) }
+}
+
+extension MQErrorType: Equatable {
+    public static func == (lhs: MQErrorType, rhs: MQErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension MQErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

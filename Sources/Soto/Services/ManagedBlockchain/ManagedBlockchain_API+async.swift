@@ -159,4 +159,163 @@ extension ManagedBlockchain {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ManagedBlockchain {
+    ///   The token based access feature is in preview release for Ethereum on Amazon Managed Blockchain and is  subject to change. We recommend that you use this feature only with  test scenarios, and not in production environments.  Returns a list of the accessors and their properties. Accessor objects are containers that have the  information required for token based access to your Ethereum nodes.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAccessorsPaginator(
+        _ input: ListAccessorsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAccessorsInput, ListAccessorsOutput> {
+        return .init(
+            input: input,
+            command: self.listAccessors,
+            inputKey: \ListAccessorsInput.nextToken,
+            outputKey: \ListAccessorsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of all invitations for the current Amazon Web Services account. Applies only to Hyperledger Fabric.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listInvitationsPaginator(
+        _ input: ListInvitationsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListInvitationsInput, ListInvitationsOutput> {
+        return .init(
+            input: input,
+            command: self.listInvitations,
+            inputKey: \ListInvitationsInput.nextToken,
+            outputKey: \ListInvitationsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of the members in a network and properties of their configurations. Applies only to Hyperledger Fabric.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMembersPaginator(
+        _ input: ListMembersInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMembersInput, ListMembersOutput> {
+        return .init(
+            input: input,
+            command: self.listMembers,
+            inputKey: \ListMembersInput.nextToken,
+            outputKey: \ListMembersOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about the networks in which the current Amazon Web Services account participates. Applies to Hyperledger Fabric and Ethereum.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listNetworksPaginator(
+        _ input: ListNetworksInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListNetworksInput, ListNetworksOutput> {
+        return .init(
+            input: input,
+            command: self.listNetworks,
+            inputKey: \ListNetworksInput.nextToken,
+            outputKey: \ListNetworksOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about the nodes within a network. Applies to Hyperledger Fabric and Ethereum.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listNodesPaginator(
+        _ input: ListNodesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListNodesInput, ListNodesOutput> {
+        return .init(
+            input: input,
+            command: self.listNodes,
+            inputKey: \ListNodesInput.nextToken,
+            outputKey: \ListNodesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the list of votes for a specified proposal, including the value of each vote and the unique identifier of the member that cast the vote. Applies only to Hyperledger Fabric.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listProposalVotesPaginator(
+        _ input: ListProposalVotesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListProposalVotesInput, ListProposalVotesOutput> {
+        return .init(
+            input: input,
+            command: self.listProposalVotes,
+            inputKey: \ListProposalVotesInput.nextToken,
+            outputKey: \ListProposalVotesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of proposals for the network. Applies only to Hyperledger Fabric.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listProposalsPaginator(
+        _ input: ListProposalsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListProposalsInput, ListProposalsOutput> {
+        return .init(
+            input: input,
+            command: self.listProposals,
+            inputKey: \ListProposalsInput.nextToken,
+            outputKey: \ListProposalsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

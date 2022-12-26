@@ -806,3 +806,63 @@ extension RDSData {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for RDSData
+public struct RDSDataErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case badRequestException = "BadRequestException"
+        case forbiddenException = "ForbiddenException"
+        case internalServerErrorException = "InternalServerErrorException"
+        case notFoundException = "NotFoundException"
+        case serviceUnavailableError = "ServiceUnavailableError"
+        case statementTimeoutException = "StatementTimeoutException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize RDSData
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You do not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// There is an error in the call or in a SQL statement.
+    public static var badRequestException: Self { .init(.badRequestException) }
+    /// There are insufficient privileges to make the call.
+    public static var forbiddenException: Self { .init(.forbiddenException) }
+    /// An internal error occurred.
+    public static var internalServerErrorException: Self { .init(.internalServerErrorException) }
+    /// The resourceArn, secretArn, or transactionId value can&#39;t be found.
+    public static var notFoundException: Self { .init(.notFoundException) }
+    /// The service specified by the resourceArn parameter is not available.
+    public static var serviceUnavailableError: Self { .init(.serviceUnavailableError) }
+    /// The execution of the SQL statement timed out.
+    public static var statementTimeoutException: Self { .init(.statementTimeoutException) }
+}
+
+extension RDSDataErrorType: Equatable {
+    public static func == (lhs: RDSDataErrorType, rhs: RDSDataErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension RDSDataErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

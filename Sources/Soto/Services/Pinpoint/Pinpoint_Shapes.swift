@@ -11190,3 +11190,66 @@ extension Pinpoint {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for Pinpoint
+public struct PinpointErrorType: AWSErrorType {
+    enum Code: String {
+        case badRequestException = "BadRequestException"
+        case conflictException = "ConflictException"
+        case forbiddenException = "ForbiddenException"
+        case internalServerErrorException = "InternalServerErrorException"
+        case methodNotAllowedException = "MethodNotAllowedException"
+        case notFoundException = "NotFoundException"
+        case payloadTooLargeException = "PayloadTooLargeException"
+        case tooManyRequestsException = "TooManyRequestsException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Pinpoint
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Provides information about an API request or response.
+    public static var badRequestException: Self { .init(.badRequestException) }
+    /// Provides information about an API request or response.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// Provides information about an API request or response.
+    public static var forbiddenException: Self { .init(.forbiddenException) }
+    /// Provides information about an API request or response.
+    public static var internalServerErrorException: Self { .init(.internalServerErrorException) }
+    /// Provides information about an API request or response.
+    public static var methodNotAllowedException: Self { .init(.methodNotAllowedException) }
+    /// Provides information about an API request or response.
+    public static var notFoundException: Self { .init(.notFoundException) }
+    /// Provides information about an API request or response.
+    public static var payloadTooLargeException: Self { .init(.payloadTooLargeException) }
+    /// Provides information about an API request or response.
+    public static var tooManyRequestsException: Self { .init(.tooManyRequestsException) }
+}
+
+extension PinpointErrorType: Equatable {
+    public static func == (lhs: PinpointErrorType, rhs: PinpointErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension PinpointErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

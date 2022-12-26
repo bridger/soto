@@ -117,3 +117,136 @@ extension EBS {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension EBS {
+    ///  Returns information about the blocks that are different between two Amazon Elastic Block Store snapshots of the same volume/snapshot lineage.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listChangedBlocksPaginator<Result>(
+        _ input: ListChangedBlocksRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListChangedBlocksResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listChangedBlocks,
+            inputKey: \ListChangedBlocksRequest.nextToken,
+            outputKey: \ListChangedBlocksResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listChangedBlocksPaginator(
+        _ input: ListChangedBlocksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListChangedBlocksResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listChangedBlocks,
+            inputKey: \ListChangedBlocksRequest.nextToken,
+            outputKey: \ListChangedBlocksResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about the blocks in an Amazon Elastic Block Store snapshot.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listSnapshotBlocksPaginator<Result>(
+        _ input: ListSnapshotBlocksRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListSnapshotBlocksResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listSnapshotBlocks,
+            inputKey: \ListSnapshotBlocksRequest.nextToken,
+            outputKey: \ListSnapshotBlocksResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listSnapshotBlocksPaginator(
+        _ input: ListSnapshotBlocksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListSnapshotBlocksResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listSnapshotBlocks,
+            inputKey: \ListSnapshotBlocksRequest.nextToken,
+            outputKey: \ListSnapshotBlocksResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension EBS.ListChangedBlocksRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> EBS.ListChangedBlocksRequest {
+        return .init(
+            firstSnapshotId: self.firstSnapshotId,
+            maxResults: self.maxResults,
+            nextToken: token,
+            secondSnapshotId: self.secondSnapshotId,
+            startingBlockIndex: self.startingBlockIndex
+        )
+    }
+}
+
+extension EBS.ListSnapshotBlocksRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> EBS.ListSnapshotBlocksRequest {
+        return .init(
+            maxResults: self.maxResults,
+            nextToken: token,
+            snapshotId: self.snapshotId,
+            startingBlockIndex: self.startingBlockIndex
+        )
+    }
+}

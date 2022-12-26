@@ -161,4 +161,117 @@ extension Signer {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Signer {
+    ///  Lists all your signing jobs. You can use the maxResults parameter to
+    ///  			limit the number of signing jobs that are returned in the response. If additional jobs
+    ///  			remain to be listed, code signing returns a nextToken value. Use this value in
+    ///  			subsequent calls to ListSigningJobs to fetch the remaining values. You can
+    ///  			continue calling ListSigningJobs with your maxResults
+    ///  			parameter and with new values that code signing returns in the nextToken
+    ///  			parameter until all of your signing jobs have been returned.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSigningJobsPaginator(
+        _ input: ListSigningJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSigningJobsRequest, ListSigningJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listSigningJobs,
+            inputKey: \ListSigningJobsRequest.nextToken,
+            outputKey: \ListSigningJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all signing platforms available in code signing that match the request parameters. If
+    ///  			additional jobs remain to be listed, code signing returns a nextToken value. Use
+    ///  			this value in subsequent calls to ListSigningJobs to fetch the remaining
+    ///  			values. You can continue calling ListSigningJobs with your
+    ///  				maxResults parameter and with new values that code signing returns in the
+    ///  				nextToken parameter until all of your signing jobs have been
+    ///  			returned.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSigningPlatformsPaginator(
+        _ input: ListSigningPlatformsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSigningPlatformsRequest, ListSigningPlatformsResponse> {
+        return .init(
+            input: input,
+            command: self.listSigningPlatforms,
+            inputKey: \ListSigningPlatformsRequest.nextToken,
+            outputKey: \ListSigningPlatformsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all available signing profiles in your AWS account. Returns only profiles with
+    ///  			an ACTIVE status unless the includeCanceled request field is
+    ///  			set to true. If additional jobs remain to be listed, code signing returns a
+    ///  				nextToken value. Use this value in subsequent calls to
+    ///  				ListSigningJobs to fetch the remaining values. You can continue calling
+    ///  				ListSigningJobs with your maxResults parameter and with
+    ///  			new values that code signing returns in the nextToken parameter until all of your
+    ///  			signing jobs have been returned.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSigningProfilesPaginator(
+        _ input: ListSigningProfilesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSigningProfilesRequest, ListSigningProfilesResponse> {
+        return .init(
+            input: input,
+            command: self.listSigningProfiles,
+            inputKey: \ListSigningProfilesRequest.nextToken,
+            outputKey: \ListSigningProfilesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Signer {
+    public func waitUntilSuccessfulSigningJob(
+        _ input: DescribeSigningJobRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("status", expected: "Succeeded")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("status", expected: "Failed")),
+                .init(state: .failure, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+            ],
+            minDelayTime: .seconds(20),
+            command: self.describeSigningJob
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

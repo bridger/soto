@@ -1373,7 +1373,7 @@ extension IoTEventsData {
         }
 
         public func validate(name: String) throws {
-            try self.validate(self.timeInMillis, name: "timeInMillis", parent: name, max: 9_223_372_036_854_775_807)
+            try self.validate(self.timeInMillis, name: "timeInMillis", parent: name, max: -9_223_372_036_854_775_808)
             try self.validate(self.timeInMillis, name: "timeInMillis", parent: name, min: 1)
         }
 
@@ -1460,5 +1460,59 @@ extension IoTEventsData {
             case name
             case value
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for IoTEventsData
+public struct IoTEventsDataErrorType: AWSErrorType {
+    enum Code: String {
+        case internalFailureException = "InternalFailureException"
+        case invalidRequestException = "InvalidRequestException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceUnavailableException = "ServiceUnavailableException"
+        case throttlingException = "ThrottlingException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize IoTEventsData
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// An internal failure occurred.
+    public static var internalFailureException: Self { .init(.internalFailureException) }
+    /// The request was invalid.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// The resource was not found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The service is currently unavailable.
+    public static var serviceUnavailableException: Self { .init(.serviceUnavailableException) }
+    /// The request could not be completed due to throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+}
+
+extension IoTEventsDataErrorType: Equatable {
+    public static func == (lhs: IoTEventsDataErrorType, rhs: IoTEventsDataErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension IoTEventsDataErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

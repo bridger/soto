@@ -89,4 +89,53 @@ extension Cloud9 {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Cloud9 {
+    ///  Gets information about environment members for an Cloud9 development environment.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEnvironmentMembershipsPaginator(
+        _ input: DescribeEnvironmentMembershipsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEnvironmentMembershipsRequest, DescribeEnvironmentMembershipsResult> {
+        return .init(
+            input: input,
+            command: self.describeEnvironmentMemberships,
+            inputKey: \DescribeEnvironmentMembershipsRequest.nextToken,
+            outputKey: \DescribeEnvironmentMembershipsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of Cloud9 development environment identifiers.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEnvironmentsPaginator(
+        _ input: ListEnvironmentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEnvironmentsRequest, ListEnvironmentsResult> {
+        return .init(
+            input: input,
+            command: self.listEnvironments,
+            inputKey: \ListEnvironmentsRequest.nextToken,
+            outputKey: \ListEnvironmentsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

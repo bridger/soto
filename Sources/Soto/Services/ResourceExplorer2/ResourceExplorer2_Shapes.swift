@@ -282,15 +282,15 @@ extension ResourceExplorer2 {
         public let createdAt: Date?
         /// The date and time when the index was last updated.
         public let lastUpdatedAt: Date?
-        /// If this index is Type=AGGREGATOR, then this response value contains a list of the Amazon Web Services Regions that replicate their content to the index in this Region. Not present for a local index.
+        /// This response value is present only if this index is Type=AGGREGATOR. A list of the Amazon Web Services Regions that replicate their content to the index in this Region.
         public let replicatingFrom: [String]?
-        /// Identifies the Amazon Web Services Region that has an index set to Type=AGGREGATOR, if one exists. If it does, then the Region you called this operation in replicates its index information to the Region specified in this response value. Not present if there isn't an aggregator index in the account.
+        /// This response value is present only if this index is Type=LOCAL. The Amazon Web Services Region that contains the aggregator index, if one exists. If an aggregator index does exist then the Region in which you called this operation replicates its index information to the Region specified in this response value.
         public let replicatingTo: [String]?
-        /// Indicates the current state of the index in this Amazon Web Services Region.
+        /// The current state of the index in this Amazon Web Services Region.
         public let state: IndexState?
         /// Tag key and value pairs that are attached to the index.
         public let tags: [String: String]?
-        /// Specifies the type of the index in this Region. For information about the aggregator index and how it differs from a local index, see Turning on cross-Region search by creating an aggregator index.
+        /// The type of the index in this Region. For information about the aggregator index and how it differs from a local index, see Turning on cross-Region search by creating an aggregator index.
         public let type: IndexType?
 
         public init(arn: String? = nil, createdAt: Date? = nil, lastUpdatedAt: Date? = nil, replicatingFrom: [String]? = nil, replicatingTo: [String]? = nil, state: IndexState? = nil, tags: [String: String]? = nil, type: IndexType? = nil) {
@@ -831,5 +831,68 @@ extension ResourceExplorer2 {
             case scope = "Scope"
             case viewArn = "ViewArn"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for ResourceExplorer2
+public struct ResourceExplorer2ErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case unauthorizedException = "UnauthorizedException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize ResourceExplorer2
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The credentials that you used to call this operation don&#39;t have the minimum required permissions.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// You tried to create a new view or index when one already exists, and you either didn&#39;t specify or specified a different idempotency token as the original request.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// The request failed because of internal service error. Try your request again later.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// You specified a resource that doesn&#39;t exist. Check the ID or ARN that you used to identity the resource, and try again.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The request failed because it exceeds a service quota.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The request failed because you exceeded a rate limit for this operation. For more information, see Quotas for Resource Explorer.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The principal making the request isn&#39;t permitted to perform the operation.
+    public static var unauthorizedException: Self { .init(.unauthorizedException) }
+    /// You provided an invalid value for one of the operation&#39;s parameters. Check the syntax for the operation, and try again.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension ResourceExplorer2ErrorType: Equatable {
+    public static func == (lhs: ResourceExplorer2ErrorType, rhs: ResourceExplorer2ErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension ResourceExplorer2ErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

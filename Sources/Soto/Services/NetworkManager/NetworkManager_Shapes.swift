@@ -75,8 +75,8 @@ extension NetworkManager {
         case coreNetworkConfiguration = "CORE_NETWORK_CONFIGURATION"
         case coreNetworkEdge = "CORE_NETWORK_EDGE"
         case coreNetworkSegment = "CORE_NETWORK_SEGMENT"
-        case segmentsConfiguration = "SEGMENTS_CONFIGURATION"
         case segmentActionsConfiguration = "SEGMENT_ACTIONS_CONFIGURATION"
+        case segmentsConfiguration = "SEGMENTS_CONFIGURATION"
         public var description: String { return self.rawValue }
     }
 
@@ -191,7 +191,7 @@ extension NetworkManager {
         case noDestinationArnProvided = "NO_DESTINATION_ARN_PROVIDED"
         case possibleMiddlebox = "POSSIBLE_MIDDLEBOX"
         case routeNotFound = "ROUTE_NOT_FOUND"
-        case transitGatewayAttachmentAttachArnNoMatch = "TRANSIT_GATEWAY_ATTACHMENT_ATTACH_ARN_NO_MATCH"
+        case transitGatewayAttachment = "TRANSIT_GATEWAY_ATTACHMENT_ATTACH_ARN_NO_MATCH"
         case transitGatewayAttachmentNotFound = "TRANSIT_GATEWAY_ATTACHMENT_NOT_FOUND"
         case transitGatewayAttachmentNotInTransitGateway = "TRANSIT_GATEWAY_ATTACHMENT_NOT_IN_TRANSIT_GATEWAY"
         case transitGatewayAttachmentStableRouteTableNotFound = "TRANSIT_GATEWAY_ATTACHMENT_STABLE_ROUTE_TABLE_NOT_FOUND"
@@ -224,8 +224,8 @@ extension NetworkManager {
     }
 
     public enum RouteType: String, CustomStringConvertible, Codable, _SotoSendable {
-        case propagated = "PROPAGATED"
         case `static` = "STATIC"
+        case propagated = "PROPAGATED"
         public var description: String { return self.rawValue }
     }
 
@@ -6173,15 +6173,82 @@ extension NetworkManager {
     }
 
     public struct VpcOptions: AWSEncodableShape & AWSDecodableShape {
+        /// Indicates whether appliance mode is supported.  If enabled, traffic flow between a source and destination use the same Availability Zone for the VPC attachment for the lifetime of that flow. The default value is false.
+        public let applianceModeSupport: Bool?
         /// Indicates whether IPv6 is supported.
         public let ipv6Support: Bool?
 
-        public init(ipv6Support: Bool? = nil) {
+        public init(applianceModeSupport: Bool? = nil, ipv6Support: Bool? = nil) {
+            self.applianceModeSupport = applianceModeSupport
             self.ipv6Support = ipv6Support
         }
 
         private enum CodingKeys: String, CodingKey {
+            case applianceModeSupport = "ApplianceModeSupport"
             case ipv6Support = "Ipv6Support"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for NetworkManager
+public struct NetworkManagerErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case coreNetworkPolicyException = "CoreNetworkPolicyException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize NetworkManager
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You do not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// There was a conflict processing the request. Updating or deleting the resource can cause an inconsistent state.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// Describes a core network policy exception.
+    public static var coreNetworkPolicyException: Self { .init(.coreNetworkPolicyException) }
+    /// The request has failed due to an internal error.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The specified resource could not be found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// A service limit was exceeded.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input fails to satisfy the constraints.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension NetworkManagerErrorType: Equatable {
+    public static func == (lhs: NetworkManagerErrorType, rhs: NetworkManagerErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension NetworkManagerErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

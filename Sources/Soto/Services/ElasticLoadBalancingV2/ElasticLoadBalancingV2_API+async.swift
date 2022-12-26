@@ -204,4 +204,166 @@ extension ElasticLoadBalancingV2 {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElasticLoadBalancingV2 {
+    ///  Describes the specified listeners or the listeners for the specified Application Load Balancer, Network Load Balancer, or Gateway Load Balancer. You must specify either a load balancer or one or more listeners.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeListenersPaginator(
+        _ input: DescribeListenersInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeListenersInput, DescribeListenersOutput> {
+        return .init(
+            input: input,
+            command: self.describeListeners,
+            inputKey: \DescribeListenersInput.marker,
+            outputKey: \DescribeListenersOutput.nextMarker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the specified load balancers or all of your load balancers.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeLoadBalancersPaginator(
+        _ input: DescribeLoadBalancersInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeLoadBalancersInput, DescribeLoadBalancersOutput> {
+        return .init(
+            input: input,
+            command: self.describeLoadBalancers,
+            inputKey: \DescribeLoadBalancersInput.marker,
+            outputKey: \DescribeLoadBalancersOutput.nextMarker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the specified target groups or all of your target groups. By default, all target groups are described. Alternatively, you can specify one of the following to filter the results: the ARN of the load balancer, the names of one or more target groups, or the ARNs of one or more target groups.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeTargetGroupsPaginator(
+        _ input: DescribeTargetGroupsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeTargetGroupsInput, DescribeTargetGroupsOutput> {
+        return .init(
+            input: input,
+            command: self.describeTargetGroups,
+            inputKey: \DescribeTargetGroupsInput.marker,
+            outputKey: \DescribeTargetGroupsOutput.nextMarker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElasticLoadBalancingV2 {
+    public func waitUntilLoadBalancerAvailable(
+        _ input: DescribeLoadBalancersInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("loadBalancers[].state.code", expected: "active")),
+                .init(state: .retry, matcher: try! JMESAnyPathMatcher("loadBalancers[].state.code", expected: "provisioning")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("LoadBalancerNotFound")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeLoadBalancers
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilLoadBalancerExists(
+        _ input: DescribeLoadBalancersInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSSuccessMatcher()),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("LoadBalancerNotFound")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeLoadBalancers
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilLoadBalancersDeleted(
+        _ input: DescribeLoadBalancersInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .retry, matcher: try! JMESAllPathMatcher("loadBalancers[].state.code", expected: "active")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("LoadBalancerNotFound")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeLoadBalancers
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilTargetDeregistered(
+        _ input: DescribeTargetHealthInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("InvalidTarget")),
+                .init(state: .success, matcher: try! JMESAllPathMatcher("targetHealthDescriptions[].targetHealth.state", expected: "unused")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeTargetHealth
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilTargetInService(
+        _ input: DescribeTargetHealthInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("targetHealthDescriptions[].targetHealth.state", expected: "healthy")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InvalidInstance")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeTargetHealth
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

@@ -818,3 +818,52 @@ extension IoT1ClickProjects {
         public init() {}
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for IoT1ClickProjects
+public struct IoT1ClickProjectsErrorType: AWSErrorType {
+    enum Code: String {
+        case internalFailureException = "InternalFailureException"
+        case invalidRequestException = "InvalidRequestException"
+        case resourceConflictException = "ResourceConflictException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case tooManyRequestsException = "TooManyRequestsException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize IoT1ClickProjects
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    public static var internalFailureException: Self { .init(.internalFailureException) }
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    public static var resourceConflictException: Self { .init(.resourceConflictException) }
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    public static var tooManyRequestsException: Self { .init(.tooManyRequestsException) }
+}
+
+extension IoT1ClickProjectsErrorType: Equatable {
+    public static func == (lhs: IoT1ClickProjectsErrorType, rhs: IoT1ClickProjectsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension IoT1ClickProjectsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

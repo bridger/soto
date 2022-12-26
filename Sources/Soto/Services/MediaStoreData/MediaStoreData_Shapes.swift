@@ -351,3 +351,54 @@ extension MediaStoreData {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for MediaStoreData
+public struct MediaStoreDataErrorType: AWSErrorType {
+    enum Code: String {
+        case containerNotFoundException = "ContainerNotFoundException"
+        case internalServerError = "InternalServerError"
+        case objectNotFoundException = "ObjectNotFoundException"
+        case requestedRangeNotSatisfiableException = "RequestedRangeNotSatisfiableException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize MediaStoreData
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The specified container was not found for the specified account.
+    public static var containerNotFoundException: Self { .init(.containerNotFoundException) }
+    /// The service is temporarily unavailable.
+    public static var internalServerError: Self { .init(.internalServerError) }
+    /// Could not perform an operation on an object that does not exist.
+    public static var objectNotFoundException: Self { .init(.objectNotFoundException) }
+    /// The requested content range is not valid.
+    public static var requestedRangeNotSatisfiableException: Self { .init(.requestedRangeNotSatisfiableException) }
+}
+
+extension MediaStoreDataErrorType: Equatable {
+    public static func == (lhs: MediaStoreDataErrorType, rhs: MediaStoreDataErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension MediaStoreDataErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

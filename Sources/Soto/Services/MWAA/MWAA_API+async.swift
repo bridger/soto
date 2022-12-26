@@ -79,4 +79,31 @@ extension MWAA {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MWAA {
+    ///  Lists the Amazon Managed Workflows for Apache Airflow (MWAA) environments.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEnvironmentsPaginator(
+        _ input: ListEnvironmentsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEnvironmentsInput, ListEnvironmentsOutput> {
+        return .init(
+            input: input,
+            command: self.listEnvironments,
+            inputKey: \ListEnvironmentsInput.nextToken,
+            outputKey: \ListEnvironmentsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

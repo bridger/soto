@@ -1590,3 +1590,72 @@ extension Synthetics {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for Synthetics
+public struct SyntheticsErrorType: AWSErrorType {
+    enum Code: String {
+        case badRequestException = "BadRequestException"
+        case conflictException = "ConflictException"
+        case internalFailureException = "InternalFailureException"
+        case internalServerException = "InternalServerException"
+        case notFoundException = "NotFoundException"
+        case requestEntityTooLargeException = "RequestEntityTooLargeException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case tooManyRequestsException = "TooManyRequestsException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Synthetics
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The request was not valid.
+    public static var badRequestException: Self { .init(.badRequestException) }
+    /// A conflicting operation is already in progress.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// An internal failure occurred. Try the operation again.
+    public static var internalFailureException: Self { .init(.internalFailureException) }
+    /// An unknown internal error occurred.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The specified resource was not found.
+    public static var notFoundException: Self { .init(.notFoundException) }
+    /// One of the input resources is larger than is allowed.
+    public static var requestEntityTooLargeException: Self { .init(.requestEntityTooLargeException) }
+    /// One of the specified resources was not found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The request exceeded a service quota value.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// There were too many simultaneous requests. Try the operation again.
+    public static var tooManyRequestsException: Self { .init(.tooManyRequestsException) }
+    /// A parameter could not be validated.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension SyntheticsErrorType: Equatable {
+    public static func == (lhs: SyntheticsErrorType, rhs: SyntheticsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension SyntheticsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

@@ -562,3 +562,277 @@ extension ACMPCA {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension ACMPCA {
+    ///  Lists the private certificate authorities that you created by using the CreateCertificateAuthority action.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listCertificateAuthoritiesPaginator<Result>(
+        _ input: ListCertificateAuthoritiesRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListCertificateAuthoritiesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listCertificateAuthorities,
+            inputKey: \ListCertificateAuthoritiesRequest.nextToken,
+            outputKey: \ListCertificateAuthoritiesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listCertificateAuthoritiesPaginator(
+        _ input: ListCertificateAuthoritiesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListCertificateAuthoritiesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listCertificateAuthorities,
+            inputKey: \ListCertificateAuthoritiesRequest.nextToken,
+            outputKey: \ListCertificateAuthoritiesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  List all permissions on a private CA, if any, granted to the Certificate Manager (ACM) service
+    ///  			principal (acm.amazonaws.com).
+    ///  		       These permissions allow ACM to issue and renew ACM certificates that reside in the
+    ///  			same Amazon Web Services account as the CA.
+    ///  		       Permissions can be granted with the CreatePermission action and
+    ///  			revoked with the DeletePermission action.
+    ///  		        About Permissions
+    ///  			            If the private CA and the certificates it issues reside in the same
+    ///  			account, you can use CreatePermission to grant permissions for ACM to
+    ///  			carry out automatic certificate renewals.
+    ///
+    ///  			            For automatic certificate renewal to succeed, the ACM service principal
+    ///  			needs permissions to create, retrieve, and list certificates.
+    ///
+    ///  			            If the private CA and the ACM certificates reside in different accounts,
+    ///  			then permissions cannot be used to enable automatic renewals. Instead,
+    ///  			the ACM certificate owner must set up a resource-based policy to enable
+    ///  			cross-account issuance and renewals. For more information, see
+    ///  			Using a Resource
+    ///  			Based Policy with ACM Private CA.
+    ///
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listPermissionsPaginator<Result>(
+        _ input: ListPermissionsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListPermissionsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listPermissions,
+            inputKey: \ListPermissionsRequest.nextToken,
+            outputKey: \ListPermissionsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listPermissionsPaginator(
+        _ input: ListPermissionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListPermissionsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listPermissions,
+            inputKey: \ListPermissionsRequest.nextToken,
+            outputKey: \ListPermissionsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists the tags, if any, that are associated with your private CA or one that has been
+    ///  			shared with you. Tags are labels that you can use to identify and organize your CAs.
+    ///  			Each tag consists of a key and an optional value. Call the TagCertificateAuthority
+    ///  			action to add one or more tags to your CA. Call the UntagCertificateAuthority action to remove tags.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listTagsPaginator<Result>(
+        _ input: ListTagsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListTagsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listTags,
+            inputKey: \ListTagsRequest.nextToken,
+            outputKey: \ListTagsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listTagsPaginator(
+        _ input: ListTagsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListTagsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listTags,
+            inputKey: \ListTagsRequest.nextToken,
+            outputKey: \ListTagsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension ACMPCA.ListCertificateAuthoritiesRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> ACMPCA.ListCertificateAuthoritiesRequest {
+        return .init(
+            maxResults: self.maxResults,
+            nextToken: token,
+            resourceOwner: self.resourceOwner
+        )
+    }
+}
+
+extension ACMPCA.ListPermissionsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> ACMPCA.ListPermissionsRequest {
+        return .init(
+            certificateAuthorityArn: self.certificateAuthorityArn,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+extension ACMPCA.ListTagsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> ACMPCA.ListTagsRequest {
+        return .init(
+            certificateAuthorityArn: self.certificateAuthorityArn,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+// MARK: Waiters
+
+extension ACMPCA {
+    /// Wait until a Audit Report is created
+    public func waitUntilAuditReportCreated(
+        _ input: DescribeCertificateAuthorityAuditReportRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("auditReportStatus", expected: "SUCCESS")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("auditReportStatus", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(3),
+            command: self.describeCertificateAuthorityAuditReport
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until a Certificate Authority CSR is created
+    public func waitUntilCertificateAuthorityCSRCreated(
+        _ input: GetCertificateAuthorityCsrRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSSuccessMatcher()),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("RequestInProgressException")),
+            ],
+            minDelayTime: .seconds(3),
+            command: self.getCertificateAuthorityCsr
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until a certificate is issued
+    public func waitUntilCertificateIssued(
+        _ input: GetCertificateRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSSuccessMatcher()),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("RequestInProgressException")),
+            ],
+            minDelayTime: .seconds(3),
+            command: self.getCertificate
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}

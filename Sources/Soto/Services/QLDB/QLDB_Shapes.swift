@@ -1265,3 +1265,60 @@ extension QLDB {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for QLDB
+public struct QLDBErrorType: AWSErrorType {
+    enum Code: String {
+        case invalidParameterException = "InvalidParameterException"
+        case limitExceededException = "LimitExceededException"
+        case resourceAlreadyExistsException = "ResourceAlreadyExistsException"
+        case resourceInUseException = "ResourceInUseException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case resourcePreconditionNotMetException = "ResourcePreconditionNotMetException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize QLDB
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// One or more parameters in the request aren&#39;t valid.
+    public static var invalidParameterException: Self { .init(.invalidParameterException) }
+    /// You have reached the limit on the maximum number of resources allowed.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// The specified resource already exists.
+    public static var resourceAlreadyExistsException: Self { .init(.resourceAlreadyExistsException) }
+    /// The specified resource can&#39;t be modified at this time.
+    public static var resourceInUseException: Self { .init(.resourceInUseException) }
+    /// The specified resource doesn&#39;t exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The operation failed because a condition wasn&#39;t satisfied in advance.
+    public static var resourcePreconditionNotMetException: Self { .init(.resourcePreconditionNotMetException) }
+}
+
+extension QLDBErrorType: Equatable {
+    public static func == (lhs: QLDBErrorType, rhs: QLDBErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension QLDBErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

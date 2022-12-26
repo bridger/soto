@@ -377,4 +377,410 @@ extension Neptune {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Neptune {
+    ///  Returns information about endpoints for an Amazon Neptune DB cluster.  This operation can also return information for Amazon RDS clusters and Amazon DocDB clusters.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBClusterEndpointsPaginator(
+        _ input: DescribeDBClusterEndpointsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBClusterEndpointsMessage, DBClusterEndpointMessage> {
+        return .init(
+            input: input,
+            command: self.describeDBClusterEndpoints,
+            inputKey: \DescribeDBClusterEndpointsMessage.marker,
+            outputKey: \DBClusterEndpointMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///   Returns a list of DBClusterParameterGroup descriptions. If a DBClusterParameterGroupName parameter is specified, the list will contain only the description of the specified DB cluster parameter group.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBClusterParameterGroupsPaginator(
+        _ input: DescribeDBClusterParameterGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBClusterParameterGroupsMessage, DBClusterParameterGroupsMessage> {
+        return .init(
+            input: input,
+            command: self.describeDBClusterParameterGroups,
+            inputKey: \DescribeDBClusterParameterGroupsMessage.marker,
+            outputKey: \DBClusterParameterGroupsMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the detailed parameter list for a particular DB cluster parameter group.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBClusterParametersPaginator(
+        _ input: DescribeDBClusterParametersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBClusterParametersMessage, DBClusterParameterGroupDetails> {
+        return .init(
+            input: input,
+            command: self.describeDBClusterParameters,
+            inputKey: \DescribeDBClusterParametersMessage.marker,
+            outputKey: \DBClusterParameterGroupDetails.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about DB cluster snapshots. This API action supports pagination.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBClusterSnapshotsPaginator(
+        _ input: DescribeDBClusterSnapshotsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBClusterSnapshotsMessage, DBClusterSnapshotMessage> {
+        return .init(
+            input: input,
+            command: self.describeDBClusterSnapshots,
+            inputKey: \DescribeDBClusterSnapshotsMessage.marker,
+            outputKey: \DBClusterSnapshotMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about provisioned DB clusters, and supports pagination.
+    ///    This operation can also return information for Amazon RDS clusters and Amazon DocDB clusters.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBClustersPaginator(
+        _ input: DescribeDBClustersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBClustersMessage, DBClusterMessage> {
+        return .init(
+            input: input,
+            command: self.describeDBClusters,
+            inputKey: \DescribeDBClustersMessage.marker,
+            outputKey: \DBClusterMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of the available DB engines.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBEngineVersionsPaginator(
+        _ input: DescribeDBEngineVersionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBEngineVersionsMessage, DBEngineVersionMessage> {
+        return .init(
+            input: input,
+            command: self.describeDBEngineVersions,
+            inputKey: \DescribeDBEngineVersionsMessage.marker,
+            outputKey: \DBEngineVersionMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about provisioned instances, and supports pagination.
+    ///    This operation can also return information for Amazon RDS instances and Amazon DocDB instances.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBInstancesPaginator(
+        _ input: DescribeDBInstancesMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBInstancesMessage, DBInstanceMessage> {
+        return .init(
+            input: input,
+            command: self.describeDBInstances,
+            inputKey: \DescribeDBInstancesMessage.marker,
+            outputKey: \DBInstanceMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of DBParameterGroup descriptions. If a DBParameterGroupName is specified, the list will contain only the description of the specified DB parameter group.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBParameterGroupsPaginator(
+        _ input: DescribeDBParameterGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBParameterGroupsMessage, DBParameterGroupsMessage> {
+        return .init(
+            input: input,
+            command: self.describeDBParameterGroups,
+            inputKey: \DescribeDBParameterGroupsMessage.marker,
+            outputKey: \DBParameterGroupsMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the detailed parameter list for a particular DB parameter group.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBParametersPaginator(
+        _ input: DescribeDBParametersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBParametersMessage, DBParameterGroupDetails> {
+        return .init(
+            input: input,
+            command: self.describeDBParameters,
+            inputKey: \DescribeDBParametersMessage.marker,
+            outputKey: \DBParameterGroupDetails.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of DBSubnetGroup descriptions. If a DBSubnetGroupName is specified, the list will contain only the descriptions of the specified DBSubnetGroup. For an overview of CIDR ranges, go to the Wikipedia Tutorial.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDBSubnetGroupsPaginator(
+        _ input: DescribeDBSubnetGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDBSubnetGroupsMessage, DBSubnetGroupMessage> {
+        return .init(
+            input: input,
+            command: self.describeDBSubnetGroups,
+            inputKey: \DescribeDBSubnetGroupsMessage.marker,
+            outputKey: \DBSubnetGroupMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the default engine and system parameter information for the specified database engine.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEngineDefaultParametersPaginator(
+        _ input: DescribeEngineDefaultParametersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEngineDefaultParametersMessage, DescribeEngineDefaultParametersResult> {
+        return .init(
+            input: input,
+            command: self.describeEngineDefaultParameters,
+            inputKey: \DescribeEngineDefaultParametersMessage.marker,
+            outputKey: \DescribeEngineDefaultParametersResult.engineDefaults?.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all the subscription descriptions for a customer account. The description for a subscription includes SubscriptionName, SNSTopicARN, CustomerID, SourceType, SourceID, CreationTime, and Status. If you specify a SubscriptionName, lists the description for that subscription.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEventSubscriptionsPaginator(
+        _ input: DescribeEventSubscriptionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEventSubscriptionsMessage, EventSubscriptionsMessage> {
+        return .init(
+            input: input,
+            command: self.describeEventSubscriptions,
+            inputKey: \DescribeEventSubscriptionsMessage.marker,
+            outputKey: \EventSubscriptionsMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns events related to DB instances, DB security groups, DB snapshots, and DB parameter groups for the past 14 days. Events specific to a particular DB instance, DB security group, database snapshot, or DB parameter group can be obtained by providing the name as a parameter. By default, the past hour of events are returned.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEventsPaginator(
+        _ input: DescribeEventsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEventsMessage, EventsMessage> {
+        return .init(
+            input: input,
+            command: self.describeEvents,
+            inputKey: \DescribeEventsMessage.marker,
+            outputKey: \EventsMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about Neptune global database clusters. This API supports pagination.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeGlobalClustersPaginator(
+        _ input: DescribeGlobalClustersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeGlobalClustersMessage, GlobalClustersMessage> {
+        return .init(
+            input: input,
+            command: self.describeGlobalClusters,
+            inputKey: \DescribeGlobalClustersMessage.marker,
+            outputKey: \GlobalClustersMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of orderable DB instance options for the specified engine.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeOrderableDBInstanceOptionsPaginator(
+        _ input: DescribeOrderableDBInstanceOptionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeOrderableDBInstanceOptionsMessage, OrderableDBInstanceOptionsMessage> {
+        return .init(
+            input: input,
+            command: self.describeOrderableDBInstanceOptions,
+            inputKey: \DescribeOrderableDBInstanceOptionsMessage.marker,
+            outputKey: \OrderableDBInstanceOptionsMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of resources (for example, DB instances) that have at least one pending maintenance action.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describePendingMaintenanceActionsPaginator(
+        _ input: DescribePendingMaintenanceActionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribePendingMaintenanceActionsMessage, PendingMaintenanceActionsMessage> {
+        return .init(
+            input: input,
+            command: self.describePendingMaintenanceActions,
+            inputKey: \DescribePendingMaintenanceActionsMessage.marker,
+            outputKey: \PendingMaintenanceActionsMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Neptune {
+    public func waitUntilDBInstanceAvailable(
+        _ input: DescribeDBInstancesMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("dbInstances[].dBInstanceStatus", expected: "available")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "deleted")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "deleting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "incompatible-restore")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "incompatible-parameters")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBInstances
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDBInstanceDeleted(
+        _ input: DescribeDBInstancesMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("dbInstances[].dBInstanceStatus", expected: "deleted")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("DBInstanceNotFound")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "creating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "modifying")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "rebooting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "resetting-master-credentials")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBInstances
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

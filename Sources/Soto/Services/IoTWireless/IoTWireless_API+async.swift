@@ -248,14 +248,21 @@ extension IoTWireless {
         return try await self.client.execute(operation: "GetPartnerAccount", path: "/partner-accounts/{PartnerAccountId}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Get the position information for a given resource.
+    /// Get the position information for a given resource.  This action is no longer supported. Calls to retrieve the position information should use the GetResourcePosition  API operation instead.
+    @available(*, deprecated, message: "This operation is no longer supported.")
     public func getPosition(_ input: GetPositionRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetPositionResponse {
         return try await self.client.execute(operation: "GetPosition", path: "/positions/{ResourceIdentifier}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Get position configuration for a given resource.
+    /// Get position configuration for a given resource.  This action is no longer supported. Calls to retrieve the position configuration should use the GetResourcePosition  API operation instead.
+    @available(*, deprecated, message: "This operation is no longer supported.")
     public func getPositionConfiguration(_ input: GetPositionConfigurationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetPositionConfigurationResponse {
         return try await self.client.execute(operation: "GetPositionConfiguration", path: "/position-configurations/{ResourceIdentifier}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Get estimated position information as a payload in GeoJSON format. The payload measurement data is  resolved using solvers that are provided by third-party vendors.
+    public func getPositionEstimate(_ input: GetPositionEstimateRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetPositionEstimateResponse {
+        return try await self.client.execute(operation: "GetPositionEstimate", path: "/position-estimate", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Get the event configuration for a particular resource identifier.
@@ -266,6 +273,11 @@ extension IoTWireless {
     /// Fetches the log-level override, if any, for a given resource-ID and resource-type. It can be used for a wireless device or a wireless gateway.
     public func getResourceLogLevel(_ input: GetResourceLogLevelRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetResourceLogLevelResponse {
         return try await self.client.execute(operation: "GetResourceLogLevel", path: "/log-levels/{ResourceIdentifier}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Get the position information for a given wireless device or a wireless gateway resource. The postion information uses the  World Geodetic System (WGS84).
+    public func getResourcePosition(_ input: GetResourcePositionRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetResourcePositionResponse {
+        return try await self.client.execute(operation: "GetResourcePosition", path: "/resource-positions/{ResourceIdentifier}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Gets the account-specific endpoint for Configuration and Update Server (CUPS) protocol or LoRaWAN Network Server (LNS) connections.
@@ -358,7 +370,8 @@ extension IoTWireless {
         return try await self.client.execute(operation: "ListPartnerAccounts", path: "/partner-accounts", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// List position configurations for a given resource, such as positioning solvers.
+    /// List position configurations for a given resource, such as positioning solvers.  This action is no longer supported. Calls to retrieve position information should use the GetResourcePosition  API operation instead.
+    @available(*, deprecated, message: "This operation is no longer supported.")
     public func listPositionConfigurations(_ input: ListPositionConfigurationsRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListPositionConfigurationsResponse {
         return try await self.client.execute(operation: "ListPositionConfigurations", path: "/position-configurations", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -393,7 +406,8 @@ extension IoTWireless {
         return try await self.client.execute(operation: "ListWirelessGateways", path: "/wireless-gateways", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Put position configuration for a given resource.
+    /// Put position configuration for a given resource.  This action is no longer supported. Calls to update the position configuration should use the UpdateResourcePosition API operation instead.
+    @available(*, deprecated, message: "This operation is no longer supported.")
     public func putPositionConfiguration(_ input: PutPositionConfigurationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> PutPositionConfigurationResponse {
         return try await self.client.execute(operation: "PutPositionConfiguration", path: "/position-configurations/{ResourceIdentifier}", httpMethod: .PUT, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -493,7 +507,8 @@ extension IoTWireless {
         return try await self.client.execute(operation: "UpdatePartnerAccount", path: "/partner-accounts/{PartnerAccountId}", httpMethod: .PATCH, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Update the position information of a resource.
+    /// Update the position information of a resource.  This action is no longer supported. Calls to update the position information should use the UpdateResourcePosition API operation instead.
+    @available(*, deprecated, message: "This operation is no longer supported.")
     public func updatePosition(_ input: UpdatePositionRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdatePositionResponse {
         return try await self.client.execute(operation: "UpdatePosition", path: "/positions/{ResourceIdentifier}", httpMethod: .PATCH, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -501,6 +516,11 @@ extension IoTWireless {
     /// Update the event configuration for a particular resource identifier.
     public func updateResourceEventConfiguration(_ input: UpdateResourceEventConfigurationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateResourceEventConfigurationResponse {
         return try await self.client.execute(operation: "UpdateResourceEventConfiguration", path: "/event-configurations/{Identifier}", httpMethod: .PATCH, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Update the position information of a given wireless device or a wireless gateway resource. The postion coordinates are based on the  World Geodetic System (WGS84).
+    public func updateResourcePosition(_ input: UpdateResourcePositionRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateResourcePositionResponse {
+        return try await self.client.execute(operation: "UpdateResourcePosition", path: "/resource-positions/{ResourceIdentifier}", httpMethod: .PATCH, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Updates properties of a wireless device.
@@ -511,6 +531,254 @@ extension IoTWireless {
     /// Updates properties of a wireless gateway.
     public func updateWirelessGateway(_ input: UpdateWirelessGatewayRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateWirelessGatewayResponse {
         return try await self.client.execute(operation: "UpdateWirelessGateway", path: "/wireless-gateways/{Id}", httpMethod: .PATCH, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension IoTWireless {
+    ///  Lists the destinations registered to your AWS account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDestinationsPaginator(
+        _ input: ListDestinationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDestinationsRequest, ListDestinationsResponse> {
+        return .init(
+            input: input,
+            command: self.listDestinations,
+            inputKey: \ListDestinationsRequest.nextToken,
+            outputKey: \ListDestinationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the device profiles registered to your AWS account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDeviceProfilesPaginator(
+        _ input: ListDeviceProfilesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDeviceProfilesRequest, ListDeviceProfilesResponse> {
+        return .init(
+            input: input,
+            command: self.listDeviceProfiles,
+            inputKey: \ListDeviceProfilesRequest.nextToken,
+            outputKey: \ListDeviceProfilesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the FUOTA tasks registered to your AWS account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFuotaTasksPaginator(
+        _ input: ListFuotaTasksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFuotaTasksRequest, ListFuotaTasksResponse> {
+        return .init(
+            input: input,
+            command: self.listFuotaTasks,
+            inputKey: \ListFuotaTasksRequest.nextToken,
+            outputKey: \ListFuotaTasksResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the multicast groups registered to your AWS account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMulticastGroupsPaginator(
+        _ input: ListMulticastGroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMulticastGroupsRequest, ListMulticastGroupsResponse> {
+        return .init(
+            input: input,
+            command: self.listMulticastGroups,
+            inputKey: \ListMulticastGroupsRequest.nextToken,
+            outputKey: \ListMulticastGroupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List all multicast groups associated with a fuota task.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMulticastGroupsByFuotaTaskPaginator(
+        _ input: ListMulticastGroupsByFuotaTaskRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMulticastGroupsByFuotaTaskRequest, ListMulticastGroupsByFuotaTaskResponse> {
+        return .init(
+            input: input,
+            command: self.listMulticastGroupsByFuotaTask,
+            inputKey: \ListMulticastGroupsByFuotaTaskRequest.nextToken,
+            outputKey: \ListMulticastGroupsByFuotaTaskResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the network analyzer configurations.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listNetworkAnalyzerConfigurationsPaginator(
+        _ input: ListNetworkAnalyzerConfigurationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListNetworkAnalyzerConfigurationsRequest, ListNetworkAnalyzerConfigurationsResponse> {
+        return .init(
+            input: input,
+            command: self.listNetworkAnalyzerConfigurations,
+            inputKey: \ListNetworkAnalyzerConfigurationsRequest.nextToken,
+            outputKey: \ListNetworkAnalyzerConfigurationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List position configurations for a given resource, such as positioning solvers.  This action is no longer supported. Calls to retrieve position information should use the GetResourcePosition  API operation instead.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    @available(*, deprecated, message: "This operation is no longer supported.")
+    public func listPositionConfigurationsPaginator(
+        _ input: ListPositionConfigurationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPositionConfigurationsRequest, ListPositionConfigurationsResponse> {
+        return .init(
+            input: input,
+            command: self.listPositionConfigurations,
+            inputKey: \ListPositionConfigurationsRequest.nextToken,
+            outputKey: \ListPositionConfigurationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List queued messages in the downlink queue.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listQueuedMessagesPaginator(
+        _ input: ListQueuedMessagesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListQueuedMessagesRequest, ListQueuedMessagesResponse> {
+        return .init(
+            input: input,
+            command: self.listQueuedMessages,
+            inputKey: \ListQueuedMessagesRequest.nextToken,
+            outputKey: \ListQueuedMessagesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the service profiles registered to your AWS account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServiceProfilesPaginator(
+        _ input: ListServiceProfilesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServiceProfilesRequest, ListServiceProfilesResponse> {
+        return .init(
+            input: input,
+            command: self.listServiceProfiles,
+            inputKey: \ListServiceProfilesRequest.nextToken,
+            outputKey: \ListServiceProfilesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the wireless devices registered to your AWS account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWirelessDevicesPaginator(
+        _ input: ListWirelessDevicesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWirelessDevicesRequest, ListWirelessDevicesResponse> {
+        return .init(
+            input: input,
+            command: self.listWirelessDevices,
+            inputKey: \ListWirelessDevicesRequest.nextToken,
+            outputKey: \ListWirelessDevicesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the wireless gateways registered to your AWS account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWirelessGatewaysPaginator(
+        _ input: ListWirelessGatewaysRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWirelessGatewaysRequest, ListWirelessGatewaysResponse> {
+        return .init(
+            input: input,
+            command: self.listWirelessGateways,
+            inputKey: \ListWirelessGatewaysRequest.nextToken,
+            outputKey: \ListWirelessGatewaysResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

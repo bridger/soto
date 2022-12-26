@@ -399,4 +399,641 @@ extension Proton {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Proton {
+    ///  Get a list of component Infrastructure as Code (IaC) outputs. For more information about components, see Proton components in the Proton User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listComponentOutputsPaginator(
+        _ input: ListComponentOutputsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListComponentOutputsInput, ListComponentOutputsOutput> {
+        return .init(
+            input: input,
+            command: self.listComponentOutputs,
+            inputKey: \ListComponentOutputsInput.nextToken,
+            outputKey: \ListComponentOutputsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List provisioned resources for a component with details. For more information about components, see Proton components in the Proton User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listComponentProvisionedResourcesPaginator(
+        _ input: ListComponentProvisionedResourcesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListComponentProvisionedResourcesInput, ListComponentProvisionedResourcesOutput> {
+        return .init(
+            input: input,
+            command: self.listComponentProvisionedResources,
+            inputKey: \ListComponentProvisionedResourcesInput.nextToken,
+            outputKey: \ListComponentProvisionedResourcesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List components with summary data. You can filter the result list by environment, service, or a single service instance. For more information about components, see Proton components in the Proton User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listComponentsPaginator(
+        _ input: ListComponentsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListComponentsInput, ListComponentsOutput> {
+        return .init(
+            input: input,
+            command: self.listComponents,
+            inputKey: \ListComponentsInput.nextToken,
+            outputKey: \ListComponentsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  View a list of environment account connections. For more information, see Environment account connections in the Proton User guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEnvironmentAccountConnectionsPaginator(
+        _ input: ListEnvironmentAccountConnectionsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEnvironmentAccountConnectionsInput, ListEnvironmentAccountConnectionsOutput> {
+        return .init(
+            input: input,
+            command: self.listEnvironmentAccountConnections,
+            inputKey: \ListEnvironmentAccountConnectionsInput.nextToken,
+            outputKey: \ListEnvironmentAccountConnectionsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the infrastructure as code outputs for your environment.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEnvironmentOutputsPaginator(
+        _ input: ListEnvironmentOutputsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEnvironmentOutputsInput, ListEnvironmentOutputsOutput> {
+        return .init(
+            input: input,
+            command: self.listEnvironmentOutputs,
+            inputKey: \ListEnvironmentOutputsInput.nextToken,
+            outputKey: \ListEnvironmentOutputsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the provisioned resources for your environment.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEnvironmentProvisionedResourcesPaginator(
+        _ input: ListEnvironmentProvisionedResourcesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEnvironmentProvisionedResourcesInput, ListEnvironmentProvisionedResourcesOutput> {
+        return .init(
+            input: input,
+            command: self.listEnvironmentProvisionedResources,
+            inputKey: \ListEnvironmentProvisionedResourcesInput.nextToken,
+            outputKey: \ListEnvironmentProvisionedResourcesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List major or minor versions of an environment template with detail data.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEnvironmentTemplateVersionsPaginator(
+        _ input: ListEnvironmentTemplateVersionsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEnvironmentTemplateVersionsInput, ListEnvironmentTemplateVersionsOutput> {
+        return .init(
+            input: input,
+            command: self.listEnvironmentTemplateVersions,
+            inputKey: \ListEnvironmentTemplateVersionsInput.nextToken,
+            outputKey: \ListEnvironmentTemplateVersionsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List environment templates.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEnvironmentTemplatesPaginator(
+        _ input: ListEnvironmentTemplatesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEnvironmentTemplatesInput, ListEnvironmentTemplatesOutput> {
+        return .init(
+            input: input,
+            command: self.listEnvironmentTemplates,
+            inputKey: \ListEnvironmentTemplatesInput.nextToken,
+            outputKey: \ListEnvironmentTemplatesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List environments with detail data summaries.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEnvironmentsPaginator(
+        _ input: ListEnvironmentsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEnvironmentsInput, ListEnvironmentsOutput> {
+        return .init(
+            input: input,
+            command: self.listEnvironments,
+            inputKey: \ListEnvironmentsInput.nextToken,
+            outputKey: \ListEnvironmentsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List linked repositories with detail data.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRepositoriesPaginator(
+        _ input: ListRepositoriesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRepositoriesInput, ListRepositoriesOutput> {
+        return .init(
+            input: input,
+            command: self.listRepositories,
+            inputKey: \ListRepositoriesInput.nextToken,
+            outputKey: \ListRepositoriesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List repository sync definitions with detail data.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRepositorySyncDefinitionsPaginator(
+        _ input: ListRepositorySyncDefinitionsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRepositorySyncDefinitionsInput, ListRepositorySyncDefinitionsOutput> {
+        return .init(
+            input: input,
+            command: self.listRepositorySyncDefinitions,
+            inputKey: \ListRepositorySyncDefinitionsInput.nextToken,
+            outputKey: \ListRepositorySyncDefinitionsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Get a list service of instance Infrastructure as Code (IaC) outputs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServiceInstanceOutputsPaginator(
+        _ input: ListServiceInstanceOutputsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServiceInstanceOutputsInput, ListServiceInstanceOutputsOutput> {
+        return .init(
+            input: input,
+            command: self.listServiceInstanceOutputs,
+            inputKey: \ListServiceInstanceOutputsInput.nextToken,
+            outputKey: \ListServiceInstanceOutputsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List provisioned resources for a service instance with details.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServiceInstanceProvisionedResourcesPaginator(
+        _ input: ListServiceInstanceProvisionedResourcesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServiceInstanceProvisionedResourcesInput, ListServiceInstanceProvisionedResourcesOutput> {
+        return .init(
+            input: input,
+            command: self.listServiceInstanceProvisionedResources,
+            inputKey: \ListServiceInstanceProvisionedResourcesInput.nextToken,
+            outputKey: \ListServiceInstanceProvisionedResourcesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List service instances with summary data. This action lists service instances of all services in the Amazon Web Services account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServiceInstancesPaginator(
+        _ input: ListServiceInstancesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServiceInstancesInput, ListServiceInstancesOutput> {
+        return .init(
+            input: input,
+            command: self.listServiceInstances,
+            inputKey: \ListServiceInstancesInput.nextToken,
+            outputKey: \ListServiceInstancesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Get a list of service pipeline Infrastructure as Code (IaC) outputs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServicePipelineOutputsPaginator(
+        _ input: ListServicePipelineOutputsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServicePipelineOutputsInput, ListServicePipelineOutputsOutput> {
+        return .init(
+            input: input,
+            command: self.listServicePipelineOutputs,
+            inputKey: \ListServicePipelineOutputsInput.nextToken,
+            outputKey: \ListServicePipelineOutputsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List provisioned resources for a service and pipeline with details.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServicePipelineProvisionedResourcesPaginator(
+        _ input: ListServicePipelineProvisionedResourcesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServicePipelineProvisionedResourcesInput, ListServicePipelineProvisionedResourcesOutput> {
+        return .init(
+            input: input,
+            command: self.listServicePipelineProvisionedResources,
+            inputKey: \ListServicePipelineProvisionedResourcesInput.nextToken,
+            outputKey: \ListServicePipelineProvisionedResourcesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List major or minor versions of a service template with detail data.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServiceTemplateVersionsPaginator(
+        _ input: ListServiceTemplateVersionsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServiceTemplateVersionsInput, ListServiceTemplateVersionsOutput> {
+        return .init(
+            input: input,
+            command: self.listServiceTemplateVersions,
+            inputKey: \ListServiceTemplateVersionsInput.nextToken,
+            outputKey: \ListServiceTemplateVersionsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List service templates with detail data.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServiceTemplatesPaginator(
+        _ input: ListServiceTemplatesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServiceTemplatesInput, ListServiceTemplatesOutput> {
+        return .init(
+            input: input,
+            command: self.listServiceTemplates,
+            inputKey: \ListServiceTemplatesInput.nextToken,
+            outputKey: \ListServiceTemplatesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List services with summaries of detail data.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServicesPaginator(
+        _ input: ListServicesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServicesInput, ListServicesOutput> {
+        return .init(
+            input: input,
+            command: self.listServices,
+            inputKey: \ListServicesInput.nextToken,
+            outputKey: \ListServicesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List tags for a resource. For more information, see Proton resources and tagging in the Proton User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTagsForResourcePaginator(
+        _ input: ListTagsForResourceInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTagsForResourceInput, ListTagsForResourceOutput> {
+        return .init(
+            input: input,
+            command: self.listTagsForResource,
+            inputKey: \ListTagsForResourceInput.nextToken,
+            outputKey: \ListTagsForResourceOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Proton {
+    public func waitUntilComponentDeleted(
+        _ input: GetComponentInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("component.deploymentStatus", expected: "DELETE_FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(4999),
+            command: self.getComponent
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilComponentDeployed(
+        _ input: GetComponentInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("component.deploymentStatus", expected: "SUCCEEDED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("component.deploymentStatus", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(4999),
+            command: self.getComponent
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilEnvironmentDeployed(
+        _ input: GetEnvironmentInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("environment.deploymentStatus", expected: "SUCCEEDED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("environment.deploymentStatus", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(4999),
+            command: self.getEnvironment
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilEnvironmentTemplateVersionRegistered(
+        _ input: GetEnvironmentTemplateVersionInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("environmentTemplateVersion.status", expected: "DRAFT")),
+                .init(state: .success, matcher: try! JMESPathMatcher("environmentTemplateVersion.status", expected: "PUBLISHED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("environmentTemplateVersion.status", expected: "REGISTRATION_FAILED")),
+            ],
+            minDelayTime: .seconds(2),
+            maxDelayTime: .seconds(300),
+            command: self.getEnvironmentTemplateVersion
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilServiceCreated(
+        _ input: GetServiceInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("service.status", expected: "ACTIVE")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("service.status", expected: "CREATE_FAILED_CLEANUP_COMPLETE")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("service.status", expected: "CREATE_FAILED_CLEANUP_FAILED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("service.status", expected: "CREATE_FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(4999),
+            command: self.getService
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilServiceDeleted(
+        _ input: GetServiceInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("service.status", expected: "DELETE_FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(4999),
+            command: self.getService
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilServiceInstanceDeployed(
+        _ input: GetServiceInstanceInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("serviceInstance.deploymentStatus", expected: "SUCCEEDED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("serviceInstance.deploymentStatus", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(4999),
+            command: self.getServiceInstance
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilServicePipelineDeployed(
+        _ input: GetServiceInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("service.pipeline.deploymentStatus", expected: "SUCCEEDED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("service.pipeline.deploymentStatus", expected: "FAILED")),
+            ],
+            minDelayTime: .seconds(10),
+            maxDelayTime: .seconds(3600),
+            command: self.getService
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilServiceTemplateVersionRegistered(
+        _ input: GetServiceTemplateVersionInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("serviceTemplateVersion.status", expected: "DRAFT")),
+                .init(state: .success, matcher: try! JMESPathMatcher("serviceTemplateVersion.status", expected: "PUBLISHED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("serviceTemplateVersion.status", expected: "REGISTRATION_FAILED")),
+            ],
+            minDelayTime: .seconds(2),
+            maxDelayTime: .seconds(300),
+            command: self.getServiceTemplateVersion
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilServiceUpdated(
+        _ input: GetServiceInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("service.status", expected: "ACTIVE")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("service.status", expected: "UPDATE_FAILED_CLEANUP_COMPLETE")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("service.status", expected: "UPDATE_FAILED_CLEANUP_FAILED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("service.status", expected: "UPDATE_FAILED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("service.status", expected: "UPDATE_COMPLETE_CLEANUP_FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(4999),
+            command: self.getService
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

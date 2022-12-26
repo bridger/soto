@@ -269,4 +269,273 @@ extension OpenSearch {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension OpenSearch {
+    ///  Returns the list of optimizations that Auto-Tune has made to an Amazon OpenSearch Service domain. For more information, see Auto-Tune for Amazon OpenSearch Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeDomainAutoTunesPaginator(
+        _ input: DescribeDomainAutoTunesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeDomainAutoTunesRequest, DescribeDomainAutoTunesResponse> {
+        return .init(
+            input: input,
+            command: self.describeDomainAutoTunes,
+            inputKey: \DescribeDomainAutoTunesRequest.nextToken,
+            outputKey: \DescribeDomainAutoTunesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all the inbound cross-cluster search connections for a destination (remote) Amazon OpenSearch Service domain. For more information, see Cross-cluster search for Amazon OpenSearch Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeInboundConnectionsPaginator(
+        _ input: DescribeInboundConnectionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeInboundConnectionsRequest, DescribeInboundConnectionsResponse> {
+        return .init(
+            input: input,
+            command: self.describeInboundConnections,
+            inputKey: \DescribeInboundConnectionsRequest.nextToken,
+            outputKey: \DescribeInboundConnectionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all the outbound cross-cluster connections for a local (source) Amazon OpenSearch Service domain. For more information, see Cross-cluster search for Amazon OpenSearch Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeOutboundConnectionsPaginator(
+        _ input: DescribeOutboundConnectionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeOutboundConnectionsRequest, DescribeOutboundConnectionsResponse> {
+        return .init(
+            input: input,
+            command: self.describeOutboundConnections,
+            inputKey: \DescribeOutboundConnectionsRequest.nextToken,
+            outputKey: \DescribeOutboundConnectionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes all packages available to OpenSearch Service. For more information, see Custom packages for Amazon OpenSearch Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describePackagesPaginator(
+        _ input: DescribePackagesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribePackagesRequest, DescribePackagesResponse> {
+        return .init(
+            input: input,
+            command: self.describePackages,
+            inputKey: \DescribePackagesRequest.nextToken,
+            outputKey: \DescribePackagesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the available Amazon OpenSearch Service Reserved Instance offerings for a given Region. For more information, see Reserved Instances in Amazon OpenSearch Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeReservedInstanceOfferingsPaginator(
+        _ input: DescribeReservedInstanceOfferingsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeReservedInstanceOfferingsRequest, DescribeReservedInstanceOfferingsResponse> {
+        return .init(
+            input: input,
+            command: self.describeReservedInstanceOfferings,
+            inputKey: \DescribeReservedInstanceOfferingsRequest.nextToken,
+            outputKey: \DescribeReservedInstanceOfferingsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the Amazon OpenSearch Service instances that you have reserved in a given Region. For more information, see Reserved Instances in Amazon OpenSearch Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeReservedInstancesPaginator(
+        _ input: DescribeReservedInstancesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeReservedInstancesRequest, DescribeReservedInstancesResponse> {
+        return .init(
+            input: input,
+            command: self.describeReservedInstances,
+            inputKey: \DescribeReservedInstancesRequest.nextToken,
+            outputKey: \DescribeReservedInstancesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of Amazon OpenSearch Service package versions, along with their creation time and commit message. For more information, see Custom packages for Amazon OpenSearch Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getPackageVersionHistoryPaginator(
+        _ input: GetPackageVersionHistoryRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetPackageVersionHistoryRequest, GetPackageVersionHistoryResponse> {
+        return .init(
+            input: input,
+            command: self.getPackageVersionHistory,
+            inputKey: \GetPackageVersionHistoryRequest.nextToken,
+            outputKey: \GetPackageVersionHistoryResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves the complete history of the last 10 upgrades performed on an Amazon OpenSearch Service domain.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getUpgradeHistoryPaginator(
+        _ input: GetUpgradeHistoryRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetUpgradeHistoryRequest, GetUpgradeHistoryResponse> {
+        return .init(
+            input: input,
+            command: self.getUpgradeHistory,
+            inputKey: \GetUpgradeHistoryRequest.nextToken,
+            outputKey: \GetUpgradeHistoryResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all Amazon OpenSearch Service domains associated with a given package. For more information, see Custom packages for Amazon OpenSearch Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDomainsForPackagePaginator(
+        _ input: ListDomainsForPackageRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDomainsForPackageRequest, ListDomainsForPackageResponse> {
+        return .init(
+            input: input,
+            command: self.listDomainsForPackage,
+            inputKey: \ListDomainsForPackageRequest.nextToken,
+            outputKey: \ListDomainsForPackageResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all instance types and available features for a given OpenSearch or Elasticsearch version.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listInstanceTypeDetailsPaginator(
+        _ input: ListInstanceTypeDetailsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListInstanceTypeDetailsRequest, ListInstanceTypeDetailsResponse> {
+        return .init(
+            input: input,
+            command: self.listInstanceTypeDetails,
+            inputKey: \ListInstanceTypeDetailsRequest.nextToken,
+            outputKey: \ListInstanceTypeDetailsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all packages associated with an Amazon OpenSearch Service domain. For more information, see Custom packages for Amazon OpenSearch Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPackagesForDomainPaginator(
+        _ input: ListPackagesForDomainRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPackagesForDomainRequest, ListPackagesForDomainResponse> {
+        return .init(
+            input: input,
+            command: self.listPackagesForDomain,
+            inputKey: \ListPackagesForDomainRequest.nextToken,
+            outputKey: \ListPackagesForDomainResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all versions of OpenSearch and Elasticsearch that Amazon OpenSearch Service supports.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listVersionsPaginator(
+        _ input: ListVersionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListVersionsRequest, ListVersionsResponse> {
+        return .init(
+            input: input,
+            command: self.listVersions,
+            inputKey: \ListVersionsRequest.nextToken,
+            outputKey: \ListVersionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

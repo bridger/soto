@@ -320,4 +320,177 @@ extension ChimeSDKVoice {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ChimeSDKVoice {
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPhoneNumberOrdersPaginator(
+        _ input: ListPhoneNumberOrdersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPhoneNumberOrdersRequest, ListPhoneNumberOrdersResponse> {
+        return .init(
+            input: input,
+            command: self.listPhoneNumberOrders,
+            inputKey: \ListPhoneNumberOrdersRequest.nextToken,
+            outputKey: \ListPhoneNumberOrdersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPhoneNumbersPaginator(
+        _ input: ListPhoneNumbersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPhoneNumbersRequest, ListPhoneNumbersResponse> {
+        return .init(
+            input: input,
+            command: self.listPhoneNumbers,
+            inputKey: \ListPhoneNumbersRequest.nextToken,
+            outputKey: \ListPhoneNumbersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listProxySessionsPaginator(
+        _ input: ListProxySessionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListProxySessionsRequest, ListProxySessionsResponse> {
+        return .init(
+            input: input,
+            command: self.listProxySessions,
+            inputKey: \ListProxySessionsRequest.nextToken,
+            outputKey: \ListProxySessionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSipMediaApplicationsPaginator(
+        _ input: ListSipMediaApplicationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSipMediaApplicationsRequest, ListSipMediaApplicationsResponse> {
+        return .init(
+            input: input,
+            command: self.listSipMediaApplications,
+            inputKey: \ListSipMediaApplicationsRequest.nextToken,
+            outputKey: \ListSipMediaApplicationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSipRulesPaginator(
+        _ input: ListSipRulesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSipRulesRequest, ListSipRulesResponse> {
+        return .init(
+            input: input,
+            command: self.listSipRules,
+            inputKey: \ListSipRulesRequest.nextToken,
+            outputKey: \ListSipRulesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listVoiceConnectorGroupsPaginator(
+        _ input: ListVoiceConnectorGroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListVoiceConnectorGroupsRequest, ListVoiceConnectorGroupsResponse> {
+        return .init(
+            input: input,
+            command: self.listVoiceConnectorGroups,
+            inputKey: \ListVoiceConnectorGroupsRequest.nextToken,
+            outputKey: \ListVoiceConnectorGroupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listVoiceConnectorsPaginator(
+        _ input: ListVoiceConnectorsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListVoiceConnectorsRequest, ListVoiceConnectorsResponse> {
+        return .init(
+            input: input,
+            command: self.listVoiceConnectors,
+            inputKey: \ListVoiceConnectorsRequest.nextToken,
+            outputKey: \ListVoiceConnectorsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func searchAvailablePhoneNumbersPaginator(
+        _ input: SearchAvailablePhoneNumbersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SearchAvailablePhoneNumbersRequest, SearchAvailablePhoneNumbersResponse> {
+        return .init(
+            input: input,
+            command: self.searchAvailablePhoneNumbers,
+            inputKey: \SearchAvailablePhoneNumbersRequest.nextToken,
+            outputKey: \SearchAvailablePhoneNumbersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

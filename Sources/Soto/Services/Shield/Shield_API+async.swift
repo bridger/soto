@@ -206,4 +206,97 @@ extension Shield {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Shield {
+    ///  Returns all ongoing DDoS attacks or all DDoS attacks during a specified time period.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAttacksPaginator(
+        _ input: ListAttacksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAttacksRequest, ListAttacksResponse> {
+        return .init(
+            input: input,
+            command: self.listAttacks,
+            inputKey: \ListAttacksRequest.nextToken,
+            outputKey: \ListAttacksResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves ProtectionGroup objects for the account. You can retrieve all protection groups or you can provide  filtering criteria and retrieve just the subset of protection groups that match the criteria.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listProtectionGroupsPaginator(
+        _ input: ListProtectionGroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListProtectionGroupsRequest, ListProtectionGroupsResponse> {
+        return .init(
+            input: input,
+            command: self.listProtectionGroups,
+            inputKey: \ListProtectionGroupsRequest.nextToken,
+            outputKey: \ListProtectionGroupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves Protection objects for the account. You can retrieve all protections or you can provide  filtering criteria and retrieve just the subset of protections that match the criteria.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listProtectionsPaginator(
+        _ input: ListProtectionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListProtectionsRequest, ListProtectionsResponse> {
+        return .init(
+            input: input,
+            command: self.listProtections,
+            inputKey: \ListProtectionsRequest.nextToken,
+            outputKey: \ListProtectionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves the resources that are included in the protection group.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listResourcesInProtectionGroupPaginator(
+        _ input: ListResourcesInProtectionGroupRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListResourcesInProtectionGroupRequest, ListResourcesInProtectionGroupResponse> {
+        return .init(
+            input: input,
+            command: self.listResourcesInProtectionGroup,
+            inputKey: \ListResourcesInProtectionGroupRequest.nextToken,
+            outputKey: \ListResourcesInProtectionGroupResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

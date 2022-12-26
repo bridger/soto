@@ -97,4 +97,138 @@ extension CodeGuruReviewer {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension CodeGuruReviewer {
+    ///  Lists all the code reviews that the customer has created in the past 90 days.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listCodeReviewsPaginator(
+        _ input: ListCodeReviewsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListCodeReviewsRequest, ListCodeReviewsResponse> {
+        return .init(
+            input: input,
+            command: self.listCodeReviews,
+            inputKey: \ListCodeReviewsRequest.nextToken,
+            outputKey: \ListCodeReviewsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of RecommendationFeedbackSummary objects that contain customer recommendation feedback for all CodeGuru Reviewer users.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRecommendationFeedbackPaginator(
+        _ input: ListRecommendationFeedbackRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRecommendationFeedbackRequest, ListRecommendationFeedbackResponse> {
+        return .init(
+            input: input,
+            command: self.listRecommendationFeedback,
+            inputKey: \ListRecommendationFeedbackRequest.nextToken,
+            outputKey: \ListRecommendationFeedbackResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the list of all recommendations for a completed code review.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRecommendationsPaginator(
+        _ input: ListRecommendationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRecommendationsRequest, ListRecommendationsResponse> {
+        return .init(
+            input: input,
+            command: self.listRecommendations,
+            inputKey: \ListRecommendationsRequest.nextToken,
+            outputKey: \ListRecommendationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of RepositoryAssociationSummary objects that contain summary information about a repository association. You can filter the returned list by ProviderType, Name, State, and Owner.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRepositoryAssociationsPaginator(
+        _ input: ListRepositoryAssociationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRepositoryAssociationsRequest, ListRepositoryAssociationsResponse> {
+        return .init(
+            input: input,
+            command: self.listRepositoryAssociations,
+            inputKey: \ListRepositoryAssociationsRequest.nextToken,
+            outputKey: \ListRepositoryAssociationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension CodeGuruReviewer {
+    public func waitUntilCodeReviewCompleted(
+        _ input: DescribeCodeReviewRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("codeReview.state", expected: "Completed")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("codeReview.state", expected: "Failed")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("codeReview.state", expected: "Pending")),
+            ],
+            minDelayTime: .seconds(10),
+            command: self.describeCodeReview
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilRepositoryAssociationSucceeded(
+        _ input: DescribeRepositoryAssociationRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("repositoryAssociation.state", expected: "Associated")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("repositoryAssociation.state", expected: "Failed")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("repositoryAssociation.state", expected: "Associating")),
+            ],
+            minDelayTime: .seconds(10),
+            command: self.describeRepositoryAssociation
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

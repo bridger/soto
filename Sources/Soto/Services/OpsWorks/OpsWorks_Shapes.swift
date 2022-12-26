@@ -4207,3 +4207,48 @@ extension OpsWorks {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for OpsWorks
+public struct OpsWorksErrorType: AWSErrorType {
+    enum Code: String {
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize OpsWorks
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Indicates that a resource was not found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// Indicates that a request was not valid.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension OpsWorksErrorType: Equatable {
+    public static func == (lhs: OpsWorksErrorType, rhs: OpsWorksErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension OpsWorksErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

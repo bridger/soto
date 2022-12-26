@@ -77,6 +77,11 @@ extension Transfer {
         public var description: String { return self.rawValue }
     }
 
+    public enum EncryptionType: String, CustomStringConvertible, Codable, _SotoSendable {
+        case pgp = "PGP"
+        public var description: String { return self.rawValue }
+    }
+
     public enum EndpointType: String, CustomStringConvertible, Codable, _SotoSendable {
         case `public` = "PUBLIC"
         case vpc = "VPC"
@@ -181,6 +186,7 @@ extension Transfer {
     public enum WorkflowStepType: String, CustomStringConvertible, Codable, _SotoSendable {
         case copy = "COPY"
         case custom = "CUSTOM"
+        case decrypt = "DECRYPT"
         case delete = "DELETE"
         case tag = "TAG"
         public var description: String { return self.rawValue }
@@ -199,13 +205,13 @@ extension Transfer {
     public struct As2ConnectorConfig: AWSEncodableShape & AWSDecodableShape {
         /// Specifies whether the AS2 file is compressed.
         public let compression: CompressionEnum?
-        /// The algorithm that is used to encrypt the file.  You can only specify NONE if the URL for your connector uses HTTPS. This ensures that no traffic is sent in clear text.
+        /// The algorithm that is used to encrypt the file.
         public let encryptionAlgorithm: EncryptionAlg?
         /// A unique identifier for the AS2 local profile.
         public let localProfileId: String?
         /// Used  for outbound requests (from an Transfer Family server to a partner AS2 server) to determine whether the partner response for transfers is synchronous or asynchronous. Specify either of the following values:    SYNC: The system expects a synchronous MDN response, confirming that the file was transferred successfully (or not).    NONE: Specifies that no MDN response is required.
         public let mdnResponse: MdnResponse?
-        /// The signing algorithm for the MDN response.  If set to DEFAULT (or not set at all), the value for SigningAlgorithm is used.
+        /// The signing algorithm for the MDN response.  If set to DEFAULT (or not set at all), the value for SigningAlogorithm is used.
         public let mdnSigningAlgorithm: MdnSigningAlg?
         /// Used as the Subject HTTP header attribute in AS2 messages that are being sent with the connector.
         public let messageSubject: String?
@@ -593,7 +599,7 @@ extension Transfer {
         public let securityPolicyName: String?
         /// Key-value pairs that can be used to group and search for servers.
         public let tags: [Tag]?
-        /// Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow. In addition to a workflow to execute when a file is uploaded completely, WorkflowDetails can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.
+        /// Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow. In additon to a workflow to execute when a file is uploaded completely, WorkflowDeatails can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.
         public let workflowDetails: WorkflowDetails?
 
         public init(certificate: String? = nil, domain: Domain? = nil, endpointDetails: EndpointDetails? = nil, endpointType: EndpointType? = nil, hostKey: String? = nil, identityProviderDetails: IdentityProviderDetails? = nil, identityProviderType: IdentityProviderType? = nil, loggingRole: String? = nil, postAuthenticationLoginBanner: String? = nil, preAuthenticationLoginBanner: String? = nil, protocolDetails: ProtocolDetails? = nil, protocols: [`Protocol`]? = nil, securityPolicyName: String? = nil, tags: [Tag]? = nil, workflowDetails: WorkflowDetails? = nil) {
@@ -694,7 +700,7 @@ extension Transfer {
         public let role: String
         /// A system-assigned unique identifier for a server instance. This is the specific server that you added your user to.
         public let serverId: String
-        /// The public portion of the Secure Shell (SSH) key used to authenticate the user to the server. The three standard SSH public key format elements are , , and  an optional , with spaces between each element. Transfer Family accepts RSA, ECDSA, and ED25519 keys.   For RSA keys, the key type  is ssh-rsa.   For ED25519 keys, the key type is ssh-ed25519.   For ECDSA keys, the key type is either ecdsa-sha2-nistp256, ecdsa-sha2-nistp384, or ecdsa-sha2-nistp521, depending on the size of the key you generated.
+        /// The public portion of the Secure Shell (SSH) key used to authenticate the user to the server. Transfer Family accepts RSA, ECDSA, and ED25519 keys.
         public let sshPublicKeyBody: String?
         /// Key-value pairs that can be used to group and search for users. Tags are metadata attached to users for any purpose.
         public let tags: [Tag]?
@@ -861,6 +867,38 @@ extension Transfer {
             case sourceFileLocation = "SourceFileLocation"
             case target = "Target"
             case timeoutSeconds = "TimeoutSeconds"
+        }
+    }
+
+    public struct DecryptStepDetails: AWSEncodableShape & AWSDecodableShape {
+        public let destinationFileLocation: InputFileLocation
+        public let name: String?
+        public let overwriteExisting: OverwriteExisting?
+        public let sourceFileLocation: String?
+        public let type: EncryptionType
+
+        public init(destinationFileLocation: InputFileLocation, name: String? = nil, overwriteExisting: OverwriteExisting? = nil, sourceFileLocation: String? = nil, type: EncryptionType) {
+            self.destinationFileLocation = destinationFileLocation
+            self.name = name
+            self.overwriteExisting = overwriteExisting
+            self.sourceFileLocation = sourceFileLocation
+            self.type = type
+        }
+
+        public func validate(name: String) throws {
+            try self.destinationFileLocation.validate(name: "\(name).destinationFileLocation")
+            try self.validate(self.name, name: "name", parent: name, max: 30)
+            try self.validate(self.name, name: "name", parent: name, pattern: "^[\\w-]*$")
+            try self.validate(self.sourceFileLocation, name: "sourceFileLocation", parent: name, max: 256)
+            try self.validate(self.sourceFileLocation, name: "sourceFileLocation", parent: name, pattern: "^\\$\\{(\\w+.)+\\w+\\}$")
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case destinationFileLocation = "DestinationFileLocation"
+            case name = "Name"
+            case overwriteExisting = "OverwriteExisting"
+            case sourceFileLocation = "SourceFileLocation"
+            case type = "Type"
         }
     }
 
@@ -1893,7 +1931,7 @@ extension Transfer {
         public let tags: [Tag]?
         /// Specifies the number of users that are assigned to a server you specified with the ServerId.
         public let userCount: Int?
-        /// Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow. In addition to a workflow to execute when a file is uploaded completely, WorkflowDetails can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.
+        /// Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow. In additon to a workflow to execute when a file is uploaded completely, WorkflowDeatails can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects.
         public let workflowDetails: WorkflowDetails?
 
         public init(arn: String, certificate: String? = nil, domain: Domain? = nil, endpointDetails: EndpointDetails? = nil, endpointType: EndpointType? = nil, hostKeyFingerprint: String? = nil, identityProviderDetails: IdentityProviderDetails? = nil, identityProviderType: IdentityProviderType? = nil, loggingRole: String? = nil, postAuthenticationLoginBanner: String? = nil, preAuthenticationLoginBanner: String? = nil, protocolDetails: ProtocolDetails? = nil, protocols: [`Protocol`]? = nil, securityPolicyName: String? = nil, serverId: String? = nil, state: State? = nil, tags: [Tag]? = nil, userCount: Int? = nil, workflowDetails: WorkflowDetails? = nil) {
@@ -4175,7 +4213,7 @@ extension Transfer {
         public let securityPolicyName: String?
         /// A system-assigned unique identifier for a server instance that the user account is assigned to.
         public let serverId: String
-        /// Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow. In addition to a workflow to execute when a file is uploaded completely, WorkflowDetails can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects. To remove an associated workflow from a server, you can provide an empty OnUpload object, as in the following example.  aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{"OnUpload":[]}'
+        /// Specifies the workflow ID for the workflow to assign and the execution role that's used for executing the workflow. In additon to a workflow to execute when a file is uploaded completely, WorkflowDeatails can also contain a workflow ID (and execution role) for a workflow to execute on partial upload. A partial upload occurs when a file is open when the session disconnects. To remove an associated workflow from a server, you can provide an empty OnUpload object, as in the following example.  aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{"OnUpload":[]}'
         public let workflowDetails: WorkflowDetails?
 
         public init(certificate: String? = nil, endpointDetails: EndpointDetails? = nil, endpointType: EndpointType? = nil, hostKey: String? = nil, identityProviderDetails: IdentityProviderDetails? = nil, loggingRole: String? = nil, postAuthenticationLoginBanner: String? = nil, preAuthenticationLoginBanner: String? = nil, protocolDetails: ProtocolDetails? = nil, protocols: [`Protocol`]? = nil, securityPolicyName: String? = nil, serverId: String, workflowDetails: WorkflowDetails? = nil) {
@@ -4411,6 +4449,7 @@ extension Transfer {
         public let copyStepDetails: CopyStepDetails?
         /// Details for a step that invokes a lambda function.  Consists of the lambda function name, target, and timeout (in seconds).
         public let customStepDetails: CustomStepDetails?
+        public let decryptStepDetails: DecryptStepDetails?
         /// Details for a step that deletes the file.
         public let deleteStepDetails: DeleteStepDetails?
         /// Details for a step that creates one or more tags. You specify one or more tags: each tag contains a key/value pair.
@@ -4418,9 +4457,10 @@ extension Transfer {
         ///  Currently, the following step types are supported.     COPY: Copy the file to another location.    CUSTOM: Perform a custom step with an Lambda function target.    DELETE: Delete the file.    TAG: Add a tag to the file.
         public let type: WorkflowStepType?
 
-        public init(copyStepDetails: CopyStepDetails? = nil, customStepDetails: CustomStepDetails? = nil, deleteStepDetails: DeleteStepDetails? = nil, tagStepDetails: TagStepDetails? = nil, type: WorkflowStepType? = nil) {
+        public init(copyStepDetails: CopyStepDetails? = nil, customStepDetails: CustomStepDetails? = nil, decryptStepDetails: DecryptStepDetails? = nil, deleteStepDetails: DeleteStepDetails? = nil, tagStepDetails: TagStepDetails? = nil, type: WorkflowStepType? = nil) {
             self.copyStepDetails = copyStepDetails
             self.customStepDetails = customStepDetails
+            self.decryptStepDetails = decryptStepDetails
             self.deleteStepDetails = deleteStepDetails
             self.tagStepDetails = tagStepDetails
             self.type = type
@@ -4429,6 +4469,7 @@ extension Transfer {
         public func validate(name: String) throws {
             try self.copyStepDetails?.validate(name: "\(name).copyStepDetails")
             try self.customStepDetails?.validate(name: "\(name).customStepDetails")
+            try self.decryptStepDetails?.validate(name: "\(name).decryptStepDetails")
             try self.deleteStepDetails?.validate(name: "\(name).deleteStepDetails")
             try self.tagStepDetails?.validate(name: "\(name).tagStepDetails")
         }
@@ -4436,9 +4477,76 @@ extension Transfer {
         private enum CodingKeys: String, CodingKey {
             case copyStepDetails = "CopyStepDetails"
             case customStepDetails = "CustomStepDetails"
+            case decryptStepDetails = "DecryptStepDetails"
             case deleteStepDetails = "DeleteStepDetails"
             case tagStepDetails = "TagStepDetails"
             case type = "Type"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for Transfer
+public struct TransferErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServiceError = "InternalServiceError"
+        case invalidNextTokenException = "InvalidNextTokenException"
+        case invalidRequestException = "InvalidRequestException"
+        case resourceExistsException = "ResourceExistsException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceUnavailableException = "ServiceUnavailableException"
+        case throttlingException = "ThrottlingException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Transfer
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You do not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// This exception is thrown when the UpdateServer is called for a file transfer protocol-enabled server that has VPC as the endpoint type and the server&#39;s VpcEndpointID is not in the available state.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// This exception is thrown when an error occurs in the Amazon Web ServicesTransfer Family service.
+    public static var internalServiceError: Self { .init(.internalServiceError) }
+    /// The NextToken parameter that was passed is invalid.
+    public static var invalidNextTokenException: Self { .init(.invalidNextTokenException) }
+    /// This exception is thrown when the client submits a malformed request.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// The requested resource does not exist.
+    public static var resourceExistsException: Self { .init(.resourceExistsException) }
+    /// This exception is thrown when a resource is not found by the Amazon Web ServicesTransfer Family service.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The request has failed because the Amazon Web ServicesTransfer Family service is not available.
+    public static var serviceUnavailableException: Self { .init(.serviceUnavailableException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+}
+
+extension TransferErrorType: Equatable {
+    public static func == (lhs: TransferErrorType, rhs: TransferErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension TransferErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

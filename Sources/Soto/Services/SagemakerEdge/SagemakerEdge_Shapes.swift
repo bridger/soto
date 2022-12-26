@@ -425,3 +425,45 @@ extension SagemakerEdge {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for SagemakerEdge
+public struct SagemakerEdgeErrorType: AWSErrorType {
+    enum Code: String {
+        case internalServiceException = "InternalServiceException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize SagemakerEdge
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// An internal failure occurred. Try your request again. If the problem  persists, contact Amazon Web Services customer support.
+    public static var internalServiceException: Self { .init(.internalServiceException) }
+}
+
+extension SagemakerEdgeErrorType: Equatable {
+    public static func == (lhs: SagemakerEdgeErrorType, rhs: SagemakerEdgeErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension SagemakerEdgeErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

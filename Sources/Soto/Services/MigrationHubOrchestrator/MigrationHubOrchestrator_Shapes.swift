@@ -2614,3 +2614,57 @@ extension MigrationHubOrchestrator {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for MigrationHubOrchestrator
+public struct MigrationHubOrchestratorErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize MigrationHubOrchestrator
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You do not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// An internal error has occurred.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The resource is not available.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input fails to satisfy the constraints specified by an AWS service.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension MigrationHubOrchestratorErrorType: Equatable {
+    public static func == (lhs: MigrationHubOrchestratorErrorType, rhs: MigrationHubOrchestratorErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension MigrationHubOrchestratorErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

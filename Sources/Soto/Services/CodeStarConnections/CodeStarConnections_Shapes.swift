@@ -638,3 +638,57 @@ extension CodeStarConnections {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for CodeStarConnections
+public struct CodeStarConnectionsErrorType: AWSErrorType {
+    enum Code: String {
+        case conflictException = "ConflictException"
+        case limitExceededException = "LimitExceededException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case resourceUnavailableException = "ResourceUnavailableException"
+        case unsupportedOperationException = "UnsupportedOperationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize CodeStarConnections
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Two conflicting operations have been made on the same resource.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// Exceeded the maximum limit for connections.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// Resource not found. Verify the connection resource ARN and try again.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// Resource not found. Verify the ARN for the host resource and try again.
+    public static var resourceUnavailableException: Self { .init(.resourceUnavailableException) }
+    /// The operation is not supported. Check the connection status and try again.
+    public static var unsupportedOperationException: Self { .init(.unsupportedOperationException) }
+}
+
+extension CodeStarConnectionsErrorType: Equatable {
+    public static func == (lhs: CodeStarConnectionsErrorType, rhs: CodeStarConnectionsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension CodeStarConnectionsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

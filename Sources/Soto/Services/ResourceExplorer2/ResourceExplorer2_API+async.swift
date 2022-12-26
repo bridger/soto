@@ -43,7 +43,7 @@ extension ResourceExplorer2 {
         return try await self.client.execute(operation: "CreateView", path: "/CreateView", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Deletes the specified index and turns off Amazon Web Services Resource Explorer in the specified Amazon Web Services Region. When you delete an index, Resource Explorer stops discovering and indexing resources in that Region. Resource Explorer also deletes all views in that Region. These actions occur as asynchronous background tasks. You can check to see when the actions are complete by using the GetIndex operation and checking the Status response value.
+    /// Deletes the specified index and turns off Amazon Web Services Resource Explorer in the specified Amazon Web Services Region. When you delete an index, Resource Explorer stops discovering and indexing resources in that Region. Resource Explorer also deletes all views in that Region. These actions occur as asynchronous background tasks. You can check to see when the actions are complete by using the GetIndex operation and checking the Status response value.  If the index you delete is the aggregator index for the Amazon Web Services account, you must wait 24 hours before you can promote another local index to be the aggregator index for the account. Users can't perform account-wide searches using Resource Explorer until another aggregator index is configured.
     public func deleteIndex(_ input: DeleteIndexInput, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DeleteIndexOutput {
         return try await self.client.execute(operation: "DeleteIndex", path: "/DeleteIndex", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -120,6 +120,103 @@ extension ResourceExplorer2 {
     /// Modifies some of the details of a view. You can change the filter string and the list of included properties. You can't change the name of the view.
     public func updateView(_ input: UpdateViewInput, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateViewOutput {
         return try await self.client.execute(operation: "UpdateView", path: "/UpdateView", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ResourceExplorer2 {
+    ///  Retrieves a list of all of the indexes in Amazon Web Services Regions that are currently collecting resource information for Amazon Web Services Resource Explorer.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listIndexesPaginator(
+        _ input: ListIndexesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListIndexesInput, ListIndexesOutput> {
+        return .init(
+            input: input,
+            command: self.listIndexes,
+            inputKey: \ListIndexesInput.nextToken,
+            outputKey: \ListIndexesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves a list of all resource types currently supported by Amazon Web Services Resource Explorer.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSupportedResourceTypesPaginator(
+        _ input: ListSupportedResourceTypesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSupportedResourceTypesInput, ListSupportedResourceTypesOutput> {
+        return .init(
+            input: input,
+            command: self.listSupportedResourceTypes,
+            inputKey: \ListSupportedResourceTypesInput.nextToken,
+            outputKey: \ListSupportedResourceTypesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the Amazon resource names (ARNs) of the views available in the Amazon Web Services Region in which you call this operation.  Always check the NextToken response parameter
+    ///  for a null value when calling a paginated operation. These operations can
+    ///  occasionally return an empty set of results even when there are more results available. The
+    ///  NextToken response parameter value is null only
+    ///  when there are no more results to display.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listViewsPaginator(
+        _ input: ListViewsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListViewsInput, ListViewsOutput> {
+        return .init(
+            input: input,
+            command: self.listViews,
+            inputKey: \ListViewsInput.nextToken,
+            outputKey: \ListViewsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Searches for resources and displays details about all resources that match the specified criteria. You must specify a query string. All search queries must use a view. If you don't explicitly specify a view, then Amazon Web Services Resource Explorer uses the default view for the Amazon Web Services Region in which you call this operation. The results are the logical intersection of the results that match both the QueryString parameter supplied to this operation and the SearchFilter parameter attached to the view. For the complete syntax supported by the QueryString parameter, see Search query syntax reference for Resource Explorer. If your search results are empty, or are missing results that you think should be there, see Troubleshooting Resource Explorer search.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func searchPaginator(
+        _ input: SearchInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SearchInput, SearchOutput> {
+        return .init(
+            input: input,
+            command: self.search,
+            inputKey: \SearchInput.nextToken,
+            outputKey: \SearchOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

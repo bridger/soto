@@ -74,4 +74,53 @@ extension SupportApp {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension SupportApp {
+    ///  Lists the Slack channel configurations for an Amazon Web Services account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSlackChannelConfigurationsPaginator(
+        _ input: ListSlackChannelConfigurationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSlackChannelConfigurationsRequest, ListSlackChannelConfigurationsResult> {
+        return .init(
+            input: input,
+            command: self.listSlackChannelConfigurations,
+            inputKey: \ListSlackChannelConfigurationsRequest.nextToken,
+            outputKey: \ListSlackChannelConfigurationsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the Slack workspace configurations for an Amazon Web Services account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSlackWorkspaceConfigurationsPaginator(
+        _ input: ListSlackWorkspaceConfigurationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSlackWorkspaceConfigurationsRequest, ListSlackWorkspaceConfigurationsResult> {
+        return .init(
+            input: input,
+            command: self.listSlackWorkspaceConfigurations,
+            inputKey: \ListSlackWorkspaceConfigurationsRequest.nextToken,
+            outputKey: \ListSlackWorkspaceConfigurationsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

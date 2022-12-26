@@ -394,4 +394,166 @@ extension OpsWorks {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension OpsWorks {
+    ///  Describes Amazon ECS clusters that are registered with a stack. If you specify only a stack ID, you can use the MaxResults and NextToken parameters to paginate the response. However, AWS OpsWorks Stacks currently supports only one cluster per layer, so the result set has a maximum of one element.  Required Permissions: To use this action, an IAM user must have a Show, Deploy, or Manage permissions level for the stack or an attached policy that explicitly grants permission. For more information about user permissions, see Managing User Permissions. This call accepts only one resource-identifying parameter.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEcsClustersPaginator(
+        _ input: DescribeEcsClustersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEcsClustersRequest, DescribeEcsClustersResult> {
+        return .init(
+            input: input,
+            command: self.describeEcsClusters,
+            inputKey: \DescribeEcsClustersRequest.nextToken,
+            outputKey: \DescribeEcsClustersResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension OpsWorks {
+    public func waitUntilAppExists(
+        _ input: DescribeAppsRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSSuccessMatcher()),
+                .init(state: .failure, matcher: AWSSuccessMatcher()),
+            ],
+            minDelayTime: .seconds(1),
+            command: self.describeApps
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDeploymentSuccessful(
+        _ input: DescribeDeploymentsRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("deployments[].status", expected: "successful")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("deployments[].status", expected: "failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeDeployments
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilInstanceOnline(
+        _ input: DescribeInstancesRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("instances[].status", expected: "online")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "setup_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "shutting_down")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "start_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stopped")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stopping")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "terminating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "terminated")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stop_failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeInstances
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilInstanceRegistered(
+        _ input: DescribeInstancesRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("instances[].status", expected: "registered")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "setup_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "shutting_down")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stopped")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stopping")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "terminating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "terminated")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stop_failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeInstances
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilInstanceStopped(
+        _ input: DescribeInstancesRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("instances[].status", expected: "stopped")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "booting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "pending")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "rebooting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "requested")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "running_setup")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "setup_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "start_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stop_failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeInstances
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilInstanceTerminated(
+        _ input: DescribeInstancesRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("instances[].status", expected: "terminated")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "booting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "online")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "pending")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "rebooting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "requested")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "running_setup")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "setup_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "start_failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeInstances
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

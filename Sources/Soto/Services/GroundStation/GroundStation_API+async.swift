@@ -174,4 +174,163 @@ extension GroundStation {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension GroundStation {
+    ///  Returns a list of Config objects.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listConfigsPaginator(
+        _ input: ListConfigsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListConfigsRequest, ListConfigsResponse> {
+        return .init(
+            input: input,
+            command: self.listConfigs,
+            inputKey: \ListConfigsRequest.nextToken,
+            outputKey: \ListConfigsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of contacts. If statusList contains AVAILABLE, the request must include groundStation, missionprofileArn, and satelliteArn.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listContactsPaginator(
+        _ input: ListContactsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListContactsRequest, ListContactsResponse> {
+        return .init(
+            input: input,
+            command: self.listContacts,
+            inputKey: \ListContactsRequest.nextToken,
+            outputKey: \ListContactsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of DataflowEndpoint groups.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDataflowEndpointGroupsPaginator(
+        _ input: ListDataflowEndpointGroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDataflowEndpointGroupsRequest, ListDataflowEndpointGroupsResponse> {
+        return .init(
+            input: input,
+            command: self.listDataflowEndpointGroups,
+            inputKey: \ListDataflowEndpointGroupsRequest.nextToken,
+            outputKey: \ListDataflowEndpointGroupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List existing ephemerides.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEphemeridesPaginator(
+        _ input: ListEphemeridesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEphemeridesRequest, ListEphemeridesResponse> {
+        return .init(
+            input: input,
+            command: self.listEphemerides,
+            inputKey: \ListEphemeridesRequest.nextToken,
+            outputKey: \ListEphemeridesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of ground stations.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listGroundStationsPaginator(
+        _ input: ListGroundStationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListGroundStationsRequest, ListGroundStationsResponse> {
+        return .init(
+            input: input,
+            command: self.listGroundStations,
+            inputKey: \ListGroundStationsRequest.nextToken,
+            outputKey: \ListGroundStationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of mission profiles.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMissionProfilesPaginator(
+        _ input: ListMissionProfilesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMissionProfilesRequest, ListMissionProfilesResponse> {
+        return .init(
+            input: input,
+            command: self.listMissionProfiles,
+            inputKey: \ListMissionProfilesRequest.nextToken,
+            outputKey: \ListMissionProfilesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of satellites.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSatellitesPaginator(
+        _ input: ListSatellitesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSatellitesRequest, ListSatellitesResponse> {
+        return .init(
+            input: input,
+            command: self.listSatellites,
+            inputKey: \ListSatellitesRequest.nextToken,
+            outputKey: \ListSatellitesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

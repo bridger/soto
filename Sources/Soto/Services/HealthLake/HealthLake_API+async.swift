@@ -89,4 +89,75 @@ extension HealthLake {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension HealthLake {
+    ///  Lists all FHIR Data Stores that are in the user’s account, regardless of Data Store status.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFHIRDatastoresPaginator(
+        _ input: ListFHIRDatastoresRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFHIRDatastoresRequest, ListFHIRDatastoresResponse> {
+        return .init(
+            input: input,
+            command: self.listFHIRDatastores,
+            inputKey: \ListFHIRDatastoresRequest.nextToken,
+            outputKey: \ListFHIRDatastoresResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///   Lists all FHIR export jobs associated with an account and their statuses.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFHIRExportJobsPaginator(
+        _ input: ListFHIRExportJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFHIRExportJobsRequest, ListFHIRExportJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listFHIRExportJobs,
+            inputKey: \ListFHIRExportJobsRequest.nextToken,
+            outputKey: \ListFHIRExportJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///   Lists all FHIR import jobs associated with an account and their statuses.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFHIRImportJobsPaginator(
+        _ input: ListFHIRImportJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFHIRImportJobsRequest, ListFHIRImportJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listFHIRImportJobs,
+            inputKey: \ListFHIRImportJobsRequest.nextToken,
+            outputKey: \ListFHIRImportJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

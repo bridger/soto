@@ -177,3 +177,173 @@ extension Amp {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension Amp {
+    ///  Lists rule groups namespaces.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listRuleGroupsNamespacesPaginator<Result>(
+        _ input: ListRuleGroupsNamespacesRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListRuleGroupsNamespacesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listRuleGroupsNamespaces,
+            inputKey: \ListRuleGroupsNamespacesRequest.nextToken,
+            outputKey: \ListRuleGroupsNamespacesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listRuleGroupsNamespacesPaginator(
+        _ input: ListRuleGroupsNamespacesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListRuleGroupsNamespacesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listRuleGroupsNamespaces,
+            inputKey: \ListRuleGroupsNamespacesRequest.nextToken,
+            outputKey: \ListRuleGroupsNamespacesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists all AMP workspaces, including workspaces being created or deleted.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listWorkspacesPaginator<Result>(
+        _ input: ListWorkspacesRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListWorkspacesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listWorkspaces,
+            inputKey: \ListWorkspacesRequest.nextToken,
+            outputKey: \ListWorkspacesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listWorkspacesPaginator(
+        _ input: ListWorkspacesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListWorkspacesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listWorkspaces,
+            inputKey: \ListWorkspacesRequest.nextToken,
+            outputKey: \ListWorkspacesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension Amp.ListRuleGroupsNamespacesRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Amp.ListRuleGroupsNamespacesRequest {
+        return .init(
+            maxResults: self.maxResults,
+            name: self.name,
+            nextToken: token,
+            workspaceId: self.workspaceId
+        )
+    }
+}
+
+extension Amp.ListWorkspacesRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Amp.ListWorkspacesRequest {
+        return .init(
+            alias: self.alias,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+// MARK: Waiters
+
+extension Amp {
+    /// Wait until a workspace reaches ACTIVE status
+    public func waitUntilWorkspaceActive(
+        _ input: DescribeWorkspaceRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("workspace.status.statusCode", expected: "ACTIVE")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("workspace.status.statusCode", expected: "UPDATING")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("workspace.status.statusCode", expected: "CREATING")),
+            ],
+            command: self.describeWorkspace
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until a workspace reaches DELETED status
+    public func waitUntilWorkspaceDeleted(
+        _ input: DescribeWorkspaceRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("workspace.status.statusCode", expected: "DELETING")),
+            ],
+            command: self.describeWorkspace
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}

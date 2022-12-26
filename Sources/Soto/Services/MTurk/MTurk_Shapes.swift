@@ -2346,3 +2346,48 @@ extension MTurk {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for MTurk
+public struct MTurkErrorType: AWSErrorType {
+    enum Code: String {
+        case requestError = "RequestError"
+        case serviceFault = "ServiceFault"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize MTurk
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Your request is invalid.
+    public static var requestError: Self { .init(.requestError) }
+    /// Amazon Mechanical Turk is temporarily unable to process your request. Try your call again.
+    public static var serviceFault: Self { .init(.serviceFault) }
+}
+
+extension MTurkErrorType: Equatable {
+    public static func == (lhs: MTurkErrorType, rhs: MTurkErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension MTurkErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

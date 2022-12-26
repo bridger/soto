@@ -38,7 +38,7 @@ extension Organizations {
         case addOrganizationsServiceLinkedRole = "ADD_ORGANIZATIONS_SERVICE_LINKED_ROLE"
         case approveAllFeatures = "APPROVE_ALL_FEATURES"
         case enableAllFeatures = "ENABLE_ALL_FEATURES"
-        case invite = "INVITE"
+        case inviteAccountToOrganization = "INVITE"
         public var description: String { return self.rawValue }
     }
 
@@ -61,8 +61,9 @@ extension Organizations {
         case invalidPaymentInstrument = "INVALID_PAYMENT_INSTRUMENT"
         case missingBusinessValidation = "MISSING_BUSINESS_VALIDATION"
         case missingPaymentInstrument = "MISSING_PAYMENT_INSTRUMENT"
-        case pendingBusinessValidation = "PENDING_BUSINESS_VALIDATION"
+        case pendingBUSINESSValidationv = "PENDING_BUSINESS_VALIDATION"
         case unknownBusinessValidation = "UNKNOWN_BUSINESS_VALIDATION"
+        case updateExistingResourcePolicyWithTagsNotSupported = "UPDATE_EXISTING_RESOURCE_POLICY_WITH_TAGS_NOT_SUPPORTED"
         public var description: String { return self.rawValue }
     }
 
@@ -316,7 +317,7 @@ extension Organizations {
         public let email: String
         /// If set to ALLOW, the new account enables IAM users to access account billing information if they have the required permissions. If set to DENY, only the root user of the new account can access account billing information. For more information, see Activating Access to the Billing and Cost Management Console in the Amazon Web Services Billing and Cost Management User Guide. If you don't specify this parameter, the value defaults to ALLOW, and IAM users and roles with the required permissions can access billing information for the new account.
         public let iamUserAccessToBilling: IAMUserAccessToBilling?
-        /// (Optional) The name of an IAM role that Organizations automatically preconfigures in the new member account. This role trusts the management account, allowing users in the management account to assume the role, as permitted by the management account administrator. The role has administrator permissions in the new member account. If you don't specify this parameter, the role name defaults to OrganizationAccountAccessRole. For more information about how to use this role to access the member account, see the following links:    Accessing and Administering the Member Accounts in Your Organization in the Organizations User Guide    Steps 2 and 3 in Tutorial: Delegate Access Across Amazon Web Services accounts Using IAM Roles in the IAM User Guide    The regex pattern that  is used to validate this parameter. The pattern can include uppercase  letters, lowercase letters, digits with no spaces, and any of the following characters: =,.@-
+        /// The name of an IAM role that Organizations automatically preconfigures in the new member account. This role trusts the management account, allowing users in the management account to assume the role, as permitted by the management account administrator. The role has administrator permissions in the new member account. If you don't specify this parameter, the role name defaults to OrganizationAccountAccessRole. For more information about how to use this role to access the member account, see the following links:    Accessing and Administering the Member Accounts in Your Organization in the Organizations User Guide    Steps 2 and 3 in Tutorial: Delegate Access Across Amazon Web Services accounts Using IAM Roles in the IAM User Guide    The regex pattern that  is used to validate this parameter. The pattern can include uppercase  letters, lowercase letters, digits with no spaces, and any of the following characters: =,.@-
         public let roleName: String?
         /// A list of tags that you want to attach to the newly created account. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can't set it to null. For more information about tagging, see Tagging Organizations resources in the Organizations User Guide.  If any one of the tags is invalid or if you exceed the maximum allowed number of tags for an account, then the entire request fails and the account is not created.
         public let tags: [Tag]?
@@ -938,6 +939,19 @@ extension Organizations {
 
         private enum CodingKeys: String, CodingKey {
             case policy = "Policy"
+        }
+    }
+
+    public struct DescribeResourcePolicyResponse: AWSDecodableShape {
+        /// A structure that contains details about the resource policy.
+        public let resourcePolicy: ResourcePolicy?
+
+        public init(resourcePolicy: ResourcePolicy? = nil) {
+            self.resourcePolicy = resourcePolicy
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case resourcePolicy = "ResourcePolicy"
         }
     }
 
@@ -1940,7 +1954,7 @@ extension Organizations {
             try self.validate(self.nextToken, name: "nextToken", parent: name, max: 100_000)
             try self.validate(self.nextToken, name: "nextToken", parent: name, pattern: "^[\\s\\S]*$")
             try self.validate(self.resourceId, name: "resourceId", parent: name, max: 130)
-            try self.validate(self.resourceId, name: "resourceId", parent: name, pattern: "^(r-[0-9a-z]{4,32})|(\\d{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})|(^p-[0-9a-zA-Z_]{8,128})$")
+            try self.validate(self.resourceId, name: "resourceId", parent: name, pattern: "^(r-[0-9a-z]{4,32})|(\\d{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})|(^p-[0-9a-zA-Z_]{8,128})|(^rp-[0-9a-zA-Z_]{4,128})$")
         }
 
         private enum CodingKeys: String, CodingKey {
@@ -2210,6 +2224,45 @@ extension Organizations {
         }
     }
 
+    public struct PutResourcePolicyRequest: AWSEncodableShape {
+        /// If provided, the new content for the resource policy. The text must be correctly formatted JSON that complies with the syntax for the resource policy's type. For more information, see Service Control Policy Syntax in the Organizations User Guide.
+        public let content: String
+        /// Updates the list of tags that you want to attach to the newly-created resource policy. For each tag in the list, you must specify both a tag key and a value. You can set the value to an empty string, but you can't set it to null. For more information about tagging, see Tagging Organizations resources in the Organizations User Guide.  Calls with tags apply to the initial creation of the resource policy, otherwise an exception is thrown. If any one of the tags is invalid or if you exceed the allowed number of tags for the resource policy, then the entire request fails and the resource policy is not created.
+        public let tags: [Tag]?
+
+        public init(content: String, tags: [Tag]? = nil) {
+            self.content = content
+            self.tags = tags
+        }
+
+        public func validate(name: String) throws {
+            try self.validate(self.content, name: "content", parent: name, max: 40000)
+            try self.validate(self.content, name: "content", parent: name, min: 1)
+            try self.validate(self.content, name: "content", parent: name, pattern: "^[\\s\\S]*$")
+            try self.tags?.forEach {
+                try $0.validate(name: "\(name).tags[]")
+            }
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case content = "Content"
+            case tags = "Tags"
+        }
+    }
+
+    public struct PutResourcePolicyResponse: AWSDecodableShape {
+        /// A structure that contains details about the resource policy.
+        public let resourcePolicy: ResourcePolicy?
+
+        public init(resourcePolicy: ResourcePolicy? = nil) {
+            self.resourcePolicy = resourcePolicy
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case resourcePolicy = "ResourcePolicy"
+        }
+    }
+
     public struct RegisterDelegatedAdministratorRequest: AWSEncodableShape {
         /// The account ID number of the member account in the organization to register as a delegated administrator.
         public let accountId: String
@@ -2250,6 +2303,40 @@ extension Organizations {
 
         private enum CodingKeys: String, CodingKey {
             case accountId = "AccountId"
+        }
+    }
+
+    public struct ResourcePolicy: AWSDecodableShape {
+        /// The policy text of the resource policy.
+        public let content: String?
+        /// A structure that contains resource policy ID and Amazon Resource Name (ARN).
+        public let resourcePolicySummary: ResourcePolicySummary?
+
+        public init(content: String? = nil, resourcePolicySummary: ResourcePolicySummary? = nil) {
+            self.content = content
+            self.resourcePolicySummary = resourcePolicySummary
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case content = "Content"
+            case resourcePolicySummary = "ResourcePolicySummary"
+        }
+    }
+
+    public struct ResourcePolicySummary: AWSDecodableShape {
+        /// The Amazon Resource Name (ARN) of the resource policy.
+        public let arn: String?
+        /// The unique identifier (ID) of the resource policy.
+        public let id: String?
+
+        public init(arn: String? = nil, id: String? = nil) {
+            self.arn = arn
+            self.id = id
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case arn = "Arn"
+            case id = "Id"
         }
     }
 
@@ -2316,7 +2403,7 @@ extension Organizations {
 
         public func validate(name: String) throws {
             try self.validate(self.resourceId, name: "resourceId", parent: name, max: 130)
-            try self.validate(self.resourceId, name: "resourceId", parent: name, pattern: "^(r-[0-9a-z]{4,32})|(\\d{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})|(^p-[0-9a-zA-Z_]{8,128})$")
+            try self.validate(self.resourceId, name: "resourceId", parent: name, pattern: "^(r-[0-9a-z]{4,32})|(\\d{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})|(^p-[0-9a-zA-Z_]{8,128})|(^rp-[0-9a-zA-Z_]{4,128})$")
             try self.tags.forEach {
                 try $0.validate(name: "\(name).tags[]")
             }
@@ -2341,7 +2428,7 @@ extension Organizations {
 
         public func validate(name: String) throws {
             try self.validate(self.resourceId, name: "resourceId", parent: name, max: 130)
-            try self.validate(self.resourceId, name: "resourceId", parent: name, pattern: "^(r-[0-9a-z]{4,32})|(\\d{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})|(^p-[0-9a-zA-Z_]{8,128})$")
+            try self.validate(self.resourceId, name: "resourceId", parent: name, pattern: "^(r-[0-9a-z]{4,32})|(\\d{12})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})|(^p-[0-9a-zA-Z_]{8,128})|(^rp-[0-9a-zA-Z_]{4,128})$")
             try self.tagKeys.forEach {
                 try validate($0, name: "tagKeys[]", parent: name, max: 128)
                 try validate($0, name: "tagKeys[]", parent: name, min: 1)
@@ -2442,5 +2529,185 @@ extension Organizations {
         private enum CodingKeys: String, CodingKey {
             case policy = "Policy"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for Organizations
+public struct OrganizationsErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case accessDeniedForDependencyException = "AccessDeniedForDependencyException"
+        case accountAlreadyClosedException = "AccountAlreadyClosedException"
+        case accountAlreadyRegisteredException = "AccountAlreadyRegisteredException"
+        case accountNotFoundException = "AccountNotFoundException"
+        case accountNotRegisteredException = "AccountNotRegisteredException"
+        case accountOwnerNotVerifiedException = "AccountOwnerNotVerifiedException"
+        case alreadyInOrganizationException = "AlreadyInOrganizationException"
+        case awsOrganizationsNotInUseException = "AWSOrganizationsNotInUseException"
+        case childNotFoundException = "ChildNotFoundException"
+        case concurrentModificationException = "ConcurrentModificationException"
+        case conflictException = "ConflictException"
+        case constraintViolationException = "ConstraintViolationException"
+        case createAccountStatusNotFoundException = "CreateAccountStatusNotFoundException"
+        case destinationParentNotFoundException = "DestinationParentNotFoundException"
+        case duplicateAccountException = "DuplicateAccountException"
+        case duplicateHandshakeException = "DuplicateHandshakeException"
+        case duplicateOrganizationalUnitException = "DuplicateOrganizationalUnitException"
+        case duplicatePolicyAttachmentException = "DuplicatePolicyAttachmentException"
+        case duplicatePolicyException = "DuplicatePolicyException"
+        case effectivePolicyNotFoundException = "EffectivePolicyNotFoundException"
+        case finalizingOrganizationException = "FinalizingOrganizationException"
+        case handshakeAlreadyInStateException = "HandshakeAlreadyInStateException"
+        case handshakeConstraintViolationException = "HandshakeConstraintViolationException"
+        case handshakeNotFoundException = "HandshakeNotFoundException"
+        case invalidHandshakeTransitionException = "InvalidHandshakeTransitionException"
+        case invalidInputException = "InvalidInputException"
+        case malformedPolicyDocumentException = "MalformedPolicyDocumentException"
+        case masterCannotLeaveOrganizationException = "MasterCannotLeaveOrganizationException"
+        case organizationNotEmptyException = "OrganizationNotEmptyException"
+        case organizationalUnitNotEmptyException = "OrganizationalUnitNotEmptyException"
+        case organizationalUnitNotFoundException = "OrganizationalUnitNotFoundException"
+        case parentNotFoundException = "ParentNotFoundException"
+        case policyChangesInProgressException = "PolicyChangesInProgressException"
+        case policyInUseException = "PolicyInUseException"
+        case policyNotAttachedException = "PolicyNotAttachedException"
+        case policyNotFoundException = "PolicyNotFoundException"
+        case policyTypeAlreadyEnabledException = "PolicyTypeAlreadyEnabledException"
+        case policyTypeNotAvailableForOrganizationException = "PolicyTypeNotAvailableForOrganizationException"
+        case policyTypeNotEnabledException = "PolicyTypeNotEnabledException"
+        case resourcePolicyNotFoundException = "ResourcePolicyNotFoundException"
+        case rootNotFoundException = "RootNotFoundException"
+        case serviceException = "ServiceException"
+        case sourceParentNotFoundException = "SourceParentNotFoundException"
+        case targetNotFoundException = "TargetNotFoundException"
+        case tooManyRequestsException = "TooManyRequestsException"
+        case unsupportedAPIEndpointException = "UnsupportedAPIEndpointException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Organizations
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You don&#39;t have permissions to perform the requested operation. The user or role that is making the request must have at least one IAM permissions policy attached that grants the required permissions. For more information, see Access Management in the IAM User Guide.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// The operation that you attempted requires you to have the iam:CreateServiceLinkedRole for organizations.amazonaws.com permission so that Organizations can create the required service-linked role. You don&#39;t have that permission.
+    public static var accessDeniedForDependencyException: Self { .init(.accessDeniedForDependencyException) }
+    /// You attempted to close an account that is already closed.
+    public static var accountAlreadyClosedException: Self { .init(.accountAlreadyClosedException) }
+    /// The specified account is already a delegated administrator for this Amazon Web Services service.
+    public static var accountAlreadyRegisteredException: Self { .init(.accountAlreadyRegisteredException) }
+    ///  We can&#39;t find an Amazon Web Services account with the AccountId that you specified, or the account whose credentials you used to make this request isn&#39;t a member of an organization.
+    public static var accountNotFoundException: Self { .init(.accountNotFoundException) }
+    /// The specified account is not a delegated administrator for this Amazon Web Services service.
+    public static var accountNotRegisteredException: Self { .init(.accountNotRegisteredException) }
+    /// You can&#39;t invite an existing account to your organization until you verify that you own the email address associated with the management account. For more information, see Email Address Verification in the Organizations User Guide.
+    public static var accountOwnerNotVerifiedException: Self { .init(.accountOwnerNotVerifiedException) }
+    /// This account is already a member of an organization. An account can belong to only one organization at a time.
+    public static var alreadyInOrganizationException: Self { .init(.alreadyInOrganizationException) }
+    /// Your account isn&#39;t a member of an organization. To make this request, you must use the credentials of an account that belongs to an organization.
+    public static var awsOrganizationsNotInUseException: Self { .init(.awsOrganizationsNotInUseException) }
+    /// We can&#39;t find an organizational unit (OU) or Amazon Web Services account with the ChildId that you specified.
+    public static var childNotFoundException: Self { .init(.childNotFoundException) }
+    /// The target of the operation is currently being modified by a different request. Try again later.
+    public static var concurrentModificationException: Self { .init(.concurrentModificationException) }
+    /// The request failed because it conflicts with the current state of the specified resource.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// Performing this operation violates a minimum or maximum value limit. For example, attempting to remove the last service control policy (SCP) from an OU or root, inviting or creating too many accounts to the organization, or attaching too many policies to an account, OU, or root. This exception includes a reason that contains additional information about the violated limit:  Some of the reasons in the following list might not be applicable to this specific API or operation.    ACCOUNT_CANNOT_LEAVE_ORGANIZATION: You attempted to remove the management account from the organization. You can&#39;t remove the management account. Instead, after you remove all member accounts, delete the organization itself.   ACCOUNT_CANNOT_LEAVE_WITHOUT_PHONE_VERIFICATION: You attempted to remove an account from the organization that doesn&#39;t yet have enough information to exist as a standalone account. This account requires you to first complete phone verification. Follow the steps at Removing a member account from your organization in the Organizations User Guide.    ACCOUNT_CREATION_RATE_LIMIT_EXCEEDED: You attempted to exceed the number of accounts that you can create in one day.   ACCOUNT_NUMBER_LIMIT_EXCEEDED: You attempted to exceed the limit on the number of accounts in an organization. If you need more accounts, contact Amazon Web Services Support to request an increase in your limit.  Or the number of invitations that you tried to send would cause you to exceed the limit of accounts in your organization. Send fewer invitations or contact Amazon Web Services Support to request an increase in the number of accounts.  Deleted and closed accounts still count toward your limit.   If you get this exception when running a command immediately after creating the organization, wait one hour and try again. After an hour, if the command continues to fail with this error, contact Amazon Web Services Support.    CANNOT_REGISTER_MASTER_AS_DELEGATED_ADMINISTRATOR: You attempted to register the management account of the organization as a delegated administrator for an Amazon Web Services service integrated with Organizations. You can designate only a member account as a delegated administrator.   CANNOT_CLOSE_MANAGEMENT_ACCOUNT: You attempted to close the management account. To close the management account for the organization, you must first either remove or close all member accounts in the organization. Follow standard account closure process using root credentials.​    CANNOT_REMOVE_DELEGATED_ADMINISTRATOR_FROM_ORG: You attempted to remove an account that is registered as a delegated administrator for a service integrated with your organization. To complete this operation, you must first deregister this account as a delegated administrator.    CLOSE_ACCOUNT_QUOTA_EXCEEDED: You have exceeded close account quota for the past 30 days.    CLOSE_ACCOUNT_REQUESTS_LIMIT_EXCEEDED: You attempted to exceed the number of accounts that you can close at a time. ​    CREATE_ORGANIZATION_IN_BILLING_MODE_UNSUPPORTED_REGION: To create an organization in the specified region, you must enable all features mode.   DELEGATED_ADMINISTRATOR_EXISTS_FOR_THIS_SERVICE: You attempted to register an Amazon Web Services account as a delegated administrator for an Amazon Web Services service that already has a delegated administrator. To complete this operation, you must first deregister any existing delegated administrators for this service.   EMAIL_VERIFICATION_CODE_EXPIRED: The email verification code is only valid for a limited period of time. You must resubmit the request and generate a new verfication code.   HANDSHAKE_RATE_LIMIT_EXCEEDED: You attempted to exceed the number of handshakes that you can send in one day.   INVALID_PAYMENT_INSTRUMENT: You cannot remove an account because no supported payment method is associated with the account. Amazon Web Services does not support cards issued by financial institutions in Russia or Belarus. For more information, see Managing your Amazon Web Services payments.   MASTER_ACCOUNT_ADDRESS_DOES_NOT_MATCH_MARKETPLACE: To create an account in this organization, you first must migrate the organization&#39;s management account to the marketplace that corresponds to the management account&#39;s address. For example, accounts with India addresses must be associated with the AISPL marketplace. All accounts in an organization must be associated with the same marketplace.   MASTER_ACCOUNT_MISSING_BUSINESS_LICENSE: Applies only to the Amazon Web Services /&gt; Regions in China. To create an organization, the master must have a valid business license. For more information, contact customer support.   MASTER_ACCOUNT_MISSING_CONTACT_INFO: To complete this operation, you must first provide a valid contact address and phone number for the management account. Then try the operation again.   MASTER_ACCOUNT_NOT_GOVCLOUD_ENABLED: To complete this operation, the management account must have an associated account in the Amazon Web Services GovCloud (US-West) Region. For more information, see Organizations in the  Amazon Web Services GovCloud User Guide.    MASTER_ACCOUNT_PAYMENT_INSTRUMENT_REQUIRED: To create an organization with this management account, you first must associate a valid payment instrument, such as a credit card, with the account. Follow the steps at To leave an organization when all required account information has not yet been provided in the Organizations User Guide.    MAX_DELEGATED_ADMINISTRATORS_FOR_SERVICE_LIMIT_EXCEEDED: You attempted to register more delegated administrators than allowed for the service principal.    MAX_POLICY_TYPE_ATTACHMENT_LIMIT_EXCEEDED: You attempted to exceed the number of policies of a certain type that can be attached to an entity at one time.   MAX_TAG_LIMIT_EXCEEDED: You have exceeded the number of tags allowed on this resource.    MEMBER_ACCOUNT_PAYMENT_INSTRUMENT_REQUIRED: To complete this operation with this member account, you first must associate a valid payment instrument, such as a credit card, with the account. Follow the steps at To leave an organization when all required account information has not yet been provided in the Organizations User Guide.    MIN_POLICY_TYPE_ATTACHMENT_LIMIT_EXCEEDED: You attempted to detach a policy from an entity that would cause the entity to have fewer than the minimum number of policies of a certain type required.   ORGANIZATION_NOT_IN_ALL_FEATURES_MODE: You attempted to perform an operation that requires the organization to be configured to support all features. An organization that supports only consolidated billing features can&#39;t perform this operation.   OU_DEPTH_LIMIT_EXCEEDED: You attempted to create an OU tree that is too many levels deep.   OU_NUMBER_LIMIT_EXCEEDED: You attempted to exceed the number of OUs that you can have in an organization.   POLICY_CONTENT_LIMIT_EXCEEDED: You attempted to create a policy that is larger than the maximum size.   POLICY_NUMBER_LIMIT_EXCEEDED: You attempted to exceed the number of policies that you can have in an organization.   SERVICE_ACCESS_NOT_ENABLED: You attempted to register a delegated administrator before you enabled service access. Call the EnableAWSServiceAccess API first.   TAG_POLICY_VIOLATION: You attempted to create or update a resource with tags that are not compliant with the tag policy requirements for this account.   WAIT_PERIOD_ACTIVE: After you create an Amazon Web Services account, there is a waiting period before you can remove it from the organization. If you get an error that indicates that a wait period is required, try again in a few days.
+    public static var constraintViolationException: Self { .init(.constraintViolationException) }
+    /// We can&#39;t find an create account request with the CreateAccountRequestId that you specified.
+    public static var createAccountStatusNotFoundException: Self { .init(.createAccountStatusNotFoundException) }
+    /// We can&#39;t find the destination container (a root or OU) with the ParentId that you specified.
+    public static var destinationParentNotFoundException: Self { .init(.destinationParentNotFoundException) }
+    /// That account is already present in the specified destination.
+    public static var duplicateAccountException: Self { .init(.duplicateAccountException) }
+    /// A handshake with the same action and target already exists. For example, if you invited an account to join your organization, the invited account might already have a pending invitation from this organization. If you intend to resend an invitation to an account, ensure that existing handshakes that might be considered duplicates are canceled or declined.
+    public static var duplicateHandshakeException: Self { .init(.duplicateHandshakeException) }
+    /// An OU with the same name already exists.
+    public static var duplicateOrganizationalUnitException: Self { .init(.duplicateOrganizationalUnitException) }
+    /// The selected policy is already attached to the specified target.
+    public static var duplicatePolicyAttachmentException: Self { .init(.duplicatePolicyAttachmentException) }
+    /// A policy with the same name already exists.
+    public static var duplicatePolicyException: Self { .init(.duplicatePolicyException) }
+    /// If you ran this action on the management account, this policy type is not enabled. If you ran the action on a member account, the account doesn&#39;t have an effective policy of this type. Contact the administrator of your organization about attaching a policy of this type to the account.
+    public static var effectivePolicyNotFoundException: Self { .init(.effectivePolicyNotFoundException) }
+    /// Organizations couldn&#39;t perform the operation because your organization hasn&#39;t finished initializing. This can take up to an hour. Try again later. If after one hour you continue to receive this error, contact Amazon Web Services Support.
+    public static var finalizingOrganizationException: Self { .init(.finalizingOrganizationException) }
+    /// The specified handshake is already in the requested state. For example, you can&#39;t accept a handshake that was already accepted.
+    public static var handshakeAlreadyInStateException: Self { .init(.handshakeAlreadyInStateException) }
+    /// The requested operation would violate the constraint identified in the reason code.  Some of the reasons in the following list might not be applicable to this specific API or operation:    ACCOUNT_NUMBER_LIMIT_EXCEEDED: You attempted to exceed the limit on the number of accounts in an organization. Note that deleted and closed accounts still count toward your limit.  If you get this exception immediately after creating the organization, wait one hour and try again. If after an hour it continues to fail with this error, contact Amazon Web Services Support.    ALREADY_IN_AN_ORGANIZATION: The handshake request is invalid because the invited account is already a member of an organization.   HANDSHAKE_RATE_LIMIT_EXCEEDED: You attempted to exceed the number of handshakes that you can send in one day.   INVITE_DISABLED_DURING_ENABLE_ALL_FEATURES: You can&#39;t issue new invitations to join an organization while it&#39;s in the process of enabling all features. You can resume inviting accounts after you finalize the process when all accounts have agreed to the change.   ORGANIZATION_ALREADY_HAS_ALL_FEATURES: The handshake request is invalid because the organization has already enabled all features.   ORGANIZATION_IS_ALREADY_PENDING_ALL_FEATURES_MIGRATION: The handshake request is invalid because the organization has already started the process to enable all features.   ORGANIZATION_FROM_DIFFERENT_SELLER_OF_RECORD: The request failed because the account is from a different marketplace than the accounts in the organization. For example, accounts with India addresses must be associated with the AISPL marketplace. All accounts in an organization must be from the same marketplace.   ORGANIZATION_MEMBERSHIP_CHANGE_RATE_LIMIT_EXCEEDED: You attempted to change the membership of an account too quickly after its previous change.   PAYMENT_INSTRUMENT_REQUIRED: You can&#39;t complete the operation with an account that doesn&#39;t have a payment instrument, such as a credit card, associated with it.
+    public static var handshakeConstraintViolationException: Self { .init(.handshakeConstraintViolationException) }
+    /// We can&#39;t find a handshake with the HandshakeId that you specified.
+    public static var handshakeNotFoundException: Self { .init(.handshakeNotFoundException) }
+    /// You can&#39;t perform the operation on the handshake in its current state. For example, you can&#39;t cancel a handshake that was already accepted or accept a handshake that was already declined.
+    public static var invalidHandshakeTransitionException: Self { .init(.invalidHandshakeTransitionException) }
+    /// The requested operation failed because you provided invalid values for one or more of the request parameters. This exception includes a reason that contains additional information about the violated limit:  Some of the reasons in the following list might not be applicable to this specific API or operation.    DUPLICATE_TAG_KEY: Tag keys must be unique among the tags attached to the same entity.   IMMUTABLE_POLICY: You specified a policy that is managed by Amazon Web Services and can&#39;t be modified.   INPUT_REQUIRED: You must include a value for all required parameters.   INVALID_EMAIL_ADDRESS_TARGET: You specified an invalid email address for the invited account owner.   INVALID_ENUM: You specified an invalid value.   INVALID_ENUM_POLICY_TYPE: You specified an invalid policy type string.   INVALID_FULL_NAME_TARGET: You specified a full name that contains invalid characters.   INVALID_LIST_MEMBER: You provided a list to a parameter that contains at least one invalid value.   INVALID_PAGINATION_TOKEN: Get the value for the NextToken parameter from the response to a previous call of the operation.   INVALID_PARTY_TYPE_TARGET: You specified the wrong type of entity (account, organization, or email) as a party.   INVALID_PATTERN: You provided a value that doesn&#39;t match the required pattern.   INVALID_PATTERN_TARGET_ID: You specified a policy target ID that doesn&#39;t match the required pattern.   INVALID_ROLE_NAME: You provided a role name that isn&#39;t valid. A role name can&#39;t begin with the reserved prefix AWSServiceRoleFor.   INVALID_SYNTAX_ORGANIZATION_ARN: You specified an invalid Amazon Resource Name (ARN) for the organization.   INVALID_SYNTAX_POLICY_ID: You specified an invalid policy ID.    INVALID_SYSTEM_TAGS_PARAMETER: You specified a tag key that is a system tag. You can’t add, edit, or delete system tag keys because they&#39;re reserved for Amazon Web Services use. System tags don’t count against your tags per resource limit.   MAX_FILTER_LIMIT_EXCEEDED: You can specify only one filter parameter for the operation.   MAX_LENGTH_EXCEEDED: You provided a string parameter that is longer than allowed.   MAX_VALUE_EXCEEDED: You provided a numeric parameter that has a larger value than allowed.   MIN_LENGTH_EXCEEDED: You provided a string parameter that is shorter than allowed.   MIN_VALUE_EXCEEDED: You provided a numeric parameter that has a smaller value than allowed.   MOVING_ACCOUNT_BETWEEN_DIFFERENT_ROOTS: You can move an account only between entities in the same root.   TARGET_NOT_SUPPORTED: You can&#39;t perform the specified operation on that target entity.   UNRECOGNIZED_SERVICE_PRINCIPAL: You specified a service principal that isn&#39;t recognized.
+    public static var invalidInputException: Self { .init(.invalidInputException) }
+    /// The provided policy document doesn&#39;t meet the requirements of the specified policy type. For example, the syntax might be incorrect. For details about service control policy syntax, see Service Control Policy Syntax in the Organizations User Guide.
+    public static var malformedPolicyDocumentException: Self { .init(.malformedPolicyDocumentException) }
+    /// You can&#39;t remove a management account from an organization. If you want the management account to become a member account in another organization, you must first delete the current organization of the management account.
+    public static var masterCannotLeaveOrganizationException: Self { .init(.masterCannotLeaveOrganizationException) }
+    /// The organization isn&#39;t empty. To delete an organization, you must first remove all accounts except the management account, delete all OUs, and delete all policies.
+    public static var organizationNotEmptyException: Self { .init(.organizationNotEmptyException) }
+    /// The specified OU is not empty. Move all accounts to another root or to other OUs, remove all child OUs, and try the operation again.
+    public static var organizationalUnitNotEmptyException: Self { .init(.organizationalUnitNotEmptyException) }
+    /// We can&#39;t find an OU with the OrganizationalUnitId that you specified.
+    public static var organizationalUnitNotFoundException: Self { .init(.organizationalUnitNotFoundException) }
+    /// We can&#39;t find a root or OU with the ParentId that you specified.
+    public static var parentNotFoundException: Self { .init(.parentNotFoundException) }
+    /// Changes to the effective policy are in progress, and its contents can&#39;t be returned. Try the operation again later.
+    public static var policyChangesInProgressException: Self { .init(.policyChangesInProgressException) }
+    /// The policy is attached to one or more entities. You must detach it from all roots, OUs, and accounts before performing this operation.
+    public static var policyInUseException: Self { .init(.policyInUseException) }
+    /// The policy isn&#39;t attached to the specified target in the specified root.
+    public static var policyNotAttachedException: Self { .init(.policyNotAttachedException) }
+    /// We can&#39;t find a policy with the PolicyId that you specified.
+    public static var policyNotFoundException: Self { .init(.policyNotFoundException) }
+    /// The specified policy type is already enabled in the specified root.
+    public static var policyTypeAlreadyEnabledException: Self { .init(.policyTypeAlreadyEnabledException) }
+    /// You can&#39;t use the specified policy type with the feature set currently enabled for this organization. For example, you can enable SCPs only after you enable all features in the organization. For more information, see Managing Organizations Policiesin the Organizations User Guide.
+    public static var policyTypeNotAvailableForOrganizationException: Self { .init(.policyTypeNotAvailableForOrganizationException) }
+    /// The specified policy type isn&#39;t currently enabled in this root. You can&#39;t attach policies of the specified type to entities in a root until you enable that type in the root. For more information, see Enabling All Features in Your Organization in the Organizations User Guide.
+    public static var policyTypeNotEnabledException: Self { .init(.policyTypeNotEnabledException) }
+    /// We can&#39;t find a resource policy request with the parameter that you specified.
+    public static var resourcePolicyNotFoundException: Self { .init(.resourcePolicyNotFoundException) }
+    /// We can&#39;t find a root with the RootId that you specified.
+    public static var rootNotFoundException: Self { .init(.rootNotFoundException) }
+    /// Organizations can&#39;t complete your request because of an internal service error. Try again later.
+    public static var serviceException: Self { .init(.serviceException) }
+    /// We can&#39;t find a source root or OU with the ParentId that you specified.
+    public static var sourceParentNotFoundException: Self { .init(.sourceParentNotFoundException) }
+    /// We can&#39;t find a root, OU, account, or policy with the TargetId that you specified.
+    public static var targetNotFoundException: Self { .init(.targetNotFoundException) }
+    /// You have sent too many requests in too short a period of time. The quota helps protect against denial-of-service attacks. Try again later. For information about quotas that affect Organizations, see Quotas for Organizationsin the Organizations User Guide.
+    public static var tooManyRequestsException: Self { .init(.tooManyRequestsException) }
+    /// This action isn&#39;t available in the current Amazon Web Services Region.
+    public static var unsupportedAPIEndpointException: Self { .init(.unsupportedAPIEndpointException) }
+}
+
+extension OrganizationsErrorType: Equatable {
+    public static func == (lhs: OrganizationsErrorType, rhs: OrganizationsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension OrganizationsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

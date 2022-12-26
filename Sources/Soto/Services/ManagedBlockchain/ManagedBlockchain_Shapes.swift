@@ -2265,3 +2265,70 @@ extension ManagedBlockchain {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for ManagedBlockchain
+public struct ManagedBlockchainErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case illegalActionException = "IllegalActionException"
+        case internalServiceErrorException = "InternalServiceErrorException"
+        case invalidRequestException = "InvalidRequestException"
+        case resourceAlreadyExistsException = "ResourceAlreadyExistsException"
+        case resourceLimitExceededException = "ResourceLimitExceededException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case resourceNotReadyException = "ResourceNotReadyException"
+        case throttlingException = "ThrottlingException"
+        case tooManyTagsException = "TooManyTagsException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize ManagedBlockchain
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You don&#39;t have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    public static var illegalActionException: Self { .init(.illegalActionException) }
+    /// The request processing has failed because of an unknown error, exception or failure.
+    public static var internalServiceErrorException: Self { .init(.internalServiceErrorException) }
+    /// The action or operation requested is invalid. Verify that the action is typed correctly.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// A resource request is issued for a resource that already exists.
+    public static var resourceAlreadyExistsException: Self { .init(.resourceAlreadyExistsException) }
+    /// The maximum number of resources of that type already exist. Ensure the resources requested  are within the boundaries of the service edition and your account limits.
+    public static var resourceLimitExceededException: Self { .init(.resourceLimitExceededException) }
+    /// A requested resource doesn&#39;t exist. It may have been deleted or referenced incorrectly.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The requested resource exists but isn&#39;t in a status that can complete the operation.
+    public static var resourceNotReadyException: Self { .init(.resourceNotReadyException) }
+    /// The request or operation couldn&#39;t be performed because a service is  throttling requests. The most common source of throttling errors is  creating resources that exceed your service limit for this resource type.  Request a limit increase or delete unused resources if possible.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    public static var tooManyTagsException: Self { .init(.tooManyTagsException) }
+}
+
+extension ManagedBlockchainErrorType: Equatable {
+    public static func == (lhs: ManagedBlockchainErrorType, rhs: ManagedBlockchainErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension ManagedBlockchainErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

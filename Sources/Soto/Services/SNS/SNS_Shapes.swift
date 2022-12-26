@@ -30,7 +30,7 @@ extension SNS {
         case frCA = "fr-CA"
         case frFR = "fr-FR"
         case itIT = "it-IT"
-        case jaJP = "ja-JP"
+        case jpJP = "ja-JP"
         case krKR = "kr-KR"
         case ptBR = "pt-BR"
         case zhCN = "zh-CN"
@@ -273,10 +273,10 @@ extension SNS {
     }
 
     public struct CreateTopicInput: AWSEncodableShape {
-        /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that the CreateTopic action uses:    DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.    DisplayName – The display name to use for a topic with SMS subscriptions.    FifoTopic – Set to true to create a FIFO topic.    Policy – The policy that defines who can access your topic. By default, only the topic owner can publish or subscribe to the topic.    The following attribute applies only to server-side encryption:    KmsMasterKeyId – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see Key Terms. For more examples, see KeyId in the Key Management Service API Reference.      The following attributes apply only to FIFO topics:    FifoTopic – When this is set to true, a FIFO topic is created.    ContentBasedDeduplication – Enables content-based deduplication for FIFO topics.    By default, ContentBasedDeduplication is set to false. If you create a FIFO topic and this attribute is false, you must specify a value for the MessageDeduplicationId parameter for the Publish action.    When you set ContentBasedDeduplication to true,  Amazon SNS uses a SHA-256 hash to generate the MessageDeduplicationId using  the body of the message (but not the attributes of the message). (Optional) To override the generated value, you can specify a value for the MessageDeduplicationId parameter for the Publish action.
+        /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that the CreateTopic action uses:    DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.    DisplayName – The display name to use for a topic with SMS subscriptions.    FifoTopic – Set to true to create a FIFO topic.    Policy – The policy that defines who can access your topic. By default, only the topic owner can publish or subscribe to the topic.    SignatureVersion – The signature version corresponds to the hashing algorithm used while creating the signature of the notifications, subscription confirmations, or unsubscribe confirmation messages sent by Amazon SNS. By default, SignatureVersion is set to 1.    TracingConfig – Tracing mode of an Amazon SNS topic. By default TracingConfig is set to PassThrough, and the topic passes through the tracing header it receives from an Amazon SNS publisher to its subscriptions. If set to Active, Amazon SNS will vend X-Ray segment data to topic owner account if the sampled flag in the tracing header is true. This is only supported on standard topics.    The following attribute applies only to server-side encryption:    KmsMasterKeyId – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see Key Terms. For more examples, see KeyId in the Key Management Service API Reference.      The following attributes apply only to FIFO topics:    FifoTopic – When this is set to true, a FIFO topic is created.    ContentBasedDeduplication – Enables content-based deduplication for FIFO topics.    By default, ContentBasedDeduplication is set to false. If you create a FIFO topic and this attribute is false, you must specify a value for the MessageDeduplicationId parameter for the Publish action.    When you set ContentBasedDeduplication to true,  Amazon SNS uses a SHA-256 hash to generate the MessageDeduplicationId using  the body of the message (but not the attributes of the message). (Optional) To override the generated value, you can specify a value for the MessageDeduplicationId parameter for the Publish action.
         @OptionalCustomCoding<StandardDictionaryCoder>
         public var attributes: [String: String]?
-        /// The body of the policy document you want to use for this topic. You can only add one policy per topic. The policy must be in JSON string format.  Length Constraints: Maximum length of 30,720.
+        /// The body of the policy document you want to use for this topic. You can only add one policy per topic. The policy must be in JSON string format. Length Constraints: Maximum length of 30,720.
         public let dataProtectionPolicy: String?
         /// The name of the topic you want to create. Constraints: Topic names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, and hyphens, and must be between 1 and 256 characters long. For a FIFO (first-in-first-out) topic, the name must end with the .fifo suffix.
         public let name: String
@@ -536,7 +536,7 @@ extension SNS {
     }
 
     public struct GetSubscriptionAttributesResponse: AWSDecodableShape {
-        /// A map of the subscription's attributes. Attributes in this map include the following:    ConfirmationWasAuthenticated – true if the subscription confirmation request was authenticated.    DeliveryPolicy – The JSON serialization of the subscription's delivery policy.    EffectiveDeliveryPolicy – The JSON serialization of the effective delivery policy that takes into account the topic delivery policy and account system defaults.    FilterPolicy – The filter policy JSON that is assigned to the subscription. For more information, see Amazon SNS Message Filtering in the Amazon SNS Developer Guide.    Owner – The Amazon Web Services account ID of the subscription's owner.    PendingConfirmation – true if the subscription hasn't been confirmed. To confirm a pending subscription, call the ConfirmSubscription action with a confirmation token.    RawMessageDelivery – true if raw message delivery is enabled for the subscription. Raw messages are free of JSON formatting and can be sent to HTTP/S and Amazon SQS endpoints.    RedrivePolicy – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue.  Messages that can't be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held  in the dead-letter queue for further analysis or reprocessing.    SubscriptionArn – The subscription's ARN.    TopicArn – The topic ARN that the subscription is associated with.    The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:    SubscriptionRoleArn – The ARN of the IAM role that has the following:   Permission to write to the Kinesis Data Firehose delivery stream   Amazon SNS listed as a trusted entity   Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions.  For more information, see Fanout  to Kinesis Data Firehose delivery streams in the Amazon SNS Developer Guide.
+        /// A map of the subscription's attributes. Attributes in this map include the following:    ConfirmationWasAuthenticated – true if the subscription confirmation request was authenticated.    DeliveryPolicy – The JSON serialization of the subscription's delivery policy.    EffectiveDeliveryPolicy – The JSON serialization of the effective delivery policy that takes into account the topic delivery policy and account system defaults.    FilterPolicy – The filter policy JSON that is assigned to the subscription. For more information, see Amazon SNS Message Filtering in the Amazon SNS Developer Guide.    FilterPolicyScope – This attribute lets you choose the filtering scope by using one of the following string value types:    MessageAttributes (default) – The filter is applied on the message attributes.    MessageBody – The filter is applied on the message body.      Owner – The Amazon Web Services account ID of the subscription's owner.    PendingConfirmation – true if the subscription hasn't been confirmed. To confirm a pending subscription, call the ConfirmSubscription action with a confirmation token.    RawMessageDelivery – true if raw message delivery is enabled for the subscription. Raw messages are free of JSON formatting and can be sent to HTTP/S and Amazon SQS endpoints.    RedrivePolicy – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue.  Messages that can't be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held  in the dead-letter queue for further analysis or reprocessing.    SubscriptionArn – The subscription's ARN.    TopicArn – The topic ARN that the subscription is associated with.    The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:    SubscriptionRoleArn – The ARN of the IAM role that has the following:   Permission to write to the Kinesis Data Firehose delivery stream   Amazon SNS listed as a trusted entity   Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions.  For more information, see Fanout  to Kinesis Data Firehose delivery streams in the Amazon SNS Developer Guide.
         @OptionalCustomCoding<StandardDictionaryCoder>
         public var attributes: [String: String]?
 
@@ -563,7 +563,7 @@ extension SNS {
     }
 
     public struct GetTopicAttributesResponse: AWSDecodableShape {
-        /// A map of the topic's attributes. Attributes in this map include the following:    DeliveryPolicy – The JSON serialization of the topic's delivery policy.    DisplayName – The human-readable name used in the From field for notifications to email and email-json endpoints.    Owner – The Amazon Web Services account ID of the topic's owner.    Policy – The JSON serialization of the topic's access control policy.    SubscriptionsConfirmed – The number of confirmed subscriptions for the topic.    SubscriptionsDeleted – The number of deleted subscriptions for the topic.    SubscriptionsPending – The number of subscriptions pending confirmation for the topic.    TopicArn – The topic's ARN.    EffectiveDeliveryPolicy – The JSON serialization of the effective delivery policy, taking system defaults into account.    The following attribute applies only to server-side-encryption:    KmsMasterKeyId - The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see Key Terms. For more examples, see KeyId in the Key Management Service API Reference.     The following attributes apply only to FIFO topics:    FifoTopic – When this is set to true, a FIFO topic is created.    ContentBasedDeduplication – Enables content-based deduplication for FIFO topics.    By default, ContentBasedDeduplication is set to false. If you create a FIFO topic and this attribute is false, you must specify a value for the MessageDeduplicationId parameter for the Publish action.    When you set ContentBasedDeduplication to true,  Amazon SNS uses a SHA-256 hash to generate the MessageDeduplicationId using  the body of the message (but not the attributes of the message). (Optional) To override the generated value, you can specify a value for the MessageDeduplicationId parameter for the Publish action.
+        /// A map of the topic's attributes. Attributes in this map include the following:    DeliveryPolicy – The JSON serialization of the topic's delivery policy.    DisplayName – The human-readable name used in the From field for notifications to email and email-json endpoints.    EffectiveDeliveryPolicy – The JSON serialization of the effective delivery policy, taking system defaults into account.    Owner – The Amazon Web Services account ID of the topic's owner.    Policy – The JSON serialization of the topic's access control policy.    SignatureVersion – The version of the Amazon SNS signature used for the topic.   By default, SignatureVersion is set to 1. The signature is a Base64-encoded SHA1withRSA signature.   When you set SignatureVersion to 2. Amazon SNS uses a Base64-encoded SHA256withRSA signature.   If the API response does not include the SignatureVersion attribute, it means that the SignatureVersion for the topic has value 1.       SubscriptionsConfirmed – The number of confirmed subscriptions for the topic.    SubscriptionsDeleted – The number of deleted subscriptions for the topic.    SubscriptionsPending – The number of subscriptions pending confirmation for the topic.    TopicArn – The topic's ARN.    TracingConfig – Tracing mode of an Amazon SNS topic. By default TracingConfig is set to PassThrough, and the topic passes through the tracing header it receives from an Amazon SNS publisher to its subscriptions. If set to Active, Amazon SNS will vend X-Ray segment data to topic owner account if the sampled flag in the tracing header is true. This is only supported on standard topics.    The following attribute applies only to server-side-encryption:    KmsMasterKeyId - The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see Key Terms. For more examples, see KeyId in the Key Management Service API Reference.     The following attributes apply only to FIFO topics:    FifoTopic – When this is set to true, a FIFO topic is created.    ContentBasedDeduplication – Enables content-based deduplication for FIFO topics.    By default, ContentBasedDeduplication is set to false. If you create a FIFO topic and this attribute is false, you must specify a value for the MessageDeduplicationId parameter for the Publish action.    When you set ContentBasedDeduplication to true,  Amazon SNS uses a SHA-256 hash to generate the MessageDeduplicationId using  the body of the message (but not the attributes of the message). (Optional) To override the generated value, you can specify a value for the MessageDeduplicationId parameter for the Publish action.
         @OptionalCustomCoding<StandardDictionaryCoder>
         public var attributes: [String: String]?
 
@@ -1080,7 +1080,7 @@ extension SNS {
         public var messageAttributes: [String: MessageAttributeValue]?
         /// This parameter applies only to FIFO (first-in-first-out) topics. The MessageDeduplicationId can contain up to 128 alphanumeric characters (a-z, A-Z, 0-9) and punctuation (!"#$%&'()*+,-./:;?@[\]^_`{|}~). Every message must have a unique MessageDeduplicationId, which is a token used for deduplication of sent messages. If a message with a particular MessageDeduplicationId is sent successfully, any message sent with the same MessageDeduplicationId during the 5-minute deduplication interval is treated as a duplicate.  If the topic has ContentBasedDeduplication set, the system generates a MessageDeduplicationId based on the contents of the message. Your MessageDeduplicationId overrides the generated one.
         public let messageDeduplicationId: String?
-        /// This parameter applies only to FIFO (first-in-first-out) topics. The MessageGroupId can contain up to 128 alphanumeric characters (a-z, A-Z, 0-9) and punctuation (!"#$%&'()*+,-./:;?@[\]^_`{|}~).         The MessageGroupId is a tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). Every message must include a MessageGroupId.
+        /// This parameter applies only to FIFO (first-in-first-out) topics. The MessageGroupId can contain up to 128 alphanumeric characters (a-z, A-Z, 0-9) and punctuation (!"#$%&'()*+,-./:;?@[\]^_`{|}~). The MessageGroupId is a tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are processed in a FIFO manner (however, messages in different message groups might be processed out of order). Every message must include a MessageGroupId.
         public let messageGroupId: String?
         /// Set MessageStructure to json if you want to send a different message for each protocol. For example, using one publish action, you can send a short message to your SMS subscribers and a longer message to your email subscribers. If you set MessageStructure to json, the value of the Message parameter must:    be a syntactically valid JSON object; and   contain at least a top-level JSON key of "default" with a value that is a string.   You can define other top-level keys that define the message you want to send to a specific transport protocol (e.g., "http"). Valid value: json
         public let messageStructure: String?
@@ -1205,7 +1205,7 @@ extension SNS {
     }
 
     public struct SetPlatformApplicationAttributesInput: AWSEncodableShape {
-        /// A map of the platform application attributes. Attributes in this map include the following:    PlatformCredential – The credential received from the notification service.    For ADM, PlatformCredentialis client secret.   For Apple Services using certificate credentials, PlatformCredential is private key.   For Apple Services using token credentials, PlatformCredential is signing key.   For GCM (Firebase Cloud Messaging), PlatformCredential is API key.         PlatformPrincipal – The principal received from the notification service.     For ADM, PlatformPrincipalis client id.   For Apple Services using certificate credentials, PlatformPrincipal is SSL certificate.   For Apple Services using token credentials, PlatformPrincipal is signing key ID.   For GCM (Firebase Cloud Messaging), there is no PlatformPrincipal.         EventEndpointCreated – Topic ARN to which EndpointCreated event notifications are sent.    EventEndpointDeleted – Topic ARN to which EndpointDeleted event notifications are sent.    EventEndpointUpdated – Topic ARN to which EndpointUpdate event notifications are sent.    EventDeliveryFailure – Topic ARN to which DeliveryFailure event notifications are sent upon Direct Publish delivery failure (permanent) to one of the application's endpoints.    SuccessFeedbackRoleArn – IAM role ARN used to give Amazon SNS write access to use CloudWatch Logs on your behalf.    FailureFeedbackRoleArn – IAM role ARN used to give Amazon SNS write access to use CloudWatch Logs on your behalf.    SuccessFeedbackSampleRate – Sample rate percentage (0-100) of successfully delivered messages.   The following attributes only apply to APNs token-based authentication:      ApplePlatformTeamID – The identifier that's assigned to your Apple developer account team.    ApplePlatformBundleID – The bundle identifier that's assigned to your iOS app.
+        /// A map of the platform application attributes. Attributes in this map include the following:    PlatformCredential – The credential received from the notification service.   For ADM, PlatformCredentialis client secret.   For Apple Services using certificate credentials, PlatformCredential is private key.   For Apple Services using token credentials, PlatformCredential is signing key.   For GCM (Firebase Cloud Messaging), PlatformCredential is API key.         PlatformPrincipal – The principal received from the notification service.   For ADM, PlatformPrincipalis client id.   For Apple Services using certificate credentials, PlatformPrincipal is SSL certificate.   For Apple Services using token credentials, PlatformPrincipal is signing key ID.   For GCM (Firebase Cloud Messaging), there is no PlatformPrincipal.         EventEndpointCreated – Topic ARN to which EndpointCreated event notifications are sent.    EventEndpointDeleted – Topic ARN to which EndpointDeleted event notifications are sent.    EventEndpointUpdated – Topic ARN to which EndpointUpdate event notifications are sent.    EventDeliveryFailure – Topic ARN to which DeliveryFailure event notifications are sent upon Direct Publish delivery failure (permanent) to one of the application's endpoints.    SuccessFeedbackRoleArn – IAM role ARN used to give Amazon SNS write access to use CloudWatch Logs on your behalf.    FailureFeedbackRoleArn – IAM role ARN used to give Amazon SNS write access to use CloudWatch Logs on your behalf.    SuccessFeedbackSampleRate – Sample rate percentage (0-100) of successfully delivered messages.   The following attributes only apply to APNs token-based authentication:    ApplePlatformTeamID – The identifier that's assigned to your Apple developer account team.    ApplePlatformBundleID – The bundle identifier that's assigned to your iOS app.
         @CustomCoding<StandardDictionaryCoder>
         public var attributes: [String: String]
         /// PlatformApplicationArn for SetPlatformApplicationAttributes action.
@@ -1241,7 +1241,7 @@ extension SNS {
     }
 
     public struct SetSubscriptionAttributesInput: AWSEncodableShape {
-        /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that this action uses:    DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.    FilterPolicy – The simple JSON object that lets your subscriber receive only a subset of messages, rather than receiving every message published to the topic.    RawMessageDelivery – When set to true, enables raw message delivery to Amazon SQS or HTTP/S endpoints. This eliminates the need for the endpoints to process JSON formatting, which is otherwise created for Amazon SNS metadata.    RedrivePolicy – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue.  Messages that can't be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held  in the dead-letter queue for further analysis or reprocessing.     The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:    SubscriptionRoleArn – The ARN of the IAM role that has the following:   Permission to write to the Kinesis Data Firehose delivery stream   Amazon SNS listed as a trusted entity   Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions.  For more information, see Fanout  to Kinesis Data Firehose delivery streams in the Amazon SNS Developer Guide.
+        /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that this action uses:    DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.    FilterPolicy – The simple JSON object that lets your subscriber receive only a subset of messages, rather than receiving every message published to the topic.    FilterPolicyScope – This attribute lets you choose the filtering scope by using one of the following string value types:    MessageAttributes (default) – The filter is applied on the message attributes.    MessageBody – The filter is applied on the message body.      RawMessageDelivery – When set to true, enables raw message delivery to Amazon SQS or HTTP/S endpoints. This eliminates the need for the endpoints to process JSON formatting, which is otherwise created for Amazon SNS metadata.    RedrivePolicy – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue.  Messages that can't be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held  in the dead-letter queue for further analysis or reprocessing.     The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:    SubscriptionRoleArn – The ARN of the IAM role that has the following:   Permission to write to the Kinesis Data Firehose delivery stream   Amazon SNS listed as a trusted entity   Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions.  For more information, see Fanout  to Kinesis Data Firehose delivery streams in the Amazon SNS Developer Guide.
         public let attributeName: String
         /// The new value for the attribute in JSON format.
         public let attributeValue: String?
@@ -1262,7 +1262,7 @@ extension SNS {
     }
 
     public struct SetTopicAttributesInput: AWSEncodableShape {
-        /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that the SetTopicAttributes action uses:    DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.    DisplayName – The display name to use for a topic with SMS subscriptions.    Policy – The policy that defines who can access your topic. By default, only the topic owner can publish or subscribe to the topic.    The following attribute applies only to server-side-encryption:    KmsMasterKeyId – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see Key Terms. For more examples, see KeyId in the Key Management Service API Reference.      The following attribute applies only to FIFO topics:    ContentBasedDeduplication – Enables content-based deduplication for FIFO topics.    By default, ContentBasedDeduplication is set to false. If you create a FIFO topic and this attribute is false, you must specify a value for the MessageDeduplicationId parameter for the Publish action.    When you set ContentBasedDeduplication to true,  Amazon SNS uses a SHA-256 hash to generate the MessageDeduplicationId using  the body of the message (but not the attributes of the message). (Optional) To override the generated value, you can specify a value for the MessageDeduplicationId parameter for the Publish action.
+        /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that the SetTopicAttributes action uses:    DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.    DisplayName – The display name to use for a topic with SMS subscriptions.    Policy – The policy that defines who can access your topic. By default, only the topic owner can publish or subscribe to the topic.    TracingConfig – Tracing mode of an Amazon SNS topic. By default TracingConfig is set to PassThrough, and the topic passes through the tracing header it receives from an Amazon SNS publisher to its subscriptions. If set to Active, Amazon SNS will vend X-Ray segment data to topic owner account if the sampled flag in the tracing header is true. This is only supported on standard topics.    The following attribute applies only to server-side-encryption:    KmsMasterKeyId – The ID of an Amazon Web Services managed customer master key (CMK) for Amazon SNS or a custom CMK. For more information, see Key Terms. For more examples, see KeyId in the Key Management Service API Reference.     SignatureVersion – The signature version corresponds to the hashing algorithm used while creating the signature of the notifications, subscription confirmations, or unsubscribe confirmation messages sent by Amazon SNS.     The following attribute applies only to FIFO topics:    ContentBasedDeduplication – Enables content-based deduplication for FIFO topics.    By default, ContentBasedDeduplication is set to false. If you create a FIFO topic and this attribute is false, you must specify a value for the MessageDeduplicationId parameter for the Publish action.    When you set ContentBasedDeduplication to true,  Amazon SNS uses a SHA-256 hash to generate the MessageDeduplicationId using  the body of the message (but not the attributes of the message). (Optional) To override the generated value, you can specify a value for the MessageDeduplicationId parameter for the Publish action.
         public let attributeName: String
         /// The new value for the attribute.
         public let attributeValue: String?
@@ -1283,7 +1283,7 @@ extension SNS {
     }
 
     public struct SubscribeInput: AWSEncodableShape {
-        /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that the Subscribe action uses:    DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.    FilterPolicy – The simple JSON object that lets your subscriber receive only a subset of messages, rather than receiving every message published to the topic.    RawMessageDelivery – When set to true, enables raw message delivery to Amazon SQS or HTTP/S endpoints. This eliminates the need for the endpoints to process JSON formatting, which is otherwise created for Amazon SNS metadata.    RedrivePolicy – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue.  Messages that can't be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held  in the dead-letter queue for further analysis or reprocessing.     The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:    SubscriptionRoleArn – The ARN of the IAM role that has the following:   Permission to write to the Kinesis Data Firehose delivery stream   Amazon SNS listed as a trusted entity   Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions.  For more information, see Fanout  to Kinesis Data Firehose delivery streams in the Amazon SNS Developer Guide.
+        /// A map of attributes with their corresponding values. The following lists the names, descriptions, and values of the special request parameters that the Subscribe action uses:    DeliveryPolicy – The policy that defines how Amazon SNS retries failed deliveries to HTTP/S endpoints.    FilterPolicy – The simple JSON object that lets your subscriber receive only a subset of messages, rather than receiving every message published to the topic.    FilterPolicyScope – This attribute lets you choose the filtering scope by using one of the following string value types:    MessageAttributes (default) – The filter is applied on the message attributes.    MessageBody – The filter is applied on the message body.      RawMessageDelivery – When set to true, enables raw message delivery to Amazon SQS or HTTP/S endpoints. This eliminates the need for the endpoints to process JSON formatting, which is otherwise created for Amazon SNS metadata.    RedrivePolicy – When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue.  Messages that can't be delivered due to client errors (for example, when the subscribed endpoint is unreachable) or server errors (for example, when the service that powers the subscribed endpoint becomes unavailable) are held  in the dead-letter queue for further analysis or reprocessing.     The following attribute applies only to Amazon Kinesis Data Firehose delivery stream subscriptions:    SubscriptionRoleArn – The ARN of the IAM role that has the following:   Permission to write to the Kinesis Data Firehose delivery stream   Amazon SNS listed as a trusted entity   Specifying a valid ARN for this attribute is required for Kinesis Data Firehose delivery stream subscriptions.  For more information, see Fanout  to Kinesis Data Firehose delivery streams in the Amazon SNS Developer Guide.
         @OptionalCustomCoding<StandardDictionaryCoder>
         public var attributes: [String: String]?
         /// The endpoint that you want to receive notifications. Endpoints vary by protocol:   For the http protocol, the (public) endpoint is a URL beginning with http://.   For the https protocol, the (public) endpoint is a URL beginning with https://.   For the email protocol, the endpoint is an email address.   For the email-json protocol, the endpoint is an email address.   For the sms protocol, the endpoint is a phone number of an SMS-enabled device.   For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue.   For the application protocol, the endpoint is the EndpointArn of a mobile app and device.   For the lambda protocol, the endpoint is the ARN of an Lambda function.   For the firehose protocol, the endpoint is the ARN of an Amazon Kinesis Data Firehose delivery stream.
@@ -1491,5 +1491,140 @@ extension SNS {
 
     public struct VerifySMSSandboxPhoneNumberResult: AWSDecodableShape {
         public init() {}
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for SNS
+public struct SNSErrorType: AWSErrorType {
+    enum Code: String {
+        case authorizationErrorException = "AuthorizationError"
+        case batchEntryIdsNotDistinctException = "BatchEntryIdsNotDistinct"
+        case batchRequestTooLongException = "BatchRequestTooLong"
+        case concurrentAccessException = "ConcurrentAccess"
+        case emptyBatchRequestException = "EmptyBatchRequest"
+        case endpointDisabledException = "EndpointDisabled"
+        case filterPolicyLimitExceededException = "FilterPolicyLimitExceeded"
+        case internalErrorException = "InternalError"
+        case invalidBatchEntryIdException = "InvalidBatchEntryId"
+        case invalidParameterException = "InvalidParameter"
+        case invalidParameterValueException = "ParameterValueInvalid"
+        case invalidSecurityException = "InvalidSecurity"
+        case kmsAccessDeniedException = "KMSAccessDenied"
+        case kmsDisabledException = "KMSDisabled"
+        case kmsInvalidStateException = "KMSInvalidState"
+        case kmsNotFoundException = "KMSNotFound"
+        case kmsOptInRequired = "KMSOptInRequired"
+        case kmsThrottlingException = "KMSThrottling"
+        case notFoundException = "NotFound"
+        case optedOutException = "OptedOut"
+        case platformApplicationDisabledException = "PlatformApplicationDisabled"
+        case resourceNotFoundException = "ResourceNotFound"
+        case staleTagException = "StaleTag"
+        case subscriptionLimitExceededException = "SubscriptionLimitExceeded"
+        case tagLimitExceededException = "TagLimitExceeded"
+        case tagPolicyException = "TagPolicy"
+        case throttledException = "Throttled"
+        case tooManyEntriesInBatchRequestException = "TooManyEntriesInBatchRequest"
+        case topicLimitExceededException = "TopicLimitExceeded"
+        case userErrorException = "UserError"
+        case validationException = "ValidationException"
+        case verificationException = "VerificationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize SNS
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Indicates that the user has been denied access to the requested resource.
+    public static var authorizationErrorException: Self { .init(.authorizationErrorException) }
+    /// Two or more batch entries in the request have the same Id.
+    public static var batchEntryIdsNotDistinctException: Self { .init(.batchEntryIdsNotDistinctException) }
+    /// The length of all the batch messages put together is more than the limit.
+    public static var batchRequestTooLongException: Self { .init(.batchRequestTooLongException) }
+    /// Can&#39;t perform multiple operations on a tag simultaneously. Perform the operations sequentially.
+    public static var concurrentAccessException: Self { .init(.concurrentAccessException) }
+    /// The batch request doesn&#39;t contain any entries.
+    public static var emptyBatchRequestException: Self { .init(.emptyBatchRequestException) }
+    /// Exception error indicating endpoint disabled.
+    public static var endpointDisabledException: Self { .init(.endpointDisabledException) }
+    /// Indicates that the number of filter polices in your Amazon Web Services account exceeds the limit. To add more filter polices, submit an Amazon SNS Limit Increase case in the Amazon Web Services Support Center.
+    public static var filterPolicyLimitExceededException: Self { .init(.filterPolicyLimitExceededException) }
+    /// Indicates an internal service error.
+    public static var internalErrorException: Self { .init(.internalErrorException) }
+    /// The Id of a batch entry in a batch request doesn&#39;t abide by the specification.
+    public static var invalidBatchEntryIdException: Self { .init(.invalidBatchEntryIdException) }
+    /// Indicates that a request parameter does not comply with the associated constraints.
+    public static var invalidParameterException: Self { .init(.invalidParameterException) }
+    /// Indicates that a request parameter does not comply with the associated constraints.
+    public static var invalidParameterValueException: Self { .init(.invalidParameterValueException) }
+    /// The credential signature isn&#39;t valid. You must use an HTTPS endpoint and sign your request using Signature Version 4.
+    public static var invalidSecurityException: Self { .init(.invalidSecurityException) }
+    /// The ciphertext references a key that doesn&#39;t exist or that you don&#39;t have access to.
+    public static var kmsAccessDeniedException: Self { .init(.kmsAccessDeniedException) }
+    /// The request was rejected because the specified customer master key (CMK) isn&#39;t enabled.
+    public static var kmsDisabledException: Self { .init(.kmsDisabledException) }
+    /// The request was rejected because the state of the specified resource isn&#39;t valid for this request. For more information, see How Key State Affects Use of a Customer Master Key in the Key Management Service Developer Guide.
+    public static var kmsInvalidStateException: Self { .init(.kmsInvalidStateException) }
+    /// The request was rejected because the specified entity or resource can&#39;t be found.
+    public static var kmsNotFoundException: Self { .init(.kmsNotFoundException) }
+    /// The Amazon Web Services access key ID needs a subscription for the service.
+    public static var kmsOptInRequired: Self { .init(.kmsOptInRequired) }
+    /// The request was denied due to request throttling. For more information about throttling, see Limits in the Key Management Service Developer Guide.
+    public static var kmsThrottlingException: Self { .init(.kmsThrottlingException) }
+    /// Indicates that the requested resource does not exist.
+    public static var notFoundException: Self { .init(.notFoundException) }
+    /// Indicates that the specified phone number opted out of receiving SMS messages from your Amazon Web Services account. You can&#39;t send SMS messages to phone numbers that opt out.
+    public static var optedOutException: Self { .init(.optedOutException) }
+    /// Exception error indicating platform application disabled.
+    public static var platformApplicationDisabledException: Self { .init(.platformApplicationDisabledException) }
+    /// Can’t perform the action on the specified resource. Make sure that the resource exists.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// A tag has been added to a resource with the same ARN as a deleted resource. Wait a short while and then retry the operation.
+    public static var staleTagException: Self { .init(.staleTagException) }
+    /// Indicates that the customer already owns the maximum allowed number of subscriptions.
+    public static var subscriptionLimitExceededException: Self { .init(.subscriptionLimitExceededException) }
+    /// Can&#39;t add more than 50 tags to a topic.
+    public static var tagLimitExceededException: Self { .init(.tagLimitExceededException) }
+    /// The request doesn&#39;t comply with the IAM tag policy. Correct your request and then retry it.
+    public static var tagPolicyException: Self { .init(.tagPolicyException) }
+    /// Indicates that the rate at which requests have been submitted for this action exceeds the limit for your Amazon Web Services account.
+    public static var throttledException: Self { .init(.throttledException) }
+    /// The batch request contains more entries than permissible.
+    public static var tooManyEntriesInBatchRequestException: Self { .init(.tooManyEntriesInBatchRequestException) }
+    /// Indicates that the customer already owns the maximum allowed number of topics.
+    public static var topicLimitExceededException: Self { .init(.topicLimitExceededException) }
+    /// Indicates that a request parameter does not comply with the associated constraints.
+    public static var userErrorException: Self { .init(.userErrorException) }
+    /// Indicates that a parameter in the request is invalid.
+    public static var validationException: Self { .init(.validationException) }
+    /// Indicates that the one-time password (OTP) used for verification is invalid.
+    public static var verificationException: Self { .init(.verificationException) }
+}
+
+extension SNSErrorType: Equatable {
+    public static func == (lhs: SNSErrorType, rhs: SNSErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension SNSErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

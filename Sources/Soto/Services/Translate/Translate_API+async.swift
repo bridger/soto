@@ -68,7 +68,7 @@ extension Translate {
         return try await self.client.execute(operation: "ListParallelData", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Lists all tags associated with a given Amazon Translate resource.  For more information, see  Tagging your resources.
+    /// Lists all tags associated with a given Amazon Translate resource. For more information, see  Tagging your resources.
     public func listTagsForResource(_ input: ListTagsForResourceRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListTagsForResourceResponse {
         return try await self.client.execute(operation: "ListTagsForResource", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -83,8 +83,8 @@ extension Translate {
         return try await self.client.execute(operation: "ListTextTranslationJobs", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Starts an asynchronous batch translation job. Use batch translation jobs to translate large volumes of text across multiple documents at once.  For batch translation, the input documents must share the same source language. You can specify one  or more target languages. Batch translation translates each input document into each of the target languages. For more information, see Asynchronous batch processing
-    ///  Batch translation jobs can be described with the DescribeTextTranslationJob operation, listed with the ListTextTranslationJobs operation, and stopped with the StopTextTranslationJob operation.  Amazon Translate does not support batch translation of multiple source languages at once.
+    /// Starts an asynchronous batch translation job. Use batch translation jobs to translate large volumes of text across multiple documents at once. For batch translation, you can input documents with different source languages (specify auto as the source language). You can specify one or more target languages. Batch translation translates each input document into each of the target languages. For more information, see Asynchronous batch processing.
+    ///  Batch translation jobs can be described with the DescribeTextTranslationJob operation, listed with the ListTextTranslationJobs operation, and stopped with the StopTextTranslationJob operation.
     public func startTextTranslationJob(_ input: StartTextTranslationJobRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> StartTextTranslationJobResponse {
         return try await self.client.execute(operation: "StartTextTranslationJob", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -94,7 +94,7 @@ extension Translate {
         return try await self.client.execute(operation: "StopTextTranslationJob", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Associates a specific tag with a resource. A tag is a key-value pair that adds as a metadata to a resource.   For more information, see  Tagging your resources.
+    /// Associates a specific tag with a resource. A tag is a key-value pair that adds as a metadata to a resource. For more information, see  Tagging your resources.
     public func tagResource(_ input: TagResourceRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> TagResourceResponse {
         return try await self.client.execute(operation: "TagResource", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -104,7 +104,7 @@ extension Translate {
         return try await self.client.execute(operation: "TranslateText", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Removes a specific tag associated with an Amazon Translate resource.  For more information, see  Tagging your resources.
+    /// Removes a specific tag associated with an Amazon Translate resource. For more information, see  Tagging your resources.
     public func untagResource(_ input: UntagResourceRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UntagResourceResponse {
         return try await self.client.execute(operation: "UntagResource", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -112,6 +112,99 @@ extension Translate {
     /// Updates a previously created parallel data resource by importing a new input file from Amazon S3.
     public func updateParallelData(_ input: UpdateParallelDataRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateParallelDataResponse {
         return try await self.client.execute(operation: "UpdateParallelData", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Translate {
+    ///  Provides a list of languages (RFC-5646 codes and names) that Amazon Translate supports.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listLanguagesPaginator(
+        _ input: ListLanguagesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListLanguagesRequest, ListLanguagesResponse> {
+        return .init(
+            input: input,
+            command: self.listLanguages,
+            inputKey: \ListLanguagesRequest.nextToken,
+            outputKey: \ListLanguagesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Provides a list of your parallel data resources in Amazon Translate.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listParallelDataPaginator(
+        _ input: ListParallelDataRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListParallelDataRequest, ListParallelDataResponse> {
+        return .init(
+            input: input,
+            command: self.listParallelData,
+            inputKey: \ListParallelDataRequest.nextToken,
+            outputKey: \ListParallelDataResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Provides a list of custom terminologies associated with your account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTerminologiesPaginator(
+        _ input: ListTerminologiesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTerminologiesRequest, ListTerminologiesResponse> {
+        return .init(
+            input: input,
+            command: self.listTerminologies,
+            inputKey: \ListTerminologiesRequest.nextToken,
+            outputKey: \ListTerminologiesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of the batch translation jobs that you have submitted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTextTranslationJobsPaginator(
+        _ input: ListTextTranslationJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTextTranslationJobsRequest, ListTextTranslationJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listTextTranslationJobs,
+            inputKey: \ListTextTranslationJobsRequest.nextToken,
+            outputKey: \ListTextTranslationJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

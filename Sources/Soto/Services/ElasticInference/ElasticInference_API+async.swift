@@ -54,4 +54,31 @@ extension ElasticInference {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElasticInference {
+    ///   Describes information over a provided set of accelerators belonging to an account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeAcceleratorsPaginator(
+        _ input: DescribeAcceleratorsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeAcceleratorsRequest, DescribeAcceleratorsResponse> {
+        return .init(
+            input: input,
+            command: self.describeAccelerators,
+            inputKey: \DescribeAcceleratorsRequest.nextToken,
+            outputKey: \DescribeAcceleratorsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

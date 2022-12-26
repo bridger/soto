@@ -2316,3 +2316,63 @@ extension Wisdom {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for Wisdom
+public struct WisdomErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case preconditionFailedException = "PreconditionFailedException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case tooManyTagsException = "TooManyTagsException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Wisdom
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You do not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// The request could not be processed because of conflict in the current state of the resource. For example, if you&#39;re using a Create API (such as CreateAssistant) that accepts name, a conflicting resource (usually with the same name) is being created or mutated.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// The provided revisionId does not match, indicating the content has been modified since it was last read.
+    public static var preconditionFailedException: Self { .init(.preconditionFailedException) }
+    /// The specified resource does not exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// You&#39;ve exceeded your service quota. To perform the requested action, remove some of the relevant resources, or use service quotas to request a service quota increase.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// Amazon Connect Wisdom throws this exception if you have too many tags in your tag set.
+    public static var tooManyTagsException: Self { .init(.tooManyTagsException) }
+    /// The input fails to satisfy the constraints specified by a service.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension WisdomErrorType: Equatable {
+    public static func == (lhs: WisdomErrorType, rhs: WisdomErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension WisdomErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

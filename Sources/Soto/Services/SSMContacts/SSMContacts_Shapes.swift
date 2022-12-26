@@ -1562,3 +1562,66 @@ extension SSMContacts {
         public init() {}
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for SSMContacts
+public struct SSMContactsErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case dataEncryptionException = "DataEncryptionException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize SSMContacts
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You don&#39;t have sufficient access to perform this operation.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// Updating or deleting a resource causes an inconsistent state.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// The operation failed to due an encryption key error.
+    public static var dataEncryptionException: Self { .init(.dataEncryptionException) }
+    /// Unexpected error occurred while processing the request.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// Request references a resource that doesn&#39;t exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// Request would cause a service quota to be exceeded.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input fails to satisfy the constraints specified by an Amazon Web Services service.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension SSMContactsErrorType: Equatable {
+    public static func == (lhs: SSMContactsErrorType, rhs: SSMContactsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension SSMContactsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

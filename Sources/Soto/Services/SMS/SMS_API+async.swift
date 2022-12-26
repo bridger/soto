@@ -199,4 +199,97 @@ extension SMS {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension SMS {
+    ///  Describes the connectors registered with the Server Migration Service.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getConnectorsPaginator(
+        _ input: GetConnectorsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetConnectorsRequest, GetConnectorsResponse> {
+        return .init(
+            input: input,
+            command: self.getConnectors,
+            inputKey: \GetConnectorsRequest.nextToken,
+            outputKey: \GetConnectorsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the specified replication job or all of your replication jobs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getReplicationJobsPaginator(
+        _ input: GetReplicationJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetReplicationJobsRequest, GetReplicationJobsResponse> {
+        return .init(
+            input: input,
+            command: self.getReplicationJobs,
+            inputKey: \GetReplicationJobsRequest.nextToken,
+            outputKey: \GetReplicationJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the replication runs for the specified replication job.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getReplicationRunsPaginator(
+        _ input: GetReplicationRunsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetReplicationRunsRequest, GetReplicationRunsResponse> {
+        return .init(
+            input: input,
+            command: self.getReplicationRuns,
+            inputKey: \GetReplicationRunsRequest.nextToken,
+            outputKey: \GetReplicationRunsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the servers in your server catalog. Before you can describe your servers, you must import them using ImportServerCatalog.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getServersPaginator(
+        _ input: GetServersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetServersRequest, GetServersResponse> {
+        return .init(
+            input: input,
+            command: self.getServers,
+            inputKey: \GetServersRequest.nextToken,
+            outputKey: \GetServersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

@@ -109,4 +109,75 @@ extension MediaPackageVod {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MediaPackageVod {
+    ///  Returns a collection of MediaPackage VOD Asset resources.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAssetsPaginator(
+        _ input: ListAssetsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAssetsRequest, ListAssetsResponse> {
+        return .init(
+            input: input,
+            command: self.listAssets,
+            inputKey: \ListAssetsRequest.nextToken,
+            outputKey: \ListAssetsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a collection of MediaPackage VOD PackagingConfiguration resources.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPackagingConfigurationsPaginator(
+        _ input: ListPackagingConfigurationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPackagingConfigurationsRequest, ListPackagingConfigurationsResponse> {
+        return .init(
+            input: input,
+            command: self.listPackagingConfigurations,
+            inputKey: \ListPackagingConfigurationsRequest.nextToken,
+            outputKey: \ListPackagingConfigurationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a collection of MediaPackage VOD PackagingGroup resources.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPackagingGroupsPaginator(
+        _ input: ListPackagingGroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPackagingGroupsRequest, ListPackagingGroupsResponse> {
+        return .init(
+            input: input,
+            command: self.listPackagingGroups,
+            inputKey: \ListPackagingGroupsRequest.nextToken,
+            outputKey: \ListPackagingGroupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

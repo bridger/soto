@@ -61,4 +61,53 @@ extension EBS {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension EBS {
+    ///  Returns information about the blocks that are different between two Amazon Elastic Block Store snapshots of the same volume/snapshot lineage.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listChangedBlocksPaginator(
+        _ input: ListChangedBlocksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListChangedBlocksRequest, ListChangedBlocksResponse> {
+        return .init(
+            input: input,
+            command: self.listChangedBlocks,
+            inputKey: \ListChangedBlocksRequest.nextToken,
+            outputKey: \ListChangedBlocksResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about the blocks in an Amazon Elastic Block Store snapshot.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSnapshotBlocksPaginator(
+        _ input: ListSnapshotBlocksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSnapshotBlocksRequest, ListSnapshotBlocksResponse> {
+        return .init(
+            input: input,
+            command: self.listSnapshotBlocks,
+            inputKey: \ListSnapshotBlocksRequest.nextToken,
+            outputKey: \ListSnapshotBlocksResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

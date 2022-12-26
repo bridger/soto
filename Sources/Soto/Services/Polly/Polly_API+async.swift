@@ -79,4 +79,31 @@ extension Polly {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Polly {
+    ///  Returns a list of SpeechSynthesisTask objects ordered by their creation date. This operation can filter the tasks by their status, for example, allowing users to list only tasks that are completed.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSpeechSynthesisTasksPaginator(
+        _ input: ListSpeechSynthesisTasksInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSpeechSynthesisTasksInput, ListSpeechSynthesisTasksOutput> {
+        return .init(
+            input: input,
+            command: self.listSpeechSynthesisTasks,
+            inputKey: \ListSpeechSynthesisTasksInput.nextToken,
+            outputKey: \ListSpeechSynthesisTasksOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

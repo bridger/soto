@@ -1536,3 +1536,60 @@ extension PrivateNetworks {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for PrivateNetworks
+public struct PrivateNetworksErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case internalServerException = "InternalServerException"
+        case limitExceededException = "LimitExceededException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize PrivateNetworks
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You do not have permission to perform this operation.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// Information about an internal error.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The limit was exceeded.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// The resource was not found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    ///  The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The request failed validation.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension PrivateNetworksErrorType: Equatable {
+    public static func == (lhs: PrivateNetworksErrorType, rhs: PrivateNetworksErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension PrivateNetworksErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

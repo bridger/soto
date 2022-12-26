@@ -198,3 +198,258 @@ extension ChimeSDKIdentity {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension ChimeSDKIdentity {
+    ///  Returns a list of the administrators in the AppInstance.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listAppInstanceAdminsPaginator<Result>(
+        _ input: ListAppInstanceAdminsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListAppInstanceAdminsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listAppInstanceAdmins,
+            inputKey: \ListAppInstanceAdminsRequest.nextToken,
+            outputKey: \ListAppInstanceAdminsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listAppInstanceAdminsPaginator(
+        _ input: ListAppInstanceAdminsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListAppInstanceAdminsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listAppInstanceAdmins,
+            inputKey: \ListAppInstanceAdminsRequest.nextToken,
+            outputKey: \ListAppInstanceAdminsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists all the AppInstanceUserEndpoints created under a single AppInstanceUser.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listAppInstanceUserEndpointsPaginator<Result>(
+        _ input: ListAppInstanceUserEndpointsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListAppInstanceUserEndpointsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listAppInstanceUserEndpoints,
+            inputKey: \ListAppInstanceUserEndpointsRequest.nextToken,
+            outputKey: \ListAppInstanceUserEndpointsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listAppInstanceUserEndpointsPaginator(
+        _ input: ListAppInstanceUserEndpointsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListAppInstanceUserEndpointsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listAppInstanceUserEndpoints,
+            inputKey: \ListAppInstanceUserEndpointsRequest.nextToken,
+            outputKey: \ListAppInstanceUserEndpointsResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  List all AppInstanceUsers created under a single AppInstance.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listAppInstanceUsersPaginator<Result>(
+        _ input: ListAppInstanceUsersRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListAppInstanceUsersResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listAppInstanceUsers,
+            inputKey: \ListAppInstanceUsersRequest.nextToken,
+            outputKey: \ListAppInstanceUsersResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listAppInstanceUsersPaginator(
+        _ input: ListAppInstanceUsersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListAppInstanceUsersResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listAppInstanceUsers,
+            inputKey: \ListAppInstanceUsersRequest.nextToken,
+            outputKey: \ListAppInstanceUsersResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists all Amazon Chime AppInstances created under a single AWS account.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listAppInstancesPaginator<Result>(
+        _ input: ListAppInstancesRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListAppInstancesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listAppInstances,
+            inputKey: \ListAppInstancesRequest.nextToken,
+            outputKey: \ListAppInstancesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listAppInstancesPaginator(
+        _ input: ListAppInstancesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListAppInstancesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listAppInstances,
+            inputKey: \ListAppInstancesRequest.nextToken,
+            outputKey: \ListAppInstancesResponse.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension ChimeSDKIdentity.ListAppInstanceAdminsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> ChimeSDKIdentity.ListAppInstanceAdminsRequest {
+        return .init(
+            appInstanceArn: self.appInstanceArn,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+extension ChimeSDKIdentity.ListAppInstanceUserEndpointsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> ChimeSDKIdentity.ListAppInstanceUserEndpointsRequest {
+        return .init(
+            appInstanceUserArn: self.appInstanceUserArn,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+extension ChimeSDKIdentity.ListAppInstanceUsersRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> ChimeSDKIdentity.ListAppInstanceUsersRequest {
+        return .init(
+            appInstanceArn: self.appInstanceArn,
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}
+
+extension ChimeSDKIdentity.ListAppInstancesRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> ChimeSDKIdentity.ListAppInstancesRequest {
+        return .init(
+            maxResults: self.maxResults,
+            nextToken: token
+        )
+    }
+}

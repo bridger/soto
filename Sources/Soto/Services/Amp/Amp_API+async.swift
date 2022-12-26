@@ -129,4 +129,91 @@ extension Amp {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Amp {
+    ///  Lists rule groups namespaces.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRuleGroupsNamespacesPaginator(
+        _ input: ListRuleGroupsNamespacesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRuleGroupsNamespacesRequest, ListRuleGroupsNamespacesResponse> {
+        return .init(
+            input: input,
+            command: self.listRuleGroupsNamespaces,
+            inputKey: \ListRuleGroupsNamespacesRequest.nextToken,
+            outputKey: \ListRuleGroupsNamespacesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all AMP workspaces, including workspaces being created or deleted.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorkspacesPaginator(
+        _ input: ListWorkspacesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorkspacesRequest, ListWorkspacesResponse> {
+        return .init(
+            input: input,
+            command: self.listWorkspaces,
+            inputKey: \ListWorkspacesRequest.nextToken,
+            outputKey: \ListWorkspacesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Amp {
+    public func waitUntilWorkspaceActive(
+        _ input: DescribeWorkspaceRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("workspace.status.statusCode", expected: "ACTIVE")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("workspace.status.statusCode", expected: "UPDATING")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("workspace.status.statusCode", expected: "CREATING")),
+            ],
+            command: self.describeWorkspace
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilWorkspaceDeleted(
+        _ input: DescribeWorkspaceRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("workspace.status.statusCode", expected: "DELETING")),
+            ],
+            command: self.describeWorkspace
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

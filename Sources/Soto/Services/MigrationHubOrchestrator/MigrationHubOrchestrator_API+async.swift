@@ -164,4 +164,163 @@ extension MigrationHubOrchestrator {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MigrationHubOrchestrator {
+    ///  List AWS Migration Hub Orchestrator plugins.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPluginsPaginator(
+        _ input: ListPluginsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPluginsRequest, ListPluginsResponse> {
+        return .init(
+            input: input,
+            command: self.listPlugins,
+            inputKey: \ListPluginsRequest.nextToken,
+            outputKey: \ListPluginsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the step groups in a template.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTemplateStepGroupsPaginator(
+        _ input: ListTemplateStepGroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTemplateStepGroupsRequest, ListTemplateStepGroupsResponse> {
+        return .init(
+            input: input,
+            command: self.listTemplateStepGroups,
+            inputKey: \ListTemplateStepGroupsRequest.nextToken,
+            outputKey: \ListTemplateStepGroupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the steps in a template.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTemplateStepsPaginator(
+        _ input: ListTemplateStepsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTemplateStepsRequest, ListTemplateStepsResponse> {
+        return .init(
+            input: input,
+            command: self.listTemplateSteps,
+            inputKey: \ListTemplateStepsRequest.nextToken,
+            outputKey: \ListTemplateStepsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the templates available in Migration Hub Orchestrator to create a migration workflow.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTemplatesPaginator(
+        _ input: ListMigrationWorkflowTemplatesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMigrationWorkflowTemplatesRequest, ListMigrationWorkflowTemplatesResponse> {
+        return .init(
+            input: input,
+            command: self.listTemplates,
+            inputKey: \ListMigrationWorkflowTemplatesRequest.nextToken,
+            outputKey: \ListMigrationWorkflowTemplatesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the step groups in a migration workflow.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorkflowStepGroupsPaginator(
+        _ input: ListWorkflowStepGroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorkflowStepGroupsRequest, ListWorkflowStepGroupsResponse> {
+        return .init(
+            input: input,
+            command: self.listWorkflowStepGroups,
+            inputKey: \ListWorkflowStepGroupsRequest.nextToken,
+            outputKey: \ListWorkflowStepGroupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the steps in a workflow.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorkflowStepsPaginator(
+        _ input: ListWorkflowStepsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorkflowStepsRequest, ListWorkflowStepsResponse> {
+        return .init(
+            input: input,
+            command: self.listWorkflowSteps,
+            inputKey: \ListWorkflowStepsRequest.nextToken,
+            outputKey: \ListWorkflowStepsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the migration workflows.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorkflowsPaginator(
+        _ input: ListMigrationWorkflowsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMigrationWorkflowsRequest, ListMigrationWorkflowsResponse> {
+        return .init(
+            input: input,
+            command: self.listWorkflows,
+            inputKey: \ListMigrationWorkflowsRequest.nextToken,
+            outputKey: \ListMigrationWorkflowsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

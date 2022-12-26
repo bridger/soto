@@ -103,4 +103,75 @@ extension SsmSap {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension SsmSap {
+    ///  Lists all the applications registered with AWS Systems Manager for SAP.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listApplicationsPaginator(
+        _ input: ListApplicationsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListApplicationsInput, ListApplicationsOutput> {
+        return .init(
+            input: input,
+            command: self.listApplications,
+            inputKey: \ListApplicationsInput.nextToken,
+            outputKey: \ListApplicationsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all the components registered with AWS Systems Manager for SAP.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listComponentsPaginator(
+        _ input: ListComponentsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListComponentsInput, ListComponentsOutput> {
+        return .init(
+            input: input,
+            command: self.listComponents,
+            inputKey: \ListComponentsInput.nextToken,
+            outputKey: \ListComponentsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the SAP HANA databases of an application registered with AWS Systems Manager for SAP.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDatabasesPaginator(
+        _ input: ListDatabasesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDatabasesInput, ListDatabasesOutput> {
+        return .init(
+            input: input,
+            command: self.listDatabases,
+            inputKey: \ListDatabasesInput.nextToken,
+            outputKey: \ListDatabasesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

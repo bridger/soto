@@ -247,3 +247,51 @@ extension PersonalizeEvents {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for PersonalizeEvents
+public struct PersonalizeEventsErrorType: AWSErrorType {
+    enum Code: String {
+        case invalidInputException = "InvalidInputException"
+        case resourceInUseException = "ResourceInUseException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize PersonalizeEvents
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Provide a valid value for the field or parameter.
+    public static var invalidInputException: Self { .init(.invalidInputException) }
+    /// The specified resource is in use.
+    public static var resourceInUseException: Self { .init(.resourceInUseException) }
+    /// Could not find the specified resource.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+}
+
+extension PersonalizeEventsErrorType: Equatable {
+    public static func == (lhs: PersonalizeEventsErrorType, rhs: PersonalizeEventsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension PersonalizeEventsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

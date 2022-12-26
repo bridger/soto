@@ -38,17 +38,17 @@ extension Nimble {
         return try await self.client.execute(operation: "CreateStreamingImage", path: "/2020-08-01/studios/{studioId}/streaming-images", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Creates a streaming session in a studio. After invoking this operation, you must poll GetStreamingSession until the streaming session is in state READY.
+    /// Creates a streaming session in a studio. After invoking this operation, you must poll GetStreamingSession until the streaming session is in the READY state.
     public func createStreamingSession(_ input: CreateStreamingSessionRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> CreateStreamingSessionResponse {
         return try await self.client.execute(operation: "CreateStreamingSession", path: "/2020-08-01/studios/{studioId}/streaming-sessions", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Creates a streaming session stream for a streaming session. After invoking this API, invoke GetStreamingSessionStream with the returned streamId to poll the resource until it is in state READY.
+    /// Creates a streaming session stream for a streaming session. After invoking this API, invoke GetStreamingSessionStream with the returned streamId to poll the resource until it is in the READY state.
     public func createStreamingSessionStream(_ input: CreateStreamingSessionStreamRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> CreateStreamingSessionStreamResponse {
         return try await self.client.execute(operation: "CreateStreamingSessionStream", path: "/2020-08-01/studios/{studioId}/streaming-sessions/{sessionId}/streams", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Create a new Studio. When creating a Studio, two IAM roles must be provided: the admin role and the user Role. These roles are assumed by your users when they log in to the Nimble Studio portal. The user role must have the AmazonNimbleStudio-StudioUser managed policy attached for the portal to function properly. The Admin Role must have the AmazonNimbleStudio-StudioAdmin managed policy attached for the portal to function properly. You may optionally specify a KMS key in the StudioEncryptionConfiguration. In Nimble Studio, resource names, descriptions, initialization scripts, and other data you provide are always encrypted at rest using an KMS key. By default, this key is owned by Amazon Web Services and managed on your behalf. You may provide your own KMS key when calling CreateStudio to encrypt this data using a key you own and manage. When providing an KMS key during studio creation, Nimble Studio creates KMS grants in your account to provide your studio user and admin roles access to these KMS keys. If you delete this grant, the studio will no longer be accessible to your portal users. If you delete the studio KMS key, your studio will no longer be accessible.
+    /// Create a new studio. When creating a studio, two IAM roles must be provided: the admin role and the user role. These roles are assumed by your users when they log in to the Nimble Studio portal. The user role must have the AmazonNimbleStudio-StudioUser managed policy attached for the portal to function properly. The admin role must have the AmazonNimbleStudio-StudioAdmin managed policy attached for the portal to function properly. You may optionally specify a KMS key in the StudioEncryptionConfiguration. In Nimble Studio, resource names, descriptions, initialization scripts, and other data you provide are always encrypted at rest using an KMS key. By default, this key is owned by Amazon Web Services and managed on your behalf. You may provide your own KMS key when calling CreateStudio to encrypt this data using a key you own and manage. When providing an KMS key during studio creation, Nimble Studio creates KMS grants in your account to provide your studio user and admin roles access to these KMS keys. If you delete this grant, the studio will no longer be accessible to your portal users. If you delete the studio KMS key, your studio will no longer be accessible.
     public func createStudio(_ input: CreateStudioRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> CreateStudioResponse {
         return try await self.client.execute(operation: "CreateStudio", path: "/2020-08-01/studios", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -93,7 +93,7 @@ extension Nimble {
         return try await self.client.execute(operation: "DeleteStudioMember", path: "/2020-08-01/studios/{studioId}/membership/{principalId}", httpMethod: .DELETE, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Get Eula.
+    /// Get EULA.
     public func getEula(_ input: GetEulaRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetEulaResponse {
         return try await self.client.execute(operation: "GetEula", path: "/2020-08-01/eulas/{eulaId}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -128,12 +128,17 @@ extension Nimble {
         return try await self.client.execute(operation: "GetStreamingSession", path: "/2020-08-01/studios/{studioId}/streaming-sessions/{sessionId}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Gets a StreamingSessionStream for a streaming session. Invoke this operation to poll the resource after invoking CreateStreamingSessionStream. After the StreamingSessionStream changes to the state READY, the url property will contain a stream to be used with the DCV streaming client.
+    /// Gets StreamingSessionBackup resource. Invoke this operation to poll for a streaming session backup while stopping a streaming session.
+    public func getStreamingSessionBackup(_ input: GetStreamingSessionBackupRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetStreamingSessionBackupResponse {
+        return try await self.client.execute(operation: "GetStreamingSessionBackup", path: "/2020-08-01/studios/{studioId}/streaming-session-backups/{backupId}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Gets a StreamingSessionStream for a streaming session. Invoke this operation to poll the resource after invoking CreateStreamingSessionStream. After the StreamingSessionStream changes to the READY state, the url property will contain a stream to be used with the DCV streaming client.
     public func getStreamingSessionStream(_ input: GetStreamingSessionStreamRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetStreamingSessionStreamResponse {
         return try await self.client.execute(operation: "GetStreamingSessionStream", path: "/2020-08-01/studios/{studioId}/streaming-sessions/{sessionId}/streams/{streamId}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Get a Studio resource.
+    /// Get a studio resource.
     public func getStudio(_ input: GetStudioRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetStudioResponse {
         return try await self.client.execute(operation: "GetStudio", path: "/2020-08-01/studios/{studioId}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -148,12 +153,12 @@ extension Nimble {
         return try await self.client.execute(operation: "GetStudioMember", path: "/2020-08-01/studios/{studioId}/membership/{principalId}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// List Eula Acceptances.
+    /// List EULA acceptances.
     public func listEulaAcceptances(_ input: ListEulaAcceptancesRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListEulaAcceptancesResponse {
         return try await self.client.execute(operation: "ListEulaAcceptances", path: "/2020-08-01/studios/{studioId}/eula-acceptances", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// List Eulas.
+    /// List EULAs.
     public func listEulas(_ input: ListEulasRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListEulasResponse {
         return try await self.client.execute(operation: "ListEulas", path: "/2020-08-01/eulas", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -173,6 +178,11 @@ extension Nimble {
         return try await self.client.execute(operation: "ListStreamingImages", path: "/2020-08-01/studios/{studioId}/streaming-images", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    /// Lists the backups of a streaming session in a studio.
+    public func listStreamingSessionBackups(_ input: ListStreamingSessionBackupsRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListStreamingSessionBackupsResponse {
+        return try await self.client.execute(operation: "ListStreamingSessionBackups", path: "/2020-08-01/studios/{studioId}/streaming-session-backups", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Lists the streaming sessions in a studio.
     public func listStreamingSessions(_ input: ListStreamingSessionsRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListStreamingSessionsResponse {
         return try await self.client.execute(operation: "ListStreamingSessions", path: "/2020-08-01/studios/{studioId}/streaming-sessions", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -188,7 +198,7 @@ extension Nimble {
         return try await self.client.execute(operation: "ListStudioMembers", path: "/2020-08-01/studios/{studioId}/membership", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// List studios in your Amazon Web Services account in the requested Amazon Web Services Region.
+    /// List studios in your Amazon Web Services accounts in the requested Amazon Web Services Region.
     public func listStudios(_ input: ListStudiosRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListStudiosResponse {
         return try await self.client.execute(operation: "ListStudios", path: "/2020-08-01/studios", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -208,7 +218,7 @@ extension Nimble {
         return try await self.client.execute(operation: "PutStudioMembers", path: "/2020-08-01/studios/{studioId}/membership", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    ///  Transitions sessions from the STOPPED state into the READY state. The START_IN_PROGRESS state is the intermediate state between the STOPPED and READY states.
+    /// Transitions sessions from the STOPPED state into the READY state. The START_IN_PROGRESS state is the intermediate state between the STOPPED and READY states.
     public func startStreamingSession(_ input: StartStreamingSessionRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> StartStreamingSessionResponse {
         return try await self.client.execute(operation: "StartStreamingSession", path: "/2020-08-01/studios/{studioId}/streaming-sessions/{sessionId}/start", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -256,6 +266,447 @@ extension Nimble {
     /// Updates a studio component resource.
     public func updateStudioComponent(_ input: UpdateStudioComponentRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateStudioComponentResponse {
         return try await self.client.execute(operation: "UpdateStudioComponent", path: "/2020-08-01/studios/{studioId}/studio-components/{studioComponentId}", httpMethod: .PATCH, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Nimble {
+    ///  List EULA acceptances.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEulaAcceptancesPaginator(
+        _ input: ListEulaAcceptancesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEulaAcceptancesRequest, ListEulaAcceptancesResponse> {
+        return .init(
+            input: input,
+            command: self.listEulaAcceptances,
+            inputKey: \ListEulaAcceptancesRequest.nextToken,
+            outputKey: \ListEulaAcceptancesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List EULAs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEulasPaginator(
+        _ input: ListEulasRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEulasRequest, ListEulasResponse> {
+        return .init(
+            input: input,
+            command: self.listEulas,
+            inputKey: \ListEulasRequest.nextToken,
+            outputKey: \ListEulasResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Get all users in a given launch profile membership.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listLaunchProfileMembersPaginator(
+        _ input: ListLaunchProfileMembersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListLaunchProfileMembersRequest, ListLaunchProfileMembersResponse> {
+        return .init(
+            input: input,
+            command: self.listLaunchProfileMembers,
+            inputKey: \ListLaunchProfileMembersRequest.nextToken,
+            outputKey: \ListLaunchProfileMembersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List all the launch profiles a studio.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listLaunchProfilesPaginator(
+        _ input: ListLaunchProfilesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListLaunchProfilesRequest, ListLaunchProfilesResponse> {
+        return .init(
+            input: input,
+            command: self.listLaunchProfiles,
+            inputKey: \ListLaunchProfilesRequest.nextToken,
+            outputKey: \ListLaunchProfilesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the streaming image resources available to this studio. This list will contain both images provided by Amazon Web Services, as well as streaming images that you have created in your studio.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listStreamingImagesPaginator(
+        _ input: ListStreamingImagesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListStreamingImagesRequest, ListStreamingImagesResponse> {
+        return .init(
+            input: input,
+            command: self.listStreamingImages,
+            inputKey: \ListStreamingImagesRequest.nextToken,
+            outputKey: \ListStreamingImagesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the backups of a streaming session in a studio.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listStreamingSessionBackupsPaginator(
+        _ input: ListStreamingSessionBackupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListStreamingSessionBackupsRequest, ListStreamingSessionBackupsResponse> {
+        return .init(
+            input: input,
+            command: self.listStreamingSessionBackups,
+            inputKey: \ListStreamingSessionBackupsRequest.nextToken,
+            outputKey: \ListStreamingSessionBackupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the streaming sessions in a studio.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listStreamingSessionsPaginator(
+        _ input: ListStreamingSessionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListStreamingSessionsRequest, ListStreamingSessionsResponse> {
+        return .init(
+            input: input,
+            command: self.listStreamingSessions,
+            inputKey: \ListStreamingSessionsRequest.nextToken,
+            outputKey: \ListStreamingSessionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the StudioComponents in a studio.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listStudioComponentsPaginator(
+        _ input: ListStudioComponentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListStudioComponentsRequest, ListStudioComponentsResponse> {
+        return .init(
+            input: input,
+            command: self.listStudioComponents,
+            inputKey: \ListStudioComponentsRequest.nextToken,
+            outputKey: \ListStudioComponentsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Get all users in a given studio membership.   ListStudioMembers only returns admin members.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listStudioMembersPaginator(
+        _ input: ListStudioMembersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListStudioMembersRequest, ListStudioMembersResponse> {
+        return .init(
+            input: input,
+            command: self.listStudioMembers,
+            inputKey: \ListStudioMembersRequest.nextToken,
+            outputKey: \ListStudioMembersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List studios in your Amazon Web Services accounts in the requested Amazon Web Services Region.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listStudiosPaginator(
+        _ input: ListStudiosRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListStudiosRequest, ListStudiosResponse> {
+        return .init(
+            input: input,
+            command: self.listStudios,
+            inputKey: \ListStudiosRequest.nextToken,
+            outputKey: \ListStudiosResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Nimble {
+    public func waitUntilLaunchProfileDeleted(
+        _ input: GetLaunchProfileRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("launchProfile.state", expected: "DELETED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("launchProfile.state", expected: "DELETE_FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(750),
+            command: self.getLaunchProfile
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilLaunchProfileReady(
+        _ input: GetLaunchProfileRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("launchProfile.state", expected: "READY")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("launchProfile.state", expected: "CREATE_FAILED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("launchProfile.state", expected: "UPDATE_FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(750),
+            command: self.getLaunchProfile
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStreamingImageDeleted(
+        _ input: GetStreamingImageRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("streamingImage.state", expected: "DELETED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("streamingImage.state", expected: "DELETE_FAILED")),
+            ],
+            command: self.getStreamingImage
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStreamingImageReady(
+        _ input: GetStreamingImageRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("streamingImage.state", expected: "READY")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("streamingImage.state", expected: "CREATE_FAILED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("streamingImage.state", expected: "UPDATE_FAILED")),
+            ],
+            command: self.getStreamingImage
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStreamingSessionDeleted(
+        _ input: GetStreamingSessionRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("session.state", expected: "DELETED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("session.state", expected: "DELETE_FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(900),
+            command: self.getStreamingSession
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStreamingSessionReady(
+        _ input: GetStreamingSessionRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("session.state", expected: "READY")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("session.state", expected: "CREATE_FAILED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("session.state", expected: "START_FAILED")),
+            ],
+            minDelayTime: .seconds(10),
+            maxDelayTime: .seconds(1800),
+            command: self.getStreamingSession
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStreamingSessionStopped(
+        _ input: GetStreamingSessionRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("session.state", expected: "STOPPED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("session.state", expected: "STOP_FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(900),
+            command: self.getStreamingSession
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStreamingSessionStreamReady(
+        _ input: GetStreamingSessionStreamRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("stream.state", expected: "READY")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("stream.state", expected: "CREATE_FAILED")),
+            ],
+            minDelayTime: .seconds(5),
+            maxDelayTime: .seconds(150),
+            command: self.getStreamingSessionStream
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStudioComponentDeleted(
+        _ input: GetStudioComponentRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("studioComponent.state", expected: "DELETED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("studioComponent.state", expected: "DELETE_FAILED")),
+            ],
+            minDelayTime: .seconds(1),
+            maxDelayTime: .seconds(120),
+            command: self.getStudioComponent
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStudioComponentReady(
+        _ input: GetStudioComponentRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("studioComponent.state", expected: "READY")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("studioComponent.state", expected: "CREATE_FAILED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("studioComponent.state", expected: "UPDATE_FAILED")),
+            ],
+            command: self.getStudioComponent
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStudioDeleted(
+        _ input: GetStudioRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("studio.state", expected: "DELETED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("studio.state", expected: "DELETE_FAILED")),
+            ],
+            command: self.getStudio
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilStudioReady(
+        _ input: GetStudioRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("studio.state", expected: "READY")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("studio.state", expected: "CREATE_FAILED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("studio.state", expected: "UPDATE_FAILED")),
+            ],
+            command: self.getStudio
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
     }
 }
 

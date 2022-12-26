@@ -132,3 +132,135 @@ extension Scheduler {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension Scheduler {
+    ///  Returns a paginated list of your schedule groups.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listScheduleGroupsPaginator<Result>(
+        _ input: ListScheduleGroupsInput,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListScheduleGroupsOutput, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listScheduleGroups,
+            inputKey: \ListScheduleGroupsInput.nextToken,
+            outputKey: \ListScheduleGroupsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listScheduleGroupsPaginator(
+        _ input: ListScheduleGroupsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListScheduleGroupsOutput, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listScheduleGroups,
+            inputKey: \ListScheduleGroupsInput.nextToken,
+            outputKey: \ListScheduleGroupsOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a paginated list of your EventBridge Scheduler schedules.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listSchedulesPaginator<Result>(
+        _ input: ListSchedulesInput,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListSchedulesOutput, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listSchedules,
+            inputKey: \ListSchedulesInput.nextToken,
+            outputKey: \ListSchedulesOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listSchedulesPaginator(
+        _ input: ListSchedulesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListSchedulesOutput, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listSchedules,
+            inputKey: \ListSchedulesInput.nextToken,
+            outputKey: \ListSchedulesOutput.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension Scheduler.ListScheduleGroupsInput: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Scheduler.ListScheduleGroupsInput {
+        return .init(
+            maxResults: self.maxResults,
+            namePrefix: self.namePrefix,
+            nextToken: token
+        )
+    }
+}
+
+extension Scheduler.ListSchedulesInput: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> Scheduler.ListSchedulesInput {
+        return .init(
+            groupName: self.groupName,
+            maxResults: self.maxResults,
+            namePrefix: self.namePrefix,
+            nextToken: token,
+            state: self.state
+        )
+    }
+}

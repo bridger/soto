@@ -134,4 +134,31 @@ extension MQ {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MQ {
+    ///  Returns a list of all brokers.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listBrokersPaginator(
+        _ input: ListBrokersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListBrokersRequest, ListBrokersResponse> {
+        return .init(
+            input: input,
+            command: self.listBrokers,
+            inputKey: \ListBrokersRequest.nextToken,
+            outputKey: \ListBrokersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

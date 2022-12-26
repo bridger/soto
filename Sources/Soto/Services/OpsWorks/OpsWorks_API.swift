@@ -446,3 +446,210 @@ extension OpsWorks {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension OpsWorks {
+    ///  Describes Amazon ECS clusters that are registered with a stack. If you specify only a stack ID, you can use the MaxResults and NextToken parameters to paginate the response. However, AWS OpsWorks Stacks currently supports only one cluster per layer, so the result set has a maximum of one element.  Required Permissions: To use this action, an IAM user must have a Show, Deploy, or Manage permissions level for the stack or an attached policy that explicitly grants permission. For more information about user permissions, see Managing User Permissions. This call accepts only one resource-identifying parameter.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeEcsClustersPaginator<Result>(
+        _ input: DescribeEcsClustersRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeEcsClustersResult, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeEcsClusters,
+            inputKey: \DescribeEcsClustersRequest.nextToken,
+            outputKey: \DescribeEcsClustersResult.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeEcsClustersPaginator(
+        _ input: DescribeEcsClustersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeEcsClustersResult, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeEcsClusters,
+            inputKey: \DescribeEcsClustersRequest.nextToken,
+            outputKey: \DescribeEcsClustersResult.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension OpsWorks.DescribeEcsClustersRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> OpsWorks.DescribeEcsClustersRequest {
+        return .init(
+            ecsClusterArns: self.ecsClusterArns,
+            maxResults: self.maxResults,
+            nextToken: token,
+            stackId: self.stackId
+        )
+    }
+}
+
+// MARK: Waiters
+
+extension OpsWorks {
+    public func waitUntilAppExists(
+        _ input: DescribeAppsRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSSuccessMatcher()),
+                .init(state: .failure, matcher: AWSSuccessMatcher()),
+            ],
+            minDelayTime: .seconds(1),
+            command: self.describeApps
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until a deployment has completed successfully.
+    public func waitUntilDeploymentSuccessful(
+        _ input: DescribeDeploymentsRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("deployments[].status", expected: "successful")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("deployments[].status", expected: "failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeDeployments
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until OpsWorks instance is online.
+    public func waitUntilInstanceOnline(
+        _ input: DescribeInstancesRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("instances[].status", expected: "online")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "setup_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "shutting_down")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "start_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stopped")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stopping")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "terminating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "terminated")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stop_failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeInstances
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until OpsWorks instance is registered.
+    public func waitUntilInstanceRegistered(
+        _ input: DescribeInstancesRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("instances[].status", expected: "registered")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "setup_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "shutting_down")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stopped")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stopping")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "terminating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "terminated")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stop_failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeInstances
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until OpsWorks instance is stopped.
+    public func waitUntilInstanceStopped(
+        _ input: DescribeInstancesRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("instances[].status", expected: "stopped")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "booting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "pending")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "rebooting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "requested")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "running_setup")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "setup_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "start_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "stop_failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeInstances
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    /// Wait until OpsWorks instance is terminated.
+    public func waitUntilInstanceTerminated(
+        _ input: DescribeInstancesRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("instances[].status", expected: "terminated")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "booting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "online")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "pending")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "rebooting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "requested")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "running_setup")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "setup_failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("instances[].status", expected: "start_failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeInstances
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}

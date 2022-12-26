@@ -175,4 +175,52 @@ extension ElasticLoadBalancing {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElasticLoadBalancing {
+    ///  Describes the specified the load balancers. If no load balancers are specified, the call describes all of your load balancers.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeLoadBalancersPaginator(
+        _ input: DescribeAccessPointsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeAccessPointsInput, DescribeAccessPointsOutput> {
+        return .init(
+            input: input,
+            command: self.describeLoadBalancers,
+            inputKey: \DescribeAccessPointsInput.marker,
+            outputKey: \DescribeAccessPointsOutput.nextMarker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElasticLoadBalancing {
+    public func waitUntilAnyInstanceInService(
+        _ input: DescribeEndPointStateInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAnyPathMatcher("instanceStates[].state", expected: "InService")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeInstanceHealth
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

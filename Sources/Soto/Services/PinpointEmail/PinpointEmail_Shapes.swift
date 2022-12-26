@@ -2150,3 +2150,72 @@ extension PinpointEmail {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for PinpointEmail
+public struct PinpointEmailErrorType: AWSErrorType {
+    enum Code: String {
+        case accountSuspendedException = "AccountSuspendedException"
+        case alreadyExistsException = "AlreadyExistsException"
+        case badRequestException = "BadRequestException"
+        case concurrentModificationException = "ConcurrentModificationException"
+        case limitExceededException = "LimitExceededException"
+        case mailFromDomainNotVerifiedException = "MailFromDomainNotVerifiedException"
+        case messageRejected = "MessageRejected"
+        case notFoundException = "NotFoundException"
+        case sendingPausedException = "SendingPausedException"
+        case tooManyRequestsException = "TooManyRequestsException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize PinpointEmail
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The message can&#39;t be sent because the account&#39;s ability to send email has been permanently restricted.
+    public static var accountSuspendedException: Self { .init(.accountSuspendedException) }
+    /// The resource specified in your request already exists.
+    public static var alreadyExistsException: Self { .init(.alreadyExistsException) }
+    /// The input you provided is invalid.
+    public static var badRequestException: Self { .init(.badRequestException) }
+    /// The resource is being modified by another operation or thread.
+    public static var concurrentModificationException: Self { .init(.concurrentModificationException) }
+    /// There are too many instances of the specified resource type.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// The message can&#39;t be sent because the sending domain isn&#39;t verified.
+    public static var mailFromDomainNotVerifiedException: Self { .init(.mailFromDomainNotVerifiedException) }
+    /// The message can&#39;t be sent because it contains invalid content.
+    public static var messageRejected: Self { .init(.messageRejected) }
+    /// The resource you attempted to access doesn&#39;t exist.
+    public static var notFoundException: Self { .init(.notFoundException) }
+    /// The message can&#39;t be sent because the account&#39;s ability to send email is currently paused.
+    public static var sendingPausedException: Self { .init(.sendingPausedException) }
+    /// Too many requests have been made to the operation.
+    public static var tooManyRequestsException: Self { .init(.tooManyRequestsException) }
+}
+
+extension PinpointEmailErrorType: Equatable {
+    public static func == (lhs: PinpointEmailErrorType, rhs: PinpointEmailErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension PinpointEmailErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

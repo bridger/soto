@@ -259,4 +259,153 @@ extension ElasticBeanstalk {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElasticBeanstalk {
+    ///  Lists an environment's completed and failed managed actions.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEnvironmentManagedActionHistoryPaginator(
+        _ input: DescribeEnvironmentManagedActionHistoryRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEnvironmentManagedActionHistoryRequest, DescribeEnvironmentManagedActionHistoryResult> {
+        return .init(
+            input: input,
+            command: self.describeEnvironmentManagedActionHistory,
+            inputKey: \DescribeEnvironmentManagedActionHistoryRequest.nextToken,
+            outputKey: \DescribeEnvironmentManagedActionHistoryResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns list of event descriptions matching criteria up to the last 6 weeks.  This action returns the most recent 1,000 events from the specified NextToken.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEventsPaginator(
+        _ input: DescribeEventsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEventsMessage, EventDescriptionsMessage> {
+        return .init(
+            input: input,
+            command: self.describeEvents,
+            inputKey: \DescribeEventsMessage.nextToken,
+            outputKey: \EventDescriptionsMessage.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the platform branches available for your account in an AWS Region. Provides summary information about each platform branch. For definitions of platform branch and other platform-related terms, see AWS Elastic Beanstalk Platforms Glossary.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPlatformBranchesPaginator(
+        _ input: ListPlatformBranchesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPlatformBranchesRequest, ListPlatformBranchesResult> {
+        return .init(
+            input: input,
+            command: self.listPlatformBranches,
+            inputKey: \ListPlatformBranchesRequest.nextToken,
+            outputKey: \ListPlatformBranchesResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the platform versions available for your account in an AWS Region. Provides summary information about each platform version. Compare to DescribePlatformVersion, which provides full details about a single platform version. For definitions of platform version and other platform-related terms, see AWS Elastic Beanstalk Platforms Glossary.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPlatformVersionsPaginator(
+        _ input: ListPlatformVersionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPlatformVersionsRequest, ListPlatformVersionsResult> {
+        return .init(
+            input: input,
+            command: self.listPlatformVersions,
+            inputKey: \ListPlatformVersionsRequest.nextToken,
+            outputKey: \ListPlatformVersionsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElasticBeanstalk {
+    public func waitUntilEnvironmentExists(
+        _ input: DescribeEnvironmentsMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("environments[].status", expected: "Ready")),
+                .init(state: .retry, matcher: try! JMESAllPathMatcher("environments[].status", expected: "Launching")),
+            ],
+            minDelayTime: .seconds(20),
+            command: self.describeEnvironments
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilEnvironmentTerminated(
+        _ input: DescribeEnvironmentsMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("environments[].status", expected: "Terminated")),
+                .init(state: .retry, matcher: try! JMESAllPathMatcher("environments[].status", expected: "Terminating")),
+            ],
+            minDelayTime: .seconds(20),
+            command: self.describeEnvironments
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilEnvironmentUpdated(
+        _ input: DescribeEnvironmentsMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("environments[].status", expected: "Ready")),
+                .init(state: .retry, matcher: try! JMESAllPathMatcher("environments[].status", expected: "Updating")),
+            ],
+            minDelayTime: .seconds(20),
+            command: self.describeEnvironments
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

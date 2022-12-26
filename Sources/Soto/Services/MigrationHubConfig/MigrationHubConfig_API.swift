@@ -91,3 +91,72 @@ extension MigrationHubConfig {
         self.config = from.config.with(patch: patch)
     }
 }
+
+// MARK: Paginators
+
+extension MigrationHubConfig {
+    ///  This API permits filtering on the ControlId and HomeRegion fields.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeHomeRegionControlsPaginator<Result>(
+        _ input: DescribeHomeRegionControlsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeHomeRegionControlsResult, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeHomeRegionControls,
+            inputKey: \DescribeHomeRegionControlsRequest.nextToken,
+            outputKey: \DescribeHomeRegionControlsResult.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeHomeRegionControlsPaginator(
+        _ input: DescribeHomeRegionControlsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeHomeRegionControlsResult, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeHomeRegionControls,
+            inputKey: \DescribeHomeRegionControlsRequest.nextToken,
+            outputKey: \DescribeHomeRegionControlsResult.nextToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension MigrationHubConfig.DescribeHomeRegionControlsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> MigrationHubConfig.DescribeHomeRegionControlsRequest {
+        return .init(
+            controlId: self.controlId,
+            homeRegion: self.homeRegion,
+            maxResults: self.maxResults,
+            nextToken: token,
+            target: self.target
+        )
+    }
+}

@@ -19,7 +19,7 @@
 
 /// Service object for interacting with AWS RDS service.
 ///
-/// Amazon Relational Database Service   Amazon Relational Database Service (Amazon RDS) is a web service that makes it easier to set up, operate, and  scale a relational database in the cloud. It provides cost-efficient, resizeable capacity for an industry-standard relational  database and manages common database administration tasks, freeing up developers to focus on what makes their applications  and businesses unique. Amazon RDS gives you access to the capabilities of a MySQL, MariaDB, PostgreSQL, Microsoft SQL Server,  Oracle, or Amazon Aurora database server. These capabilities mean that the code, applications, and tools  you already use today with your existing databases work with Amazon RDS without modification. Amazon RDS  automatically backs up your database and maintains the database software that powers your DB instance. Amazon RDS  is flexible: you can scale your DB instance's compute resources and storage capacity to meet your  application's demand. As with all Amazon Web Services, there are no up-front investments, and you pay only for  the resources you use. This interface reference for Amazon RDS contains documentation for a programming or command line interface  you can use to manage Amazon RDS. Amazon RDS is asynchronous, which means that some interfaces might  require techniques such as polling or callback functions to determine when a command has been applied. In this  reference, the parameter descriptions indicate whether a command is applied immediately, on the next instance reboot,  or during the maintenance window. The reference structure is as follows, and we list following some related topics  from the user guide.  Amazon RDS API Reference    For the alphabetical list of API actions, see  API Actions.   For the alphabetical list of data types, see  Data Types.   For a list of common query parameters, see  Common Parameters.   For descriptions of the error codes, see  Common Errors.    Amazon RDS User Guide    For a summary of the Amazon RDS interfaces, see  Available RDS Interfaces.   For more information about how to use the Query API, see  Using the Query API.
+/// Amazon Relational Database Service  Amazon Relational Database Service (Amazon RDS) is a web service that makes it easier to set up, operate, and  scale a relational database in the cloud. It provides cost-efficient, resizeable capacity for an industry-standard relational  database and manages common database administration tasks, freeing up developers to focus on what makes their applications  and businesses unique. Amazon RDS gives you access to the capabilities of a MySQL, MariaDB, PostgreSQL, Microsoft SQL Server,  Oracle, or Amazon Aurora database server. These capabilities mean that the code, applications, and tools  you already use today with your existing databases work with Amazon RDS without modification. Amazon RDS  automatically backs up your database and maintains the database software that powers your DB instance. Amazon RDS  is flexible: you can scale your DB instance's compute resources and storage capacity to meet your  application's demand. As with all Amazon Web Services, there are no up-front investments, and you pay only for  the resources you use. This interface reference for Amazon RDS contains documentation for a programming or command line interface  you can use to manage Amazon RDS. Amazon RDS is asynchronous, which means that some interfaces might  require techniques such as polling or callback functions to determine when a command has been applied. In this  reference, the parameter descriptions indicate whether a command is applied immediately, on the next instance reboot,  or during the maintenance window. The reference structure is as follows, and we list following some related topics  from the user guide.  Amazon RDS API Reference    For the alphabetical list of API actions, see  API Actions.   For the alphabetical list of data types, see  Data Types.   For a list of common query parameters, see  Common Parameters.   For descriptions of the error codes, see  Common Errors.    Amazon RDS User Guide    For a summary of the Amazon RDS interfaces, see  Available RDS Interfaces.   For more information about how to use the Query API, see  Using the Query API.
 public struct RDS: AWSService {
     // MARK: Member variables
 
@@ -145,6 +145,11 @@ public struct RDS: AWSService {
         return self.client.execute(operation: "CopyOptionGroup", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    /// Creates a blue/green deployment. A blue/green deployment creates a staging environment that copies the production environment.  In a blue/green deployment, the blue environment is the current production environment.  The green environment is the staging environment. The staging environment stays in sync  with the current production environment using logical replication. You can make changes to the databases in the green environment without affecting  production workloads. For example, you can upgrade the major or minor DB engine version, change  database parameters, or make schema changes in the staging environment. You can thoroughly test  changes in the green environment. When ready, you can switch over the environments to promote the  green environment to be the new production environment. The switchover typically takes under a minute. For more information, see Using Amazon RDS Blue/Green Deployments  for database updates in the Amazon RDS User Guide and   Using Amazon RDS Blue/Green Deployments for database updates in the Amazon Aurora  User Guide.
+    public func createBlueGreenDeployment(_ input: CreateBlueGreenDeploymentRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<CreateBlueGreenDeploymentResponse> {
+        return self.client.execute(operation: "CreateBlueGreenDeployment", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Creates a custom DB engine version (CEV). A CEV is a binary volume snapshot of a database engine and specific AMI. The supported engines are the following:   Oracle Database 12.1 Enterprise Edition with the January 2021 or later RU/RUR   Oracle Database 19c Enterprise Edition with the January 2021 or later RU/RUR   Amazon RDS, which is a fully managed service, supplies the Amazon Machine Image (AMI) and database software. The Amazon RDS database software is preinstalled, so you need only select a DB engine and version, and create your database. With Amazon RDS Custom for Oracle, you upload your database installation files in Amazon S3. When you create a custom engine version, you specify the files in a JSON document called a CEV manifest.  This document describes installation .zip files stored in Amazon S3. RDS Custom creates your CEV from  the installation files that you provided. This service model is called Bring Your Own Media (BYOM). Creation takes approximately two hours. If creation fails, RDS Custom issues RDS-EVENT-0196 with  the message Creation failed for custom engine version, and includes details about the failure.  For example, the event prints missing files. After you create the CEV, it is available for use. You can create multiple CEVs, and create multiple  RDS Custom instances from any CEV. You can also change the status of a CEV to make it available or inactive.  The MediaImport service that imports files from Amazon S3 to create CEVs isn't integrated with  Amazon Web Services CloudTrail. If you turn on data logging for Amazon RDS in CloudTrail, calls to the  CreateCustomDbEngineVersion event aren't logged. However, you might see calls from the  API gateway that accesses your Amazon S3 bucket. These calls originate from the MediaImport service for  the CreateCustomDbEngineVersion event.  For more information, see  Creating a CEV in the Amazon RDS User Guide.
     public func createCustomDBEngineVersion(_ input: CreateCustomDBEngineVersionMessage, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DBEngineVersion> {
         return self.client.execute(operation: "CreateCustomDBEngineVersion", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -223,6 +228,11 @@ public struct RDS: AWSService {
     /// Creates a new option group. You can create up to 20 option groups. This command doesn't apply to RDS Custom.
     public func createOptionGroup(_ input: CreateOptionGroupMessage, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<CreateOptionGroupResult> {
         return self.client.execute(operation: "CreateOptionGroup", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Deletes a blue/green deployment. For more information, see Using Amazon RDS Blue/Green Deployments  for database updates in the Amazon RDS User Guide and   Using Amazon RDS Blue/Green Deployments for database updates in the Amazon Aurora  User Guide.
+    public func deleteBlueGreenDeployment(_ input: DeleteBlueGreenDeploymentRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DeleteBlueGreenDeploymentResponse> {
+        return self.client.execute(operation: "DeleteBlueGreenDeployment", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Deletes a custom engine version. To run this command, make sure you meet the following prerequisites:   The CEV must not be the default for RDS Custom. If it is, change the default  before running this command.   The CEV must not be associated with an RDS Custom DB instance, RDS Custom instance snapshot,  or automated backup of your RDS Custom instance.   Typically, deletion takes a few minutes.  The MediaImport service that imports files from Amazon S3 to create CEVs isn't integrated with  Amazon Web Services CloudTrail. If you turn on data logging for Amazon RDS in CloudTrail, calls to the  DeleteCustomDbEngineVersion event aren't logged. However, you might see calls from the  API gateway that accesses your Amazon S3 bucket. These calls originate from the MediaImport service for  the DeleteCustomDbEngineVersion event.  For more information, see  Deleting a CEV in the Amazon RDS User Guide.
@@ -313,6 +323,11 @@ public struct RDS: AWSService {
     /// Lists all of the attributes for a customer account. The attributes include Amazon RDS quotas for the account, such as the number of DB instances allowed. The description for a quota includes the quota name, current usage toward that quota, and the quota's maximum value. This command doesn't take any parameters.
     public func describeAccountAttributes(_ input: DescribeAccountAttributesMessage, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<AccountAttributesMessage> {
         return self.client.execute(operation: "DescribeAccountAttributes", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Returns information about blue/green deployments. For more information, see Using Amazon RDS Blue/Green Deployments  for database updates in the Amazon RDS User Guide and   Using Amazon RDS Blue/Green Deployments for database updates in the Amazon Aurora  User Guide.
+    public func describeBlueGreenDeployments(_ input: DescribeBlueGreenDeploymentsRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<DescribeBlueGreenDeploymentsResponse> {
+        return self.client.execute(operation: "DescribeBlueGreenDeployments", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Lists the set of CA certificates provided by Amazon RDS for this Amazon Web Services account.
@@ -760,6 +775,11 @@ public struct RDS: AWSService {
         return self.client.execute(operation: "StopDBInstanceAutomatedBackupsReplication", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    /// Switches over a blue/green deployment. Before you switch over, production traffic is routed to the databases in the blue environment.  After you switch over, production traffic is routed to the databases in the green environment. For more information, see Using Amazon RDS Blue/Green Deployments  for database updates in the Amazon RDS User Guide and   Using Amazon RDS Blue/Green Deployments for database updates in the Amazon Aurora  User Guide.
+    public func switchoverBlueGreenDeployment(_ input: SwitchoverBlueGreenDeploymentRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<SwitchoverBlueGreenDeploymentResponse> {
+        return self.client.execute(operation: "SwitchoverBlueGreenDeployment", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Switches over an Oracle standby database in an Oracle Data Guard environment, making it the new primary database. Issue this command in the Region that hosts the current standby database.
     public func switchoverReadReplica(_ input: SwitchoverReadReplicaMessage, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) -> EventLoopFuture<SwitchoverReadReplicaResult> {
         return self.client.execute(operation: "SwitchoverReadReplica", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -772,5 +792,2412 @@ extension RDS {
     public init(from: RDS, patch: AWSServiceConfig.Patch) {
         self.client = from.client
         self.config = from.config.with(patch: patch)
+    }
+}
+
+// MARK: Paginators
+
+extension RDS {
+    ///  Returns information about blue/green deployments. For more information, see Using Amazon RDS Blue/Green Deployments  for database updates in the Amazon RDS User Guide and   Using Amazon RDS Blue/Green Deployments for database updates in the Amazon Aurora  User Guide.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeBlueGreenDeploymentsPaginator<Result>(
+        _ input: DescribeBlueGreenDeploymentsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeBlueGreenDeploymentsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeBlueGreenDeployments,
+            inputKey: \DescribeBlueGreenDeploymentsRequest.marker,
+            outputKey: \DescribeBlueGreenDeploymentsResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeBlueGreenDeploymentsPaginator(
+        _ input: DescribeBlueGreenDeploymentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeBlueGreenDeploymentsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeBlueGreenDeployments,
+            inputKey: \DescribeBlueGreenDeploymentsRequest.marker,
+            outputKey: \DescribeBlueGreenDeploymentsResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists the set of CA certificates provided by Amazon RDS for this Amazon Web Services account.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeCertificatesPaginator<Result>(
+        _ input: DescribeCertificatesMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, CertificateMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeCertificates,
+            inputKey: \DescribeCertificatesMessage.marker,
+            outputKey: \CertificateMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeCertificatesPaginator(
+        _ input: DescribeCertificatesMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (CertificateMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeCertificates,
+            inputKey: \DescribeCertificatesMessage.marker,
+            outputKey: \CertificateMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about backtracks for a DB cluster. For more information on Amazon Aurora, see   What is Amazon Aurora? in the Amazon Aurora User Guide.  This action only applies to Aurora MySQL DB clusters.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBClusterBacktracksPaginator<Result>(
+        _ input: DescribeDBClusterBacktracksMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBClusterBacktrackMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBClusterBacktracks,
+            inputKey: \DescribeDBClusterBacktracksMessage.marker,
+            outputKey: \DBClusterBacktrackMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBClusterBacktracksPaginator(
+        _ input: DescribeDBClusterBacktracksMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBClusterBacktrackMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBClusterBacktracks,
+            inputKey: \DescribeDBClusterBacktracksMessage.marker,
+            outputKey: \DBClusterBacktrackMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about endpoints for an Amazon Aurora DB cluster.  This action only applies to Aurora DB clusters.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBClusterEndpointsPaginator<Result>(
+        _ input: DescribeDBClusterEndpointsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBClusterEndpointMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBClusterEndpoints,
+            inputKey: \DescribeDBClusterEndpointsMessage.marker,
+            outputKey: \DBClusterEndpointMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBClusterEndpointsPaginator(
+        _ input: DescribeDBClusterEndpointsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBClusterEndpointMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBClusterEndpoints,
+            inputKey: \DescribeDBClusterEndpointsMessage.marker,
+            outputKey: \DBClusterEndpointMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of DBClusterParameterGroup descriptions. If a  DBClusterParameterGroupName parameter is specified, the list will contain only the description of the specified DB cluster parameter group. For more information on Amazon Aurora, see    What is Amazon Aurora? in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see   Multi-AZ deployments with two readable standby DB instances in the Amazon RDS User Guide.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBClusterParameterGroupsPaginator<Result>(
+        _ input: DescribeDBClusterParameterGroupsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBClusterParameterGroupsMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBClusterParameterGroups,
+            inputKey: \DescribeDBClusterParameterGroupsMessage.marker,
+            outputKey: \DBClusterParameterGroupsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBClusterParameterGroupsPaginator(
+        _ input: DescribeDBClusterParameterGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBClusterParameterGroupsMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBClusterParameterGroups,
+            inputKey: \DescribeDBClusterParameterGroupsMessage.marker,
+            outputKey: \DBClusterParameterGroupsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns the detailed parameter list for a particular DB cluster parameter group. For more information on Amazon Aurora, see    What is Amazon Aurora? in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see   Multi-AZ deployments with two readable standby DB instances in the Amazon RDS User Guide.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBClusterParametersPaginator<Result>(
+        _ input: DescribeDBClusterParametersMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBClusterParameterGroupDetails, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBClusterParameters,
+            inputKey: \DescribeDBClusterParametersMessage.marker,
+            outputKey: \DBClusterParameterGroupDetails.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBClusterParametersPaginator(
+        _ input: DescribeDBClusterParametersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBClusterParameterGroupDetails, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBClusterParameters,
+            inputKey: \DescribeDBClusterParametersMessage.marker,
+            outputKey: \DBClusterParameterGroupDetails.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about DB cluster snapshots. This API action supports pagination. For more information on Amazon Aurora DB clusters, see    What is Amazon Aurora? in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see   Multi-AZ deployments with two readable standby DB instances in the Amazon RDS User Guide.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBClusterSnapshotsPaginator<Result>(
+        _ input: DescribeDBClusterSnapshotsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBClusterSnapshotMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBClusterSnapshots,
+            inputKey: \DescribeDBClusterSnapshotsMessage.marker,
+            outputKey: \DBClusterSnapshotMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBClusterSnapshotsPaginator(
+        _ input: DescribeDBClusterSnapshotsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBClusterSnapshotMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBClusterSnapshots,
+            inputKey: \DescribeDBClusterSnapshotsMessage.marker,
+            outputKey: \DBClusterSnapshotMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about Amazon Aurora DB clusters and Multi-AZ DB clusters. This API supports pagination. For more information on Amazon Aurora DB clusters, see    What is Amazon Aurora? in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters, see   Multi-AZ deployments with two readable standby DB instances in the Amazon RDS User Guide. This operation can also return information for Amazon Neptune DB instances and Amazon DocumentDB instances.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBClustersPaginator<Result>(
+        _ input: DescribeDBClustersMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBClusterMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBClusters,
+            inputKey: \DescribeDBClustersMessage.marker,
+            outputKey: \DBClusterMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBClustersPaginator(
+        _ input: DescribeDBClustersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBClusterMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBClusters,
+            inputKey: \DescribeDBClustersMessage.marker,
+            outputKey: \DBClusterMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of the available DB engines.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBEngineVersionsPaginator<Result>(
+        _ input: DescribeDBEngineVersionsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBEngineVersionMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBEngineVersions,
+            inputKey: \DescribeDBEngineVersionsMessage.marker,
+            outputKey: \DBEngineVersionMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBEngineVersionsPaginator(
+        _ input: DescribeDBEngineVersionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBEngineVersionMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBEngineVersions,
+            inputKey: \DescribeDBEngineVersionsMessage.marker,
+            outputKey: \DBEngineVersionMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Displays backups for both current and deleted instances. For example, use this operation to find details about automated backups for previously deleted instances. Current instances with retention periods greater than zero (0) are returned for both the  DescribeDBInstanceAutomatedBackups and DescribeDBInstances operations. All parameters are optional.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBInstanceAutomatedBackupsPaginator<Result>(
+        _ input: DescribeDBInstanceAutomatedBackupsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBInstanceAutomatedBackupMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBInstanceAutomatedBackups,
+            inputKey: \DescribeDBInstanceAutomatedBackupsMessage.marker,
+            outputKey: \DBInstanceAutomatedBackupMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBInstanceAutomatedBackupsPaginator(
+        _ input: DescribeDBInstanceAutomatedBackupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBInstanceAutomatedBackupMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBInstanceAutomatedBackups,
+            inputKey: \DescribeDBInstanceAutomatedBackupsMessage.marker,
+            outputKey: \DBInstanceAutomatedBackupMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about provisioned RDS instances. This API supports pagination.  This operation can also return information for Amazon Neptune DB instances and Amazon DocumentDB instances.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBInstancesPaginator<Result>(
+        _ input: DescribeDBInstancesMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBInstanceMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBInstances,
+            inputKey: \DescribeDBInstancesMessage.marker,
+            outputKey: \DBInstanceMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBInstancesPaginator(
+        _ input: DescribeDBInstancesMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBInstanceMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBInstances,
+            inputKey: \DescribeDBInstancesMessage.marker,
+            outputKey: \DBInstanceMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of DB log files for the DB instance. This command doesn't apply to RDS Custom.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBLogFilesPaginator<Result>(
+        _ input: DescribeDBLogFilesMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeDBLogFilesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBLogFiles,
+            inputKey: \DescribeDBLogFilesMessage.marker,
+            outputKey: \DescribeDBLogFilesResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBLogFilesPaginator(
+        _ input: DescribeDBLogFilesMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeDBLogFilesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBLogFiles,
+            inputKey: \DescribeDBLogFilesMessage.marker,
+            outputKey: \DescribeDBLogFilesResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of DBParameterGroup descriptions. If a DBParameterGroupName is specified, the list will contain only the description of the specified DB parameter group.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBParameterGroupsPaginator<Result>(
+        _ input: DescribeDBParameterGroupsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBParameterGroupsMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBParameterGroups,
+            inputKey: \DescribeDBParameterGroupsMessage.marker,
+            outputKey: \DBParameterGroupsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBParameterGroupsPaginator(
+        _ input: DescribeDBParameterGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBParameterGroupsMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBParameterGroups,
+            inputKey: \DescribeDBParameterGroupsMessage.marker,
+            outputKey: \DBParameterGroupsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns the detailed parameter list for a particular DB parameter group.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBParametersPaginator<Result>(
+        _ input: DescribeDBParametersMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBParameterGroupDetails, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBParameters,
+            inputKey: \DescribeDBParametersMessage.marker,
+            outputKey: \DBParameterGroupDetails.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBParametersPaginator(
+        _ input: DescribeDBParametersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBParameterGroupDetails, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBParameters,
+            inputKey: \DescribeDBParametersMessage.marker,
+            outputKey: \DBParameterGroupDetails.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about DB proxies.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBProxiesPaginator<Result>(
+        _ input: DescribeDBProxiesRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeDBProxiesResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBProxies,
+            inputKey: \DescribeDBProxiesRequest.marker,
+            outputKey: \DescribeDBProxiesResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBProxiesPaginator(
+        _ input: DescribeDBProxiesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeDBProxiesResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBProxies,
+            inputKey: \DescribeDBProxiesRequest.marker,
+            outputKey: \DescribeDBProxiesResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about DB proxy endpoints.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBProxyEndpointsPaginator<Result>(
+        _ input: DescribeDBProxyEndpointsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeDBProxyEndpointsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBProxyEndpoints,
+            inputKey: \DescribeDBProxyEndpointsRequest.marker,
+            outputKey: \DescribeDBProxyEndpointsResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBProxyEndpointsPaginator(
+        _ input: DescribeDBProxyEndpointsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeDBProxyEndpointsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBProxyEndpoints,
+            inputKey: \DescribeDBProxyEndpointsRequest.marker,
+            outputKey: \DescribeDBProxyEndpointsResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about DB proxy target groups, represented by DBProxyTargetGroup data structures.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBProxyTargetGroupsPaginator<Result>(
+        _ input: DescribeDBProxyTargetGroupsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeDBProxyTargetGroupsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBProxyTargetGroups,
+            inputKey: \DescribeDBProxyTargetGroupsRequest.marker,
+            outputKey: \DescribeDBProxyTargetGroupsResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBProxyTargetGroupsPaginator(
+        _ input: DescribeDBProxyTargetGroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeDBProxyTargetGroupsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBProxyTargetGroups,
+            inputKey: \DescribeDBProxyTargetGroupsRequest.marker,
+            outputKey: \DescribeDBProxyTargetGroupsResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about DBProxyTarget objects. This API supports pagination.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBProxyTargetsPaginator<Result>(
+        _ input: DescribeDBProxyTargetsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeDBProxyTargetsResponse, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBProxyTargets,
+            inputKey: \DescribeDBProxyTargetsRequest.marker,
+            outputKey: \DescribeDBProxyTargetsResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBProxyTargetsPaginator(
+        _ input: DescribeDBProxyTargetsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeDBProxyTargetsResponse, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBProxyTargets,
+            inputKey: \DescribeDBProxyTargetsRequest.marker,
+            outputKey: \DescribeDBProxyTargetsResponse.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of DBSecurityGroup descriptions. If a DBSecurityGroupName is specified, the list will contain only the descriptions of the specified DB security group.  EC2-Classic was retired on August 15, 2022. If you haven't migrated from EC2-Classic to a VPC, we recommend that  you migrate as soon as possible. For more information, see Migrate from EC2-Classic to a VPC in the  Amazon EC2 User Guide, the blog EC2-Classic Networking is Retiring –  Here’s How to Prepare, and Moving a DB instance not in a VPC  into a VPC in the Amazon RDS User Guide.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBSecurityGroupsPaginator<Result>(
+        _ input: DescribeDBSecurityGroupsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBSecurityGroupMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBSecurityGroups,
+            inputKey: \DescribeDBSecurityGroupsMessage.marker,
+            outputKey: \DBSecurityGroupMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBSecurityGroupsPaginator(
+        _ input: DescribeDBSecurityGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBSecurityGroupMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBSecurityGroups,
+            inputKey: \DescribeDBSecurityGroupsMessage.marker,
+            outputKey: \DBSecurityGroupMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about DB snapshots. This API action supports pagination.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBSnapshotsPaginator<Result>(
+        _ input: DescribeDBSnapshotsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBSnapshotMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBSnapshots,
+            inputKey: \DescribeDBSnapshotsMessage.marker,
+            outputKey: \DBSnapshotMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBSnapshotsPaginator(
+        _ input: DescribeDBSnapshotsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBSnapshotMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBSnapshots,
+            inputKey: \DescribeDBSnapshotsMessage.marker,
+            outputKey: \DBSnapshotMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of DBSubnetGroup descriptions. If a DBSubnetGroupName is specified, the list will contain only the descriptions of the specified DBSubnetGroup. For an overview of CIDR ranges, go to the  Wikipedia Tutorial.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeDBSubnetGroupsPaginator<Result>(
+        _ input: DescribeDBSubnetGroupsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DBSubnetGroupMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeDBSubnetGroups,
+            inputKey: \DescribeDBSubnetGroupsMessage.marker,
+            outputKey: \DBSubnetGroupMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeDBSubnetGroupsPaginator(
+        _ input: DescribeDBSubnetGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DBSubnetGroupMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeDBSubnetGroups,
+            inputKey: \DescribeDBSubnetGroupsMessage.marker,
+            outputKey: \DBSubnetGroupMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns the default engine and system parameter information for the specified database engine.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeEngineDefaultParametersPaginator<Result>(
+        _ input: DescribeEngineDefaultParametersMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DescribeEngineDefaultParametersResult, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeEngineDefaultParameters,
+            inputKey: \DescribeEngineDefaultParametersMessage.marker,
+            outputKey: \DescribeEngineDefaultParametersResult.engineDefaults?.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeEngineDefaultParametersPaginator(
+        _ input: DescribeEngineDefaultParametersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DescribeEngineDefaultParametersResult, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeEngineDefaultParameters,
+            inputKey: \DescribeEngineDefaultParametersMessage.marker,
+            outputKey: \DescribeEngineDefaultParametersResult.engineDefaults?.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists all the subscription descriptions for a customer account. The description for a subscription includes  SubscriptionName, SNSTopicARN, CustomerID, SourceType, SourceID, CreationTime, and Status. If you specify a SubscriptionName, lists the description for that subscription.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeEventSubscriptionsPaginator<Result>(
+        _ input: DescribeEventSubscriptionsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, EventSubscriptionsMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeEventSubscriptions,
+            inputKey: \DescribeEventSubscriptionsMessage.marker,
+            outputKey: \EventSubscriptionsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeEventSubscriptionsPaginator(
+        _ input: DescribeEventSubscriptionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (EventSubscriptionsMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeEventSubscriptions,
+            inputKey: \DescribeEventSubscriptionsMessage.marker,
+            outputKey: \EventSubscriptionsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns events related to DB instances, DB clusters, DB parameter groups, DB security groups, DB snapshots, DB cluster snapshots, and RDS Proxies for the past 14 days.  Events specific to a particular DB instance, DB cluster, DB parameter group, DB security group, DB snapshot, DB cluster snapshot group, or RDS Proxy can be  obtained by providing the name as a parameter. For more information on working with events, see Monitoring Amazon RDS events in the Amazon RDS User Guide and Monitoring  Amazon Aurora events in the Amazon Aurora User Guide.  By default, RDS returns events that were generated in the past hour.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeEventsPaginator<Result>(
+        _ input: DescribeEventsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, EventsMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeEvents,
+            inputKey: \DescribeEventsMessage.marker,
+            outputKey: \EventsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeEventsPaginator(
+        _ input: DescribeEventsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (EventsMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeEvents,
+            inputKey: \DescribeEventsMessage.marker,
+            outputKey: \EventsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about a snapshot export to Amazon S3. This API operation supports pagination.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeExportTasksPaginator<Result>(
+        _ input: DescribeExportTasksMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ExportTasksMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeExportTasks,
+            inputKey: \DescribeExportTasksMessage.marker,
+            outputKey: \ExportTasksMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeExportTasksPaginator(
+        _ input: DescribeExportTasksMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ExportTasksMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeExportTasks,
+            inputKey: \DescribeExportTasksMessage.marker,
+            outputKey: \ExportTasksMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about Aurora global database clusters. This API supports pagination. For more information on Amazon Aurora, see  What is Amazon Aurora? in the Amazon Aurora User Guide.  This action only applies to Aurora DB clusters.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeGlobalClustersPaginator<Result>(
+        _ input: DescribeGlobalClustersMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, GlobalClustersMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeGlobalClusters,
+            inputKey: \DescribeGlobalClustersMessage.marker,
+            outputKey: \GlobalClustersMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeGlobalClustersPaginator(
+        _ input: DescribeGlobalClustersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (GlobalClustersMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeGlobalClusters,
+            inputKey: \DescribeGlobalClustersMessage.marker,
+            outputKey: \GlobalClustersMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Describes all available options.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeOptionGroupOptionsPaginator<Result>(
+        _ input: DescribeOptionGroupOptionsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, OptionGroupOptionsMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeOptionGroupOptions,
+            inputKey: \DescribeOptionGroupOptionsMessage.marker,
+            outputKey: \OptionGroupOptionsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeOptionGroupOptionsPaginator(
+        _ input: DescribeOptionGroupOptionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (OptionGroupOptionsMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeOptionGroupOptions,
+            inputKey: \DescribeOptionGroupOptionsMessage.marker,
+            outputKey: \OptionGroupOptionsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Describes the available option groups.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeOptionGroupsPaginator<Result>(
+        _ input: DescribeOptionGroupsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, OptionGroups, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeOptionGroups,
+            inputKey: \DescribeOptionGroupsMessage.marker,
+            outputKey: \OptionGroups.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeOptionGroupsPaginator(
+        _ input: DescribeOptionGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (OptionGroups, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeOptionGroups,
+            inputKey: \DescribeOptionGroupsMessage.marker,
+            outputKey: \OptionGroups.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of orderable DB instance options for the specified DB engine, DB engine version, and DB instance class.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeOrderableDBInstanceOptionsPaginator<Result>(
+        _ input: DescribeOrderableDBInstanceOptionsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, OrderableDBInstanceOptionsMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeOrderableDBInstanceOptions,
+            inputKey: \DescribeOrderableDBInstanceOptionsMessage.marker,
+            outputKey: \OrderableDBInstanceOptionsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeOrderableDBInstanceOptionsPaginator(
+        _ input: DescribeOrderableDBInstanceOptionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (OrderableDBInstanceOptionsMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeOrderableDBInstanceOptions,
+            inputKey: \DescribeOrderableDBInstanceOptionsMessage.marker,
+            outputKey: \OrderableDBInstanceOptionsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of resources (for example, DB instances) that have at least one pending maintenance action.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describePendingMaintenanceActionsPaginator<Result>(
+        _ input: DescribePendingMaintenanceActionsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, PendingMaintenanceActionsMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describePendingMaintenanceActions,
+            inputKey: \DescribePendingMaintenanceActionsMessage.marker,
+            outputKey: \PendingMaintenanceActionsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describePendingMaintenanceActionsPaginator(
+        _ input: DescribePendingMaintenanceActionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (PendingMaintenanceActionsMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describePendingMaintenanceActions,
+            inputKey: \DescribePendingMaintenanceActionsMessage.marker,
+            outputKey: \PendingMaintenanceActionsMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns information about reserved DB instances for this account, or about a specified reserved DB instance.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeReservedDBInstancesPaginator<Result>(
+        _ input: DescribeReservedDBInstancesMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ReservedDBInstanceMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeReservedDBInstances,
+            inputKey: \DescribeReservedDBInstancesMessage.marker,
+            outputKey: \ReservedDBInstanceMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeReservedDBInstancesPaginator(
+        _ input: DescribeReservedDBInstancesMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ReservedDBInstanceMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeReservedDBInstances,
+            inputKey: \DescribeReservedDBInstancesMessage.marker,
+            outputKey: \ReservedDBInstanceMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists available reserved DB instance offerings.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeReservedDBInstancesOfferingsPaginator<Result>(
+        _ input: DescribeReservedDBInstancesOfferingsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ReservedDBInstancesOfferingMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeReservedDBInstancesOfferings,
+            inputKey: \DescribeReservedDBInstancesOfferingsMessage.marker,
+            outputKey: \ReservedDBInstancesOfferingMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeReservedDBInstancesOfferingsPaginator(
+        _ input: DescribeReservedDBInstancesOfferingsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ReservedDBInstancesOfferingMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeReservedDBInstancesOfferings,
+            inputKey: \DescribeReservedDBInstancesOfferingsMessage.marker,
+            outputKey: \ReservedDBInstancesOfferingMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Returns a list of the source Amazon Web Services Regions where the current Amazon Web Services Region can create a read replica,  copy a DB snapshot from, or replicate automated backups from. Use this operation to determine whether cross-Region features are supported between other Regions  and your current Region. This operation supports pagination. To return information about the Regions that are enabled for your account, or all Regions,  use the EC2 operation DescribeRegions. For more information, see   DescribeRegions in the Amazon EC2 API Reference.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func describeSourceRegionsPaginator<Result>(
+        _ input: DescribeSourceRegionsMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, SourceRegionMessage, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.describeSourceRegions,
+            inputKey: \DescribeSourceRegionsMessage.marker,
+            outputKey: \SourceRegionMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func describeSourceRegionsPaginator(
+        _ input: DescribeSourceRegionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (SourceRegionMessage, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.describeSourceRegions,
+            inputKey: \DescribeSourceRegionsMessage.marker,
+            outputKey: \SourceRegionMessage.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Downloads all or a portion of the specified log file, up to 1 MB in size. This command doesn't apply to RDS Custom.
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func downloadDBLogFilePortionPaginator<Result>(
+        _ input: DownloadDBLogFilePortionMessage,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, DownloadDBLogFilePortionDetails, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.downloadDBLogFilePortion,
+            inputKey: \DownloadDBLogFilePortionMessage.marker,
+            outputKey: \DownloadDBLogFilePortionDetails.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func downloadDBLogFilePortionPaginator(
+        _ input: DownloadDBLogFilePortionMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (DownloadDBLogFilePortionDetails, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.downloadDBLogFilePortion,
+            inputKey: \DownloadDBLogFilePortionMessage.marker,
+            outputKey: \DownloadDBLogFilePortionDetails.marker,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension RDS.DescribeBlueGreenDeploymentsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeBlueGreenDeploymentsRequest {
+        return .init(
+            blueGreenDeploymentIdentifier: self.blueGreenDeploymentIdentifier,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeCertificatesMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeCertificatesMessage {
+        return .init(
+            certificateIdentifier: self.certificateIdentifier,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBClusterBacktracksMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBClusterBacktracksMessage {
+        return .init(
+            backtrackIdentifier: self.backtrackIdentifier,
+            dbClusterIdentifier: self.dbClusterIdentifier,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBClusterEndpointsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBClusterEndpointsMessage {
+        return .init(
+            dbClusterEndpointIdentifier: self.dbClusterEndpointIdentifier,
+            dbClusterIdentifier: self.dbClusterIdentifier,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBClusterParameterGroupsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBClusterParameterGroupsMessage {
+        return .init(
+            dbClusterParameterGroupName: self.dbClusterParameterGroupName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBClusterParametersMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBClusterParametersMessage {
+        return .init(
+            dbClusterParameterGroupName: self.dbClusterParameterGroupName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            source: self.source
+        )
+    }
+}
+
+extension RDS.DescribeDBClusterSnapshotsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBClusterSnapshotsMessage {
+        return .init(
+            dbClusterIdentifier: self.dbClusterIdentifier,
+            dbClusterSnapshotIdentifier: self.dbClusterSnapshotIdentifier,
+            filters: self.filters,
+            includePublic: self.includePublic,
+            includeShared: self.includeShared,
+            marker: token,
+            maxRecords: self.maxRecords,
+            snapshotType: self.snapshotType
+        )
+    }
+}
+
+extension RDS.DescribeDBClustersMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBClustersMessage {
+        return .init(
+            dbClusterIdentifier: self.dbClusterIdentifier,
+            filters: self.filters,
+            includeShared: self.includeShared,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBEngineVersionsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBEngineVersionsMessage {
+        return .init(
+            dbParameterGroupFamily: self.dbParameterGroupFamily,
+            defaultOnly: self.defaultOnly,
+            engine: self.engine,
+            engineVersion: self.engineVersion,
+            filters: self.filters,
+            includeAll: self.includeAll,
+            listSupportedCharacterSets: self.listSupportedCharacterSets,
+            listSupportedTimezones: self.listSupportedTimezones,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBInstanceAutomatedBackupsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBInstanceAutomatedBackupsMessage {
+        return .init(
+            dbInstanceAutomatedBackupsArn: self.dbInstanceAutomatedBackupsArn,
+            dbInstanceIdentifier: self.dbInstanceIdentifier,
+            dbiResourceId: self.dbiResourceId,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBInstancesMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBInstancesMessage {
+        return .init(
+            dbInstanceIdentifier: self.dbInstanceIdentifier,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBLogFilesMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBLogFilesMessage {
+        return .init(
+            dbInstanceIdentifier: self.dbInstanceIdentifier,
+            fileLastWritten: self.fileLastWritten,
+            filenameContains: self.filenameContains,
+            fileSize: self.fileSize,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBParameterGroupsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBParameterGroupsMessage {
+        return .init(
+            dbParameterGroupName: self.dbParameterGroupName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBParametersMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBParametersMessage {
+        return .init(
+            dbParameterGroupName: self.dbParameterGroupName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            source: self.source
+        )
+    }
+}
+
+extension RDS.DescribeDBProxiesRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBProxiesRequest {
+        return .init(
+            dbProxyName: self.dbProxyName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBProxyEndpointsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBProxyEndpointsRequest {
+        return .init(
+            dbProxyEndpointName: self.dbProxyEndpointName,
+            dbProxyName: self.dbProxyName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBProxyTargetGroupsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBProxyTargetGroupsRequest {
+        return .init(
+            dbProxyName: self.dbProxyName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            targetGroupName: self.targetGroupName
+        )
+    }
+}
+
+extension RDS.DescribeDBProxyTargetsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBProxyTargetsRequest {
+        return .init(
+            dbProxyName: self.dbProxyName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            targetGroupName: self.targetGroupName
+        )
+    }
+}
+
+extension RDS.DescribeDBSecurityGroupsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBSecurityGroupsMessage {
+        return .init(
+            dbSecurityGroupName: self.dbSecurityGroupName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeDBSnapshotsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBSnapshotsMessage {
+        return .init(
+            dbInstanceIdentifier: self.dbInstanceIdentifier,
+            dbiResourceId: self.dbiResourceId,
+            dbSnapshotIdentifier: self.dbSnapshotIdentifier,
+            filters: self.filters,
+            includePublic: self.includePublic,
+            includeShared: self.includeShared,
+            marker: token,
+            maxRecords: self.maxRecords,
+            snapshotType: self.snapshotType
+        )
+    }
+}
+
+extension RDS.DescribeDBSubnetGroupsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeDBSubnetGroupsMessage {
+        return .init(
+            dbSubnetGroupName: self.dbSubnetGroupName,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeEngineDefaultParametersMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeEngineDefaultParametersMessage {
+        return .init(
+            dbParameterGroupFamily: self.dbParameterGroupFamily,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeEventSubscriptionsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeEventSubscriptionsMessage {
+        return .init(
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            subscriptionName: self.subscriptionName
+        )
+    }
+}
+
+extension RDS.DescribeEventsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeEventsMessage {
+        return .init(
+            duration: self.duration,
+            endTime: self.endTime,
+            eventCategories: self.eventCategories,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            sourceIdentifier: self.sourceIdentifier,
+            sourceType: self.sourceType,
+            startTime: self.startTime
+        )
+    }
+}
+
+extension RDS.DescribeExportTasksMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeExportTasksMessage {
+        return .init(
+            exportTaskIdentifier: self.exportTaskIdentifier,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            sourceArn: self.sourceArn,
+            sourceType: self.sourceType
+        )
+    }
+}
+
+extension RDS.DescribeGlobalClustersMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeGlobalClustersMessage {
+        return .init(
+            filters: self.filters,
+            globalClusterIdentifier: self.globalClusterIdentifier,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeOptionGroupOptionsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeOptionGroupOptionsMessage {
+        return .init(
+            engineName: self.engineName,
+            filters: self.filters,
+            majorEngineVersion: self.majorEngineVersion,
+            marker: token,
+            maxRecords: self.maxRecords
+        )
+    }
+}
+
+extension RDS.DescribeOptionGroupsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeOptionGroupsMessage {
+        return .init(
+            engineName: self.engineName,
+            filters: self.filters,
+            majorEngineVersion: self.majorEngineVersion,
+            marker: token,
+            maxRecords: self.maxRecords,
+            optionGroupName: self.optionGroupName
+        )
+    }
+}
+
+extension RDS.DescribeOrderableDBInstanceOptionsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeOrderableDBInstanceOptionsMessage {
+        return .init(
+            availabilityZoneGroup: self.availabilityZoneGroup,
+            dbInstanceClass: self.dbInstanceClass,
+            engine: self.engine,
+            engineVersion: self.engineVersion,
+            filters: self.filters,
+            licenseModel: self.licenseModel,
+            marker: token,
+            maxRecords: self.maxRecords,
+            vpc: self.vpc
+        )
+    }
+}
+
+extension RDS.DescribePendingMaintenanceActionsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribePendingMaintenanceActionsMessage {
+        return .init(
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            resourceIdentifier: self.resourceIdentifier
+        )
+    }
+}
+
+extension RDS.DescribeReservedDBInstancesMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeReservedDBInstancesMessage {
+        return .init(
+            dbInstanceClass: self.dbInstanceClass,
+            duration: self.duration,
+            filters: self.filters,
+            leaseId: self.leaseId,
+            marker: token,
+            maxRecords: self.maxRecords,
+            multiAZ: self.multiAZ,
+            offeringType: self.offeringType,
+            productDescription: self.productDescription,
+            reservedDBInstanceId: self.reservedDBInstanceId,
+            reservedDBInstancesOfferingId: self.reservedDBInstancesOfferingId
+        )
+    }
+}
+
+extension RDS.DescribeReservedDBInstancesOfferingsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeReservedDBInstancesOfferingsMessage {
+        return .init(
+            dbInstanceClass: self.dbInstanceClass,
+            duration: self.duration,
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            multiAZ: self.multiAZ,
+            offeringType: self.offeringType,
+            productDescription: self.productDescription,
+            reservedDBInstancesOfferingId: self.reservedDBInstancesOfferingId
+        )
+    }
+}
+
+extension RDS.DescribeSourceRegionsMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DescribeSourceRegionsMessage {
+        return .init(
+            filters: self.filters,
+            marker: token,
+            maxRecords: self.maxRecords,
+            regionName: self.regionName
+        )
+    }
+}
+
+extension RDS.DownloadDBLogFilePortionMessage: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> RDS.DownloadDBLogFilePortionMessage {
+        return .init(
+            dbInstanceIdentifier: self.dbInstanceIdentifier,
+            logFileName: self.logFileName,
+            marker: token,
+            numberOfLines: self.numberOfLines
+        )
+    }
+}
+
+// MARK: Waiters
+
+extension RDS {
+    public func waitUntilDBClusterAvailable(
+        _ input: DescribeDBClustersMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("dbClusters[].status", expected: "available")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusters[].status", expected: "deleted")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusters[].status", expected: "deleting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusters[].status", expected: "failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusters[].status", expected: "incompatible-restore")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusters[].status", expected: "incompatible-parameters")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBClusters
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDBClusterDeleted(
+        _ input: DescribeDBClustersMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("length(dbClusters) == `0`", expected: "true")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("DBClusterNotFoundFault")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusters[].status", expected: "creating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusters[].status", expected: "modifying")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusters[].status", expected: "rebooting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusters[].status", expected: "resetting-master-credentials")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBClusters
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDBClusterSnapshotAvailable(
+        _ input: DescribeDBClusterSnapshotsMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("dbClusterSnapshots[].status", expected: "available")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusterSnapshots[].status", expected: "deleted")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusterSnapshots[].status", expected: "deleting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusterSnapshots[].status", expected: "failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusterSnapshots[].status", expected: "incompatible-restore")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusterSnapshots[].status", expected: "incompatible-parameters")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBClusterSnapshots
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDBClusterSnapshotDeleted(
+        _ input: DescribeDBClusterSnapshotsMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("length(dbClusterSnapshots) == `0`", expected: "true")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("DBClusterSnapshotNotFoundFault")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusterSnapshots[].status", expected: "creating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusterSnapshots[].status", expected: "modifying")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusterSnapshots[].status", expected: "rebooting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbClusterSnapshots[].status", expected: "resetting-master-credentials")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBClusterSnapshots
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDBInstanceAvailable(
+        _ input: DescribeDBInstancesMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("dbInstances[].dBInstanceStatus", expected: "available")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "deleted")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "deleting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "incompatible-restore")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "incompatible-parameters")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBInstances
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDBInstanceDeleted(
+        _ input: DescribeDBInstancesMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("length(dbInstances) == `0`", expected: "true")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("DBInstanceNotFound")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "creating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "modifying")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "rebooting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbInstances[].dBInstanceStatus", expected: "resetting-master-credentials")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBInstances
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDBSnapshotAvailable(
+        _ input: DescribeDBSnapshotsMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("dbSnapshots[].status", expected: "available")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbSnapshots[].status", expected: "deleted")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbSnapshots[].status", expected: "deleting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbSnapshots[].status", expected: "failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbSnapshots[].status", expected: "incompatible-restore")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbSnapshots[].status", expected: "incompatible-parameters")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBSnapshots
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilDBSnapshotDeleted(
+        _ input: DescribeDBSnapshotsMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("length(dbSnapshots) == `0`", expected: "true")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("DBSnapshotNotFound")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbSnapshots[].status", expected: "creating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbSnapshots[].status", expected: "modifying")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbSnapshots[].status", expected: "rebooting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("dbSnapshots[].status", expected: "resetting-master-credentials")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeDBSnapshots
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
     }
 }

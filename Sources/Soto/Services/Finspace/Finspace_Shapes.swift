@@ -553,3 +553,66 @@ extension Finspace {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for Finspace
+public struct FinspaceErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case internalServerException = "InternalServerException"
+        case invalidRequestException = "InvalidRequestException"
+        case limitExceededException = "LimitExceededException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Finspace
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You do not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// The request processing has failed because of an unknown error, exception or failure.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The request is invalid. Something is wrong with the input to the request.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// A service limit or quota is exceeded.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// One or more resources can&#39;t be found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    ///  You have exceeded your service quota. To perform the requested action,  remove some of the relevant resources, or use Service Quotas to request a service quota increase.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input fails to satisfy the constraints specified by an AWS service.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension FinspaceErrorType: Equatable {
+    public static func == (lhs: FinspaceErrorType, rhs: FinspaceErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension FinspaceErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

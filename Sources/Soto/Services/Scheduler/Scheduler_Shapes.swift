@@ -706,7 +706,7 @@ extension Scheduler {
             try self.validate(self.maxResults, name: "maxResults", parent: name, min: 1)
             try self.validate(self.namePrefix, name: "namePrefix", parent: name, max: 64)
             try self.validate(self.namePrefix, name: "namePrefix", parent: name, min: 1)
-            try self.validate(self.namePrefix, name: "namePrefix", parent: name, pattern: "^[a-zA-Z][0-9a-zA-Z-_]*$")
+            try self.validate(self.namePrefix, name: "namePrefix", parent: name, pattern: "^[0-9a-zA-Z-_.]+$")
             try self.validate(self.nextToken, name: "nextToken", parent: name, max: 2048)
             try self.validate(self.nextToken, name: "nextToken", parent: name, min: 1)
         }
@@ -767,7 +767,7 @@ extension Scheduler {
             try self.validate(self.maxResults, name: "maxResults", parent: name, min: 1)
             try self.validate(self.namePrefix, name: "namePrefix", parent: name, max: 64)
             try self.validate(self.namePrefix, name: "namePrefix", parent: name, min: 1)
-            try self.validate(self.namePrefix, name: "namePrefix", parent: name, pattern: "^[a-zA-Z][0-9a-zA-Z-_]*$")
+            try self.validate(self.namePrefix, name: "namePrefix", parent: name, pattern: "^[0-9a-zA-Z-_.]+$")
             try self.validate(self.nextToken, name: "nextToken", parent: name, max: 2048)
             try self.validate(self.nextToken, name: "nextToken", parent: name, min: 1)
         }
@@ -1142,7 +1142,7 @@ extension Scheduler {
             try self.retryPolicy?.validate(name: "\(name).retryPolicy")
             try self.validate(self.roleArn, name: "roleArn", parent: name, max: 1600)
             try self.validate(self.roleArn, name: "roleArn", parent: name, min: 1)
-            try self.validate(self.roleArn, name: "roleArn", parent: name, pattern: "^arn:aws(-[a-z]+)?:iam::\\d{12}:role\\/(service-role\\/){0,1}[a-zA-Z0-9\\+=,\\.@\\-_]+$")
+            try self.validate(self.roleArn, name: "roleArn", parent: name, pattern: "^arn:aws(-[a-z]+)?:iam::\\d{12}:role\\/[\\w+=,.@\\/-]+$")
             try self.sageMakerPipelineParameters?.validate(name: "\(name).sageMakerPipelineParameters")
             try self.sqsParameters?.validate(name: "\(name).sqsParameters")
         }
@@ -1306,5 +1306,62 @@ extension Scheduler {
         private enum CodingKeys: String, CodingKey {
             case scheduleArn = "ScheduleArn"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for Scheduler
+public struct SchedulerErrorType: AWSErrorType {
+    enum Code: String {
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Scheduler
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Updating or deleting the resource can cause an inconsistent state.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// Unexpected error encountered while processing the request.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The request references a resource which does not exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The request exceeds a service quota.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input fails to satisfy the constraints specified by an AWS service.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension SchedulerErrorType: Equatable {
+    public static func == (lhs: SchedulerErrorType, rhs: SchedulerErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension SchedulerErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

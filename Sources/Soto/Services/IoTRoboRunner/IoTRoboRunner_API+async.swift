@@ -124,4 +124,97 @@ extension IoTRoboRunner {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension IoTRoboRunner {
+    ///  Grants permission to list destinations
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDestinationsPaginator(
+        _ input: ListDestinationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDestinationsRequest, ListDestinationsResponse> {
+        return .init(
+            input: input,
+            command: self.listDestinations,
+            inputKey: \ListDestinationsRequest.nextToken,
+            outputKey: \ListDestinationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Grants permission to list sites
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSitesPaginator(
+        _ input: ListSitesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSitesRequest, ListSitesResponse> {
+        return .init(
+            input: input,
+            command: self.listSites,
+            inputKey: \ListSitesRequest.nextToken,
+            outputKey: \ListSitesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Grants permission to list worker fleets
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorkerFleetsPaginator(
+        _ input: ListWorkerFleetsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorkerFleetsRequest, ListWorkerFleetsResponse> {
+        return .init(
+            input: input,
+            command: self.listWorkerFleets,
+            inputKey: \ListWorkerFleetsRequest.nextToken,
+            outputKey: \ListWorkerFleetsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Grants permission to list workers
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorkersPaginator(
+        _ input: ListWorkersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorkersRequest, ListWorkersResponse> {
+        return .init(
+            input: input,
+            command: self.listWorkers,
+            inputKey: \ListWorkersRequest.nextToken,
+            outputKey: \ListWorkersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

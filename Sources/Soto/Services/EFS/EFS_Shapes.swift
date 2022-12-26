@@ -33,7 +33,7 @@ extension EFS {
 
     public enum PerformanceMode: String, CustomStringConvertible, Codable, _SotoSendable {
         case generalPurpose
-        case maxIO
+        case maxIo = "maxIO"
         public var description: String { return self.rawValue }
     }
 
@@ -67,12 +67,14 @@ extension EFS {
 
     public enum ThroughputMode: String, CustomStringConvertible, Codable, _SotoSendable {
         case bursting
+        case elastic
         case provisioned
         public var description: String { return self.rawValue }
     }
 
     public enum TransitionToIARules: String, CustomStringConvertible, Codable, _SotoSendable {
         case after14Days = "AFTER_14_DAYS"
+        case after1Day = "AFTER_1_DAY"
         case after30Days = "AFTER_30_DAYS"
         case after60Days = "AFTER_60_DAYS"
         case after7Days = "AFTER_7_DAYS"
@@ -221,7 +223,7 @@ extension EFS {
         public let provisionedThroughputInMibps: Double?
         /// Use to create one or more tags associated with the file system. Each tag is a user-defined key-value pair. Name your file system on creation by including a "Key":"Name","Value":"{value}" key-value pair. Each key must be unique. For more  information, see Tagging Amazon Web Services resources in the Amazon Web Services General Reference Guide.
         public let tags: [Tag]?
-        /// Specifies the throughput mode for the file system, either bursting or provisioned. If you set ThroughputMode to provisioned, you must also set a value for ProvisionedThroughputInMibps. After you create the file system, you can decrease your file system's throughput in Provisioned Throughput mode or change between the throughput modes, as long as it’s been more than 24 hours since the last decrease or throughput mode change. For more information, see Specifying throughput with provisioned mode in the Amazon EFS User Guide.  Default is bursting.
+        /// Specifies the throughput mode for the file system. The mode can be bursting, provisioned, or elastic. If you set ThroughputMode to provisioned, you must also set a value for ProvisionedThroughputInMibps. After you create the file system, you can decrease your file system's throughput in Provisioned Throughput mode or change between the throughput modes, with certain time restrictions. For more information, see Specifying throughput with provisioned mode in the Amazon EFS User Guide.  Default is bursting.
         public let throughputMode: ThroughputMode?
 
         public init(availabilityZoneName: String? = nil, backup: Bool? = nil, creationToken: String = CreateFileSystemRequest.idempotencyToken(), encrypted: Bool? = nil, kmsKeyId: String? = nil, performanceMode: PerformanceMode? = nil, provisionedThroughputInMibps: Double? = nil, tags: [Tag]? = nil, throughputMode: ThroughputMode? = nil) {
@@ -1607,5 +1609,134 @@ extension EFS {
             case provisionedThroughputInMibps = "ProvisionedThroughputInMibps"
             case throughputMode = "ThroughputMode"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for EFS
+public struct EFSErrorType: AWSErrorType {
+    enum Code: String {
+        case accessPointAlreadyExists = "AccessPointAlreadyExists"
+        case accessPointLimitExceeded = "AccessPointLimitExceeded"
+        case accessPointNotFound = "AccessPointNotFound"
+        case availabilityZonesMismatch = "AvailabilityZonesMismatch"
+        case badRequest = "BadRequest"
+        case dependencyTimeout = "DependencyTimeout"
+        case fileSystemAlreadyExists = "FileSystemAlreadyExists"
+        case fileSystemInUse = "FileSystemInUse"
+        case fileSystemLimitExceeded = "FileSystemLimitExceeded"
+        case fileSystemNotFound = "FileSystemNotFound"
+        case incorrectFileSystemLifeCycleState = "IncorrectFileSystemLifeCycleState"
+        case incorrectMountTargetState = "IncorrectMountTargetState"
+        case insufficientThroughputCapacity = "InsufficientThroughputCapacity"
+        case internalServerError = "InternalServerError"
+        case invalidPolicyException = "InvalidPolicyException"
+        case ipAddressInUse = "IpAddressInUse"
+        case mountTargetConflict = "MountTargetConflict"
+        case mountTargetNotFound = "MountTargetNotFound"
+        case networkInterfaceLimitExceeded = "NetworkInterfaceLimitExceeded"
+        case noFreeAddressesInSubnet = "NoFreeAddressesInSubnet"
+        case policyNotFound = "PolicyNotFound"
+        case replicationNotFound = "ReplicationNotFound"
+        case securityGroupLimitExceeded = "SecurityGroupLimitExceeded"
+        case securityGroupNotFound = "SecurityGroupNotFound"
+        case subnetNotFound = "SubnetNotFound"
+        case throttlingException = "ThrottlingException"
+        case throughputLimitExceeded = "ThroughputLimitExceeded"
+        case tooManyRequests = "TooManyRequests"
+        case unsupportedAvailabilityZone = "UnsupportedAvailabilityZone"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize EFS
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Returned if the access point that you are trying to create already exists, with the creation token you provided in the request.
+    public static var accessPointAlreadyExists: Self { .init(.accessPointAlreadyExists) }
+    /// Returned if the Amazon Web Services account has already created the maximum number of access points allowed per file system. For more informaton, see https://docs.aws.amazon.com/efs/latest/ug/limits.html#limits-efs-resources-per-account-per-region.
+    public static var accessPointLimitExceeded: Self { .init(.accessPointLimitExceeded) }
+    /// Returned if the specified AccessPointId value doesn&#39;t exist in the requester&#39;s Amazon Web Services account.
+    public static var accessPointNotFound: Self { .init(.accessPointNotFound) }
+    /// Returned if the Availability Zone that was specified for a mount target is  different from the Availability Zone that was specified for One Zone storage. For more information, see Regional and One Zone storage redundancy.
+    public static var availabilityZonesMismatch: Self { .init(.availabilityZonesMismatch) }
+    /// Returned if the request is malformed or contains an error such as an invalid parameter value or a missing required parameter.
+    public static var badRequest: Self { .init(.badRequest) }
+    /// The service timed out trying to fulfill the request, and the client should try the call again.
+    public static var dependencyTimeout: Self { .init(.dependencyTimeout) }
+    /// Returned if the file system you are trying to create already exists, with the creation token you provided.
+    public static var fileSystemAlreadyExists: Self { .init(.fileSystemAlreadyExists) }
+    /// Returned if a file system has mount targets.
+    public static var fileSystemInUse: Self { .init(.fileSystemInUse) }
+    /// Returned if the Amazon Web Services account has already created the maximum number of file systems allowed per account.
+    public static var fileSystemLimitExceeded: Self { .init(.fileSystemLimitExceeded) }
+    /// Returned if the specified FileSystemId value doesn&#39;t exist in the requester&#39;s Amazon Web Services account.
+    public static var fileSystemNotFound: Self { .init(.fileSystemNotFound) }
+    /// Returned if the file system&#39;s lifecycle state is not &quot;available&quot;.
+    public static var incorrectFileSystemLifeCycleState: Self { .init(.incorrectFileSystemLifeCycleState) }
+    /// Returned if the mount target is not in the correct state for the operation.
+    public static var incorrectMountTargetState: Self { .init(.incorrectMountTargetState) }
+    /// Returned if there&#39;s not enough capacity to provision additional throughput. This value might be returned when you try to create a file system in provisioned throughput mode, when you attempt to increase the provisioned throughput of an existing file system, or when you attempt to change an existing file system from Bursting Throughput to Provisioned Throughput mode. Try again later.
+    public static var insufficientThroughputCapacity: Self { .init(.insufficientThroughputCapacity) }
+    /// Returned if an error occurred on the server side.
+    public static var internalServerError: Self { .init(.internalServerError) }
+    /// Returned if the FileSystemPolicy is malformed or contains an error such as a parameter value that is not valid or a missing required parameter. Returned in the case of a policy lockout safety check error.
+    public static var invalidPolicyException: Self { .init(.invalidPolicyException) }
+    /// Returned if the request specified an IpAddress that is already in use in the subnet.
+    public static var ipAddressInUse: Self { .init(.ipAddressInUse) }
+    /// Returned if the mount target would violate one of the specified restrictions based on the file system&#39;s existing mount targets.
+    public static var mountTargetConflict: Self { .init(.mountTargetConflict) }
+    /// Returned if there is no mount target with the specified ID found in the caller&#39;s Amazon Web Services account.
+    public static var mountTargetNotFound: Self { .init(.mountTargetNotFound) }
+    /// The calling account has reached the limit for elastic network interfaces for the specific Amazon Web Services Region. Either delete some network interfaces or request that the account quota be raised. For more information, see Amazon VPC Quotas in the Amazon VPC User Guide (see the Network interfaces per Region entry in the Network interfaces table).
+    public static var networkInterfaceLimitExceeded: Self { .init(.networkInterfaceLimitExceeded) }
+    /// Returned if IpAddress was not specified in the request and there are no free IP addresses in the subnet.
+    public static var noFreeAddressesInSubnet: Self { .init(.noFreeAddressesInSubnet) }
+    /// Returned if the default file system policy is in effect for the EFS file system specified.
+    public static var policyNotFound: Self { .init(.policyNotFound) }
+    /// Returned if the specified file system does not have a replication configuration.
+    public static var replicationNotFound: Self { .init(.replicationNotFound) }
+    /// Returned if the size of SecurityGroups specified in the request is greater than five.
+    public static var securityGroupLimitExceeded: Self { .init(.securityGroupLimitExceeded) }
+    /// Returned if one of the specified security groups doesn&#39;t exist in the subnet&#39;s virtual private cloud (VPC).
+    public static var securityGroupNotFound: Self { .init(.securityGroupNotFound) }
+    /// Returned if there is no subnet with ID SubnetId provided in the request.
+    public static var subnetNotFound: Self { .init(.subnetNotFound) }
+    /// Returned when the CreateAccessPoint API action is called too quickly and  the number of Access Points on the file system is nearing the  limit of 120.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// Returned if the throughput mode or amount of provisioned throughput can&#39;t be changed because the throughput limit of 1024 MiB/s has been reached.
+    public static var throughputLimitExceeded: Self { .init(.throughputLimitExceeded) }
+    /// Returned if you don’t wait at least 24 hours before either changing the throughput mode, or decreasing the Provisioned Throughput value.
+    public static var tooManyRequests: Self { .init(.tooManyRequests) }
+    /// Returned if the requested Amazon EFS functionality is not available in the specified Availability Zone.
+    public static var unsupportedAvailabilityZone: Self { .init(.unsupportedAvailabilityZone) }
+    /// Returned if the Backup service is not available in the Amazon Web Services Region in which the request was made.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension EFSErrorType: Equatable {
+    public static func == (lhs: EFSErrorType, rhs: EFSErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension EFSErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

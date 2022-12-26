@@ -235,3 +235,63 @@ extension ControlTower {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for ControlTower
+public struct ControlTowerErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize ControlTower
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// User does not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// Updating or deleting a resource can cause an inconsistent state.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// Unexpected error during processing of request.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// Request references a resource which does not exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// Request would cause a service quota to be exceeded. The limit is 10 concurrent operations.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    ///  Request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input fails to satisfy the constraints specified by an AWS service.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension ControlTowerErrorType: Equatable {
+    public static func == (lhs: ControlTowerErrorType, rhs: ControlTowerErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension ControlTowerErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

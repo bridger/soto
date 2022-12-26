@@ -139,4 +139,232 @@ extension Route53RecoveryControlConfig {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Route53RecoveryControlConfig {
+    ///  Returns an array of all Amazon Route 53 health checks associated with a specific routing control.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAssociatedRoute53HealthChecksPaginator(
+        _ input: ListAssociatedRoute53HealthChecksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAssociatedRoute53HealthChecksRequest, ListAssociatedRoute53HealthChecksResponse> {
+        return .init(
+            input: input,
+            command: self.listAssociatedRoute53HealthChecks,
+            inputKey: \ListAssociatedRoute53HealthChecksRequest.nextToken,
+            outputKey: \ListAssociatedRoute53HealthChecksResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns an array of all the clusters in an account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listClustersPaginator(
+        _ input: ListClustersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListClustersRequest, ListClustersResponse> {
+        return .init(
+            input: input,
+            command: self.listClusters,
+            inputKey: \ListClustersRequest.nextToken,
+            outputKey: \ListClustersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns an array of control panels in an account or in a cluster.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listControlPanelsPaginator(
+        _ input: ListControlPanelsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListControlPanelsRequest, ListControlPanelsResponse> {
+        return .init(
+            input: input,
+            command: self.listControlPanels,
+            inputKey: \ListControlPanelsRequest.nextToken,
+            outputKey: \ListControlPanelsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns an array of routing controls for a control panel. A routing control is an Amazon Route 53 Application Recovery Controller construct that has one of two states: ON and OFF. You can map the routing control state to the state of an Amazon Route 53 health check, which can be used to control routing.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRoutingControlsPaginator(
+        _ input: ListRoutingControlsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRoutingControlsRequest, ListRoutingControlsResponse> {
+        return .init(
+            input: input,
+            command: self.listRoutingControls,
+            inputKey: \ListRoutingControlsRequest.nextToken,
+            outputKey: \ListRoutingControlsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the safety rules (the assertion rules and gating rules) that you've defined for the routing controls in a control panel.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSafetyRulesPaginator(
+        _ input: ListSafetyRulesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSafetyRulesRequest, ListSafetyRulesResponse> {
+        return .init(
+            input: input,
+            command: self.listSafetyRules,
+            inputKey: \ListSafetyRulesRequest.nextToken,
+            outputKey: \ListSafetyRulesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Route53RecoveryControlConfig {
+    public func waitUntilClusterCreated(
+        _ input: DescribeClusterRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("cluster.status", expected: "DEPLOYED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("cluster.status", expected: "PENDING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeCluster
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilClusterDeleted(
+        _ input: DescribeClusterRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("cluster.status", expected: "PENDING_DELETION")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeCluster
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilControlPanelCreated(
+        _ input: DescribeControlPanelRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("controlPanel.status", expected: "DEPLOYED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("controlPanel.status", expected: "PENDING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeControlPanel
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilControlPanelDeleted(
+        _ input: DescribeControlPanelRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("controlPanel.status", expected: "PENDING_DELETION")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeControlPanel
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilRoutingControlCreated(
+        _ input: DescribeRoutingControlRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("routingControl.status", expected: "DEPLOYED")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("routingControl.status", expected: "PENDING")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeRoutingControl
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilRoutingControlDeleted(
+        _ input: DescribeRoutingControlRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ResourceNotFoundException")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("routingControl.status", expected: "PENDING_DELETION")),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("InternalServerException")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeRoutingControl
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

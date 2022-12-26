@@ -62,6 +62,7 @@ extension AccessAnalyzer {
         case bucketAcl = "BUCKET_ACL"
         case policy = "POLICY"
         case s3AccessPoint = "S3_ACCESS_POINT"
+        case s3AccessPointAccount = "S3_ACCESS_POINT_ACCOUNT"
         public var description: String { return self.rawValue }
     }
 
@@ -1203,14 +1204,18 @@ extension AccessAnalyzer {
     }
 
     public struct FindingSourceDetail: AWSDecodableShape {
+        /// The account of the cross-account access point that generated the finding.
+        public let accessPointAccount: String?
         /// The ARN of the access point that generated the finding. The ARN format depends on whether the ARN represents an access point or a multi-region access point.
         public let accessPointArn: String?
 
-        public init(accessPointArn: String? = nil) {
+        public init(accessPointAccount: String? = nil, accessPointArn: String? = nil) {
+            self.accessPointAccount = accessPointAccount
             self.accessPointArn = accessPointArn
         }
 
         private enum CodingKeys: String, CodingKey {
+            case accessPointAccount
             case accessPointArn
         }
     }
@@ -2747,5 +2752,65 @@ extension AccessAnalyzer {
         private enum CodingKeys: String, CodingKey {
             case accountIds
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for AccessAnalyzer
+public struct AccessAnalyzerErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize AccessAnalyzer
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You do not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// A conflict exception error.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// Internal server error.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The specified resource could not be found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// Service quote met error.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// Throttling limit exceeded error.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// Validation exception error.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension AccessAnalyzerErrorType: Equatable {
+    public static func == (lhs: AccessAnalyzerErrorType, rhs: AccessAnalyzerErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension AccessAnalyzerErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

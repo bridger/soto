@@ -89,4 +89,75 @@ extension CodeStarNotifications {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension CodeStarNotifications {
+    ///  Returns information about the event types available for configuring notifications.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEventTypesPaginator(
+        _ input: ListEventTypesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEventTypesRequest, ListEventTypesResult> {
+        return .init(
+            input: input,
+            command: self.listEventTypes,
+            inputKey: \ListEventTypesRequest.nextToken,
+            outputKey: \ListEventTypesResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of the notification rules for an Amazon Web Services account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listNotificationRulesPaginator(
+        _ input: ListNotificationRulesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListNotificationRulesRequest, ListNotificationRulesResult> {
+        return .init(
+            input: input,
+            command: self.listNotificationRules,
+            inputKey: \ListNotificationRulesRequest.nextToken,
+            outputKey: \ListNotificationRulesResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of the notification rule targets for an Amazon Web Services account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTargetsPaginator(
+        _ input: ListTargetsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTargetsRequest, ListTargetsResult> {
+        return .init(
+            input: input,
+            command: self.listTargets,
+            inputKey: \ListTargetsRequest.nextToken,
+            outputKey: \ListTargetsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

@@ -134,4 +134,141 @@ extension AmplifyUIBuilder {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension AmplifyUIBuilder {
+    ///  Exports component configurations to code that is ready to integrate into an Amplify app.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func exportComponentsPaginator(
+        _ input: ExportComponentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ExportComponentsRequest, ExportComponentsResponse> {
+        return .init(
+            input: input,
+            command: self.exportComponents,
+            inputKey: \ExportComponentsRequest.nextToken,
+            outputKey: \ExportComponentsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Exports form configurations to code that is ready to integrate into an Amplify app.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func exportFormsPaginator(
+        _ input: ExportFormsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ExportFormsRequest, ExportFormsResponse> {
+        return .init(
+            input: input,
+            command: self.exportForms,
+            inputKey: \ExportFormsRequest.nextToken,
+            outputKey: \ExportFormsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Exports theme configurations to code that is ready to integrate into an Amplify app.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func exportThemesPaginator(
+        _ input: ExportThemesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ExportThemesRequest, ExportThemesResponse> {
+        return .init(
+            input: input,
+            command: self.exportThemes,
+            inputKey: \ExportThemesRequest.nextToken,
+            outputKey: \ExportThemesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves a list of components for a specified Amplify app and backend environment.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listComponentsPaginator(
+        _ input: ListComponentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListComponentsRequest, ListComponentsResponse> {
+        return .init(
+            input: input,
+            command: self.listComponents,
+            inputKey: \ListComponentsRequest.nextToken,
+            outputKey: \ListComponentsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves a list of forms for a specified Amplify app and backend environment.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFormsPaginator(
+        _ input: ListFormsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFormsRequest, ListFormsResponse> {
+        return .init(
+            input: input,
+            command: self.listForms,
+            inputKey: \ListFormsRequest.nextToken,
+            outputKey: \ListFormsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves a list of themes for a specified Amplify app and backend environment.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listThemesPaginator(
+        _ input: ListThemesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListThemesRequest, ListThemesResponse> {
+        return .init(
+            input: input,
+            command: self.listThemes,
+            inputKey: \ListThemesRequest.nextToken,
+            outputKey: \ListThemesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

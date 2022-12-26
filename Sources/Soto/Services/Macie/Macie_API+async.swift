@@ -59,4 +59,53 @@ extension Macie {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Macie {
+    ///  (Discontinued) Lists all Amazon Macie Classic member accounts for the current Macie Classic administrator account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMemberAccountsPaginator(
+        _ input: ListMemberAccountsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMemberAccountsRequest, ListMemberAccountsResult> {
+        return .init(
+            input: input,
+            command: self.listMemberAccounts,
+            inputKey: \ListMemberAccountsRequest.nextToken,
+            outputKey: \ListMemberAccountsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  (Discontinued) Lists all the S3 resources associated with Amazon Macie Classic. If memberAccountId isn't specified, the action lists the S3 resources associated with Macie Classic for the current Macie Classic administrator account. If memberAccountId is specified, the action lists the S3 resources associated with Macie Classic for the specified member account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listS3ResourcesPaginator(
+        _ input: ListS3ResourcesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListS3ResourcesRequest, ListS3ResourcesResult> {
+        return .init(
+            input: input,
+            command: self.listS3Resources,
+            inputKey: \ListS3ResourcesRequest.nextToken,
+            outputKey: \ListS3ResourcesResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

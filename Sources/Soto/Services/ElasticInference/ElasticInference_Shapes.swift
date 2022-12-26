@@ -396,3 +396,51 @@ extension ElasticInference {
         public init() {}
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for ElasticInference
+public struct ElasticInferenceErrorType: AWSErrorType {
+    enum Code: String {
+        case badRequestException = "BadRequestException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize ElasticInference
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    ///  Raised when a malformed input has been provided to the API.
+    public static var badRequestException: Self { .init(.badRequestException) }
+    ///  Raised when an unexpected error occurred during request processing.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    ///  Raised when the requested resource cannot be found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+}
+
+extension ElasticInferenceErrorType: Equatable {
+    public static func == (lhs: ElasticInferenceErrorType, rhs: ElasticInferenceErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension ElasticInferenceErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

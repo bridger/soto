@@ -56,4 +56,31 @@ extension MediaStoreData {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MediaStoreData {
+    ///  Provides a list of metadata entries about folders and objects in the specified folder.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listItemsPaginator(
+        _ input: ListItemsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListItemsRequest, ListItemsResponse> {
+        return .init(
+            input: input,
+            command: self.listItems,
+            inputKey: \ListItemsRequest.nextToken,
+            outputKey: \ListItemsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

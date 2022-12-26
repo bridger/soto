@@ -38,6 +38,11 @@ extension AutoScaling {
         return try await self.client.execute(operation: "AttachLoadBalancers", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    ///  Reserved for use with Amazon VPC Lattice, which is in preview and subject to change.  Do not use this API for production workloads. This API is also subject to change.  Attaches one or more traffic sources to the specified Auto Scaling group. To describe the traffic sources for an Auto Scaling group, call the DescribeTrafficSources API. To detach a traffic source from the Auto Scaling group, call the DetachTrafficSources API. This operation is additive and does not detach existing traffic sources from the Auto Scaling group.
+    public func attachTrafficSources(_ input: AttachTrafficSourcesType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> AttachTrafficSourcesResultType {
+        return try await self.client.execute(operation: "AttachTrafficSources", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Deletes one or more scheduled actions for the specified Auto Scaling group.
     public func batchDeleteScheduledAction(_ input: BatchDeleteScheduledActionType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> BatchDeleteScheduledActionAnswer {
         return try await self.client.execute(operation: "BatchDeleteScheduledAction", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -158,7 +163,7 @@ extension AutoScaling {
         return try await self.client.execute(operation: "DescribeLifecycleHooks", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Gets information about the Elastic Load Balancing target groups for the specified Auto Scaling group. To determine the attachment status of the target group, use the State element in the response. When you attach a target group to an Auto Scaling group, the initial State value is Adding. The state transitions to Added after all Auto Scaling instances are registered with the target group. If Elastic Load Balancing health checks are enabled for the Auto Scaling group, the state transitions to InService after at least one Auto Scaling instance passes the health check. When the target group is in the InService state, Amazon EC2 Auto Scaling can terminate and replace any instances that are reported as unhealthy. If no registered instances pass the health checks, the target group doesn't enter the InService state.  Target groups also have an InService state if you attach them in the CreateAutoScalingGroup API call. If your target group state is InService, but it is not working properly, check the scaling activities by calling DescribeScalingActivities and take any corrective actions necessary. For help with failed health checks, see Troubleshooting Amazon EC2 Auto Scaling: Health checks in the Amazon EC2 Auto Scaling User Guide. For more information, see Use Elastic Load Balancing to distribute traffic across the instances in your Auto Scaling group in the Amazon EC2 Auto Scaling User Guide.
+    /// Gets information about the Elastic Load Balancing target groups for the specified Auto Scaling group. To determine the attachment status of the target group, use the State element in the response. When you attach a target group to an Auto Scaling group, the initial State value is Adding. The state transitions to Added after all Auto Scaling instances are registered with the target group. If Elastic Load Balancing health checks are enabled for the Auto Scaling group, the state transitions to InService after at least one Auto Scaling instance passes the health check. When the target group is in the InService state, Amazon EC2 Auto Scaling can terminate and replace any instances that are reported as unhealthy. If no registered instances pass the health checks, the target group doesn't enter the InService state.  Target groups also have an InService state if you attach them in the CreateAutoScalingGroup API call. If your target group state is InService, but it is not working properly, check the scaling activities by calling DescribeScalingActivities and take any corrective actions necessary. For help with failed health checks, see Troubleshooting Amazon EC2 Auto Scaling: Health checks in the Amazon EC2 Auto Scaling User Guide. For more information, see Use Elastic Load Balancing to distribute traffic across the instances in your Auto Scaling group in the Amazon EC2 Auto Scaling User Guide.   You can use this operation to describe target groups that were attached by using AttachLoadBalancerTargetGroups, but not for target groups that were attached by using AttachTrafficSources.
     public func describeLoadBalancerTargetGroups(_ input: DescribeLoadBalancerTargetGroupsRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DescribeLoadBalancerTargetGroupsResponse {
         return try await self.client.execute(operation: "DescribeLoadBalancerTargetGroups", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -208,6 +213,11 @@ extension AutoScaling {
         return try await self.client.execute(operation: "DescribeTerminationPolicyTypes", path: "/", httpMethod: .POST, serviceConfig: self.config, logger: logger, on: eventLoop)
     }
 
+    ///  Reserved for use with Amazon VPC Lattice, which is in preview and subject to change.  Do not use this API for production workloads. This API is also subject to change.  Gets information about the traffic sources for the specified Auto Scaling group.
+    public func describeTrafficSources(_ input: DescribeTrafficSourcesRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DescribeTrafficSourcesResponse {
+        return try await self.client.execute(operation: "DescribeTrafficSources", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Gets information about a warm pool and its instances. For more information, see Warm pools for Amazon EC2 Auto Scaling in the Amazon EC2 Auto Scaling User Guide.
     public func describeWarmPool(_ input: DescribeWarmPoolType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DescribeWarmPoolAnswer {
         return try await self.client.execute(operation: "DescribeWarmPool", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -218,7 +228,7 @@ extension AutoScaling {
         return try await self.client.execute(operation: "DetachInstances", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Detaches one or more target groups from the specified Auto Scaling group. When you detach a target group, it enters the Removing state while deregistering the instances in the group. When all instances are deregistered, then you can no longer describe the target group using the DescribeLoadBalancerTargetGroups API call. The instances remain running.
+    /// Detaches one or more target groups from the specified Auto Scaling group. When you detach a target group, it enters the Removing state while deregistering the instances in the group. When all instances are deregistered, then you can no longer describe the target group using the DescribeLoadBalancerTargetGroups API call. The instances remain running.  You can use this operation to detach target groups that were attached by using AttachLoadBalancerTargetGroups, but not for target groups that were attached by using AttachTrafficSources.
     public func detachLoadBalancerTargetGroups(_ input: DetachLoadBalancerTargetGroupsType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DetachLoadBalancerTargetGroupsResultType {
         return try await self.client.execute(operation: "DetachLoadBalancerTargetGroups", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -226,6 +236,11 @@ extension AutoScaling {
     /// Detaches one or more Classic Load Balancers from the specified Auto Scaling group. This operation detaches only Classic Load Balancers. If you have Application Load Balancers, Network Load Balancers, or Gateway Load Balancer, use the DetachLoadBalancerTargetGroups API instead. When you detach a load balancer, it enters the Removing state while deregistering the instances in the group. When all instances are deregistered, then you can no longer describe the load balancer using the DescribeLoadBalancers API call. The instances remain running.
     public func detachLoadBalancers(_ input: DetachLoadBalancersType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DetachLoadBalancersResultType {
         return try await self.client.execute(operation: "DetachLoadBalancers", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    ///  Reserved for use with Amazon VPC Lattice, which is in preview and subject to change.  Do not use this API for production workloads. This API is also subject to change.  Detaches one or more traffic sources from the specified Auto Scaling group.
+    public func detachTrafficSources(_ input: DetachTrafficSourcesType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DetachTrafficSourcesResultType {
+        return try await self.client.execute(operation: "DetachTrafficSources", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Disables group metrics collection for the specified Auto Scaling group.
@@ -326,6 +341,243 @@ extension AutoScaling {
     ///  We strongly recommend that all Auto Scaling groups use launch templates to ensure full functionality for Amazon EC2 Auto Scaling and Amazon EC2.  Updates the configuration for the specified Auto Scaling group. To update an Auto Scaling group, specify the name of the group and the property that you want to change. Any properties that you don't specify are not changed by this update request. The new settings take effect on any scaling activities after this call returns.  If you associate a new launch configuration or template with an Auto Scaling group, all new instances will get the updated configuration. Existing instances continue to run with the configuration that they were originally launched with. When you update a group to specify a mixed instances policy instead of a launch configuration or template, existing instances may be replaced to match the new purchasing options that you specified in the policy. For example, if the group currently has 100% On-Demand capacity and the policy specifies 50% Spot capacity, this means that half of your instances will be gradually terminated and relaunched as Spot Instances. When replacing instances, Amazon EC2 Auto Scaling launches new instances before terminating the old ones, so that updating your group does not compromise the performance or availability of your application. Note the following about changing DesiredCapacity, MaxSize, or MinSize:   If a scale-in activity occurs as a result of a new DesiredCapacity value that is lower than the current size of the group, the Auto Scaling group uses its termination policy to determine which instances to terminate.   If you specify a new value for MinSize without specifying a value for DesiredCapacity, and the new MinSize is larger than the current size of the group, this sets the group's DesiredCapacity to the new MinSize value.   If you specify a new value for MaxSize without specifying a value for DesiredCapacity, and the new MaxSize is smaller than the current size of the group, this sets the group's DesiredCapacity to the new MaxSize value.   To see which properties have been set, call the DescribeAutoScalingGroups API. To view the scaling policies for an Auto Scaling group, call the DescribePolicies API. If the group has scaling policies, you can update them by calling the PutScalingPolicy API.
     public func updateAutoScalingGroup(_ input: UpdateAutoScalingGroupType, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws {
         return try await self.client.execute(operation: "UpdateAutoScalingGroup", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension AutoScaling {
+    ///  Gets information about the Auto Scaling groups in the account and Region. If you specify Auto Scaling group names, the output includes information for only the specified Auto Scaling groups. If you specify filters, the output includes information for only those Auto Scaling groups that meet the filter criteria. If you do not specify group names or filters, the output includes information for all Auto Scaling groups.  This operation also returns information about instances in Auto Scaling groups. To retrieve information about the instances in a warm pool, you must call the DescribeWarmPool API.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeAutoScalingGroupsPaginator(
+        _ input: AutoScalingGroupNamesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<AutoScalingGroupNamesType, AutoScalingGroupsType> {
+        return .init(
+            input: input,
+            command: self.describeAutoScalingGroups,
+            inputKey: \AutoScalingGroupNamesType.nextToken,
+            outputKey: \AutoScalingGroupsType.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets information about the Auto Scaling instances in the account and Region.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeAutoScalingInstancesPaginator(
+        _ input: DescribeAutoScalingInstancesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeAutoScalingInstancesType, AutoScalingInstancesType> {
+        return .init(
+            input: input,
+            command: self.describeAutoScalingInstances,
+            inputKey: \DescribeAutoScalingInstancesType.nextToken,
+            outputKey: \AutoScalingInstancesType.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets information about the launch configurations in the account and Region.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeLaunchConfigurationsPaginator(
+        _ input: LaunchConfigurationNamesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<LaunchConfigurationNamesType, LaunchConfigurationsType> {
+        return .init(
+            input: input,
+            command: self.describeLaunchConfigurations,
+            inputKey: \LaunchConfigurationNamesType.nextToken,
+            outputKey: \LaunchConfigurationsType.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets information about the Amazon SNS notifications that are configured for one or more Auto Scaling groups.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeNotificationConfigurationsPaginator(
+        _ input: DescribeNotificationConfigurationsType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeNotificationConfigurationsType, DescribeNotificationConfigurationsAnswer> {
+        return .init(
+            input: input,
+            command: self.describeNotificationConfigurations,
+            inputKey: \DescribeNotificationConfigurationsType.nextToken,
+            outputKey: \DescribeNotificationConfigurationsAnswer.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets information about the scaling policies in the account and Region.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describePoliciesPaginator(
+        _ input: DescribePoliciesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribePoliciesType, PoliciesType> {
+        return .init(
+            input: input,
+            command: self.describePolicies,
+            inputKey: \DescribePoliciesType.nextToken,
+            outputKey: \PoliciesType.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets information about the scaling activities in the account and Region. When scaling events occur, you see a record of the scaling activity in the scaling activities. For more information, see Verifying a scaling activity for an Auto Scaling group in the Amazon EC2 Auto Scaling User Guide. If the scaling event succeeds, the value of the StatusCode element in the response is Successful. If an attempt to launch instances failed, the StatusCode value is Failed or Cancelled and the StatusMessage element in the response indicates the cause of the failure. For help interpreting the StatusMessage, see Troubleshooting Amazon EC2 Auto Scaling in the Amazon EC2 Auto Scaling User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeScalingActivitiesPaginator(
+        _ input: DescribeScalingActivitiesType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeScalingActivitiesType, ActivitiesType> {
+        return .init(
+            input: input,
+            command: self.describeScalingActivities,
+            inputKey: \DescribeScalingActivitiesType.nextToken,
+            outputKey: \ActivitiesType.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets information about the scheduled actions that haven't run or that have not reached their end time. To describe the scaling activities for scheduled actions that have already run, call the DescribeScalingActivities API.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeScheduledActionsPaginator(
+        _ input: DescribeScheduledActionsType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeScheduledActionsType, ScheduledActionsType> {
+        return .init(
+            input: input,
+            command: self.describeScheduledActions,
+            inputKey: \DescribeScheduledActionsType.nextToken,
+            outputKey: \ScheduledActionsType.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the specified tags. You can use filters to limit the results. For example, you can query for the tags for a specific Auto Scaling group. You can specify multiple values for a filter. A tag must match at least one of the specified values for it to be included in the results. You can also specify multiple filters. The result includes information for a particular tag only if it matches all the filters. If there's no match, no special message is returned. For more information, see Tag Auto Scaling groups and instances in the Amazon EC2 Auto Scaling User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeTagsPaginator(
+        _ input: DescribeTagsType,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeTagsType, TagsType> {
+        return .init(
+            input: input,
+            command: self.describeTags,
+            inputKey: \DescribeTagsType.nextToken,
+            outputKey: \TagsType.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension AutoScaling {
+    public func waitUntilGroupExists(
+        _ input: AutoScalingGroupNamesType,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("length(autoScalingGroups) > `0`", expected: "true")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("length(autoScalingGroups) > `0`", expected: "false")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.describeAutoScalingGroups
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilGroupInService(
+        _ input: AutoScalingGroupNamesType,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("contains(autoScalingGroups[].[length(instances[?lifecycleState=='inService']) >= minSize][], `false`)", expected: "false")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("contains(autoScalingGroups[].[length(instances[?lifecycleState=='inService']) >= minSize][], `false`)", expected: "true")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeAutoScalingGroups
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilGroupNotExists(
+        _ input: AutoScalingGroupNamesType,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("length(autoScalingGroups) > `0`", expected: "false")),
+                .init(state: .retry, matcher: try! JMESPathMatcher("length(autoScalingGroups) > `0`", expected: "true")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeAutoScalingGroups
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
     }
 }
 

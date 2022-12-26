@@ -89,4 +89,75 @@ extension Braket {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Braket {
+    ///  Searches for devices using the specified filters.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func searchDevicesPaginator(
+        _ input: SearchDevicesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SearchDevicesRequest, SearchDevicesResponse> {
+        return .init(
+            input: input,
+            command: self.searchDevices,
+            inputKey: \SearchDevicesRequest.nextToken,
+            outputKey: \SearchDevicesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Searches for Amazon Braket jobs that match the specified filter values.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func searchJobsPaginator(
+        _ input: SearchJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SearchJobsRequest, SearchJobsResponse> {
+        return .init(
+            input: input,
+            command: self.searchJobs,
+            inputKey: \SearchJobsRequest.nextToken,
+            outputKey: \SearchJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Searches for tasks that match the specified filter values.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func searchQuantumTasksPaginator(
+        _ input: SearchQuantumTasksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SearchQuantumTasksRequest, SearchQuantumTasksResponse> {
+        return .init(
+            input: input,
+            command: self.searchQuantumTasks,
+            inputKey: \SearchQuantumTasksRequest.nextToken,
+            outputKey: \SearchQuantumTasksResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

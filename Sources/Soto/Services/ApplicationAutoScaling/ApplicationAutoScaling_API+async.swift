@@ -74,4 +74,97 @@ extension ApplicationAutoScaling {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ApplicationAutoScaling {
+    ///  Gets information about the scalable targets in the specified namespace. You can filter the results using ResourceIds and ScalableDimension.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeScalableTargetsPaginator(
+        _ input: DescribeScalableTargetsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeScalableTargetsRequest, DescribeScalableTargetsResponse> {
+        return .init(
+            input: input,
+            command: self.describeScalableTargets,
+            inputKey: \DescribeScalableTargetsRequest.nextToken,
+            outputKey: \DescribeScalableTargetsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Provides descriptive information about the scaling activities in the specified namespace from the previous six weeks. You can filter the results using ResourceId and ScalableDimension.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeScalingActivitiesPaginator(
+        _ input: DescribeScalingActivitiesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeScalingActivitiesRequest, DescribeScalingActivitiesResponse> {
+        return .init(
+            input: input,
+            command: self.describeScalingActivities,
+            inputKey: \DescribeScalingActivitiesRequest.nextToken,
+            outputKey: \DescribeScalingActivitiesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the Application Auto Scaling scaling policies for the specified service namespace. You can filter the results using ResourceId, ScalableDimension, and PolicyNames. For more information, see Target tracking scaling policies and Step scaling policies in the Application Auto Scaling User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeScalingPoliciesPaginator(
+        _ input: DescribeScalingPoliciesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeScalingPoliciesRequest, DescribeScalingPoliciesResponse> {
+        return .init(
+            input: input,
+            command: self.describeScalingPolicies,
+            inputKey: \DescribeScalingPoliciesRequest.nextToken,
+            outputKey: \DescribeScalingPoliciesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Describes the Application Auto Scaling scheduled actions for the specified service namespace. You can filter the results using the ResourceId, ScalableDimension, and ScheduledActionNames parameters. For more information, see Scheduled scaling and Managing scheduled scaling in the Application Auto Scaling User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeScheduledActionsPaginator(
+        _ input: DescribeScheduledActionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeScheduledActionsRequest, DescribeScheduledActionsResponse> {
+        return .init(
+            input: input,
+            command: self.describeScheduledActions,
+            inputKey: \DescribeScheduledActionsRequest.nextToken,
+            outputKey: \DescribeScheduledActionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

@@ -73,7 +73,7 @@ extension Kendra {
         return try await self.client.execute(operation: "CreateFaq", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Creates an Amazon Kendra index. Index creation is an asynchronous API. To determine if index creation has completed, check the Status field returned from a call to DescribeIndex. The Status field is set to ACTIVE when the index is ready to use. Once the index is active you can index your documents using the BatchPutDocument API or using one of the supported data sources. For an example of creating an index and data source using the Python SDK,  see Getting  started with Python SDK. For an example of creating an index and data  source using the Java SDK, see Getting started with Java SDK.
+    /// Creates an Amazon Kendra index. Index creation is an asynchronous API. To determine if index creation has completed, check the Status field returned from a call to DescribeIndex. The Status field is set to ACTIVE when the index is ready to use. Once the index is active you can index your documents using the BatchPutDocument API or using one of the supported data sources. For an example of creating an index and data source using the Python SDK, see Getting started with Python SDK. For an example of creating an index and data source using the Java SDK, see Getting started with Java SDK.
     public func createIndex(_ input: CreateIndexRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> CreateIndexResponse {
         return try await self.client.execute(operation: "CreateIndex", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -321,6 +321,275 @@ extension Kendra {
     /// Updates a thesaurus for an index.
     public func updateThesaurus(_ input: UpdateThesaurusRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws {
         return try await self.client.execute(operation: "UpdateThesaurus", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Kendra {
+    ///  Retrieves search metrics data. The data provides a snapshot of how your users interact with your search application and how effective the application is.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getSnapshotsPaginator(
+        _ input: GetSnapshotsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetSnapshotsRequest, GetSnapshotsResponse> {
+        return .init(
+            input: input,
+            command: self.getSnapshots,
+            inputKey: \GetSnapshotsRequest.nextToken,
+            outputKey: \GetSnapshotsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists one or more access control configurations for an index. This  includes user and group access information for your documents. This  is useful for user context filtering, where search results are filtered  based on the user or their group access to documents.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAccessControlConfigurationsPaginator(
+        _ input: ListAccessControlConfigurationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAccessControlConfigurationsRequest, ListAccessControlConfigurationsResponse> {
+        return .init(
+            input: input,
+            command: self.listAccessControlConfigurations,
+            inputKey: \ListAccessControlConfigurationsRequest.nextToken,
+            outputKey: \ListAccessControlConfigurationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets statistics about synchronizing a data source connector.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDataSourceSyncJobsPaginator(
+        _ input: ListDataSourceSyncJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDataSourceSyncJobsRequest, ListDataSourceSyncJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listDataSourceSyncJobs,
+            inputKey: \ListDataSourceSyncJobsRequest.nextToken,
+            outputKey: \ListDataSourceSyncJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the data source connectors that you have created.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDataSourcesPaginator(
+        _ input: ListDataSourcesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDataSourcesRequest, ListDataSourcesResponse> {
+        return .init(
+            input: input,
+            command: self.listDataSources,
+            inputKey: \ListDataSourcesRequest.nextToken,
+            outputKey: \ListDataSourcesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists specific permissions of users and groups with access to your  Amazon Kendra experience.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEntityPersonasPaginator(
+        _ input: ListEntityPersonasRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEntityPersonasRequest, ListEntityPersonasResponse> {
+        return .init(
+            input: input,
+            command: self.listEntityPersonas,
+            inputKey: \ListEntityPersonasRequest.nextToken,
+            outputKey: \ListEntityPersonasResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists users or groups in your IAM Identity Center identity source that are  granted access to your Amazon Kendra experience. You can create an Amazon Kendra experience  such as a search application. For more information on creating a search  application experience, see Building  a search experience with no code.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listExperienceEntitiesPaginator(
+        _ input: ListExperienceEntitiesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListExperienceEntitiesRequest, ListExperienceEntitiesResponse> {
+        return .init(
+            input: input,
+            command: self.listExperienceEntities,
+            inputKey: \ListExperienceEntitiesRequest.nextToken,
+            outputKey: \ListExperienceEntitiesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists one or more Amazon Kendra experiences. You can create an Amazon Kendra experience such  as a search application. For more information on creating a search application  experience, see Building a  search experience with no code.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listExperiencesPaginator(
+        _ input: ListExperiencesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListExperiencesRequest, ListExperiencesResponse> {
+        return .init(
+            input: input,
+            command: self.listExperiences,
+            inputKey: \ListExperiencesRequest.nextToken,
+            outputKey: \ListExperiencesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Gets a list of FAQ lists associated with an index.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFaqsPaginator(
+        _ input: ListFaqsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFaqsRequest, ListFaqsResponse> {
+        return .init(
+            input: input,
+            command: self.listFaqs,
+            inputKey: \ListFaqsRequest.nextToken,
+            outputKey: \ListFaqsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Provides a list of groups that are mapped to users before a  given ordering or timestamp identifier.  ListGroupsOlderThanOrderingId is currently not supported in the  Amazon Web Services GovCloud (US-West) region.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listGroupsOlderThanOrderingIdPaginator(
+        _ input: ListGroupsOlderThanOrderingIdRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListGroupsOlderThanOrderingIdRequest, ListGroupsOlderThanOrderingIdResponse> {
+        return .init(
+            input: input,
+            command: self.listGroupsOlderThanOrderingId,
+            inputKey: \ListGroupsOlderThanOrderingIdRequest.nextToken,
+            outputKey: \ListGroupsOlderThanOrderingIdResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the Amazon Kendra indexes that you created.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listIndicesPaginator(
+        _ input: ListIndicesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListIndicesRequest, ListIndicesResponse> {
+        return .init(
+            input: input,
+            command: self.listIndices,
+            inputKey: \ListIndicesRequest.nextToken,
+            outputKey: \ListIndicesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the block lists used for query suggestions for an index. For information on the current quota limits for block lists, see  Quotas  for Amazon Kendra.  ListQuerySuggestionsBlockLists is currently not supported in the  Amazon Web Services GovCloud (US-West) region.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listQuerySuggestionsBlockListsPaginator(
+        _ input: ListQuerySuggestionsBlockListsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListQuerySuggestionsBlockListsRequest, ListQuerySuggestionsBlockListsResponse> {
+        return .init(
+            input: input,
+            command: self.listQuerySuggestionsBlockLists,
+            inputKey: \ListQuerySuggestionsBlockListsRequest.nextToken,
+            outputKey: \ListQuerySuggestionsBlockListsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the thesauri for an index.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listThesauriPaginator(
+        _ input: ListThesauriRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListThesauriRequest, ListThesauriResponse> {
+        return .init(
+            input: input,
+            command: self.listThesauri,
+            inputKey: \ListThesauriRequest.nextToken,
+            outputKey: \ListThesauriResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

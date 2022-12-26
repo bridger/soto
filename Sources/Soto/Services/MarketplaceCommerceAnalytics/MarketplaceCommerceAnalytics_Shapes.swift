@@ -186,3 +186,45 @@ extension MarketplaceCommerceAnalytics {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for MarketplaceCommerceAnalytics
+public struct MarketplaceCommerceAnalyticsErrorType: AWSErrorType {
+    enum Code: String {
+        case marketplaceCommerceAnalyticsException = "MarketplaceCommerceAnalyticsException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize MarketplaceCommerceAnalytics
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// This exception is thrown when an internal service error occurs.
+    public static var marketplaceCommerceAnalyticsException: Self { .init(.marketplaceCommerceAnalyticsException) }
+}
+
+extension MarketplaceCommerceAnalyticsErrorType: Equatable {
+    public static func == (lhs: MarketplaceCommerceAnalyticsErrorType, rhs: MarketplaceCommerceAnalyticsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension MarketplaceCommerceAnalyticsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

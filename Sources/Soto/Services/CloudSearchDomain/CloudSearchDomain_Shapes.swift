@@ -431,3 +431,48 @@ extension CloudSearchDomain {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for CloudSearchDomain
+public struct CloudSearchDomainErrorType: AWSErrorType {
+    enum Code: String {
+        case documentServiceException = "DocumentServiceException"
+        case searchException = "SearchException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize CloudSearchDomain
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Information about any problems encountered while processing an upload request.
+    public static var documentServiceException: Self { .init(.documentServiceException) }
+    /// Information about any problems encountered while processing a search request.
+    public static var searchException: Self { .init(.searchException) }
+}
+
+extension CloudSearchDomainErrorType: Equatable {
+    public static func == (lhs: CloudSearchDomainErrorType, rhs: CloudSearchDomainErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension CloudSearchDomainErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

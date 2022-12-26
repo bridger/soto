@@ -3061,3 +3061,63 @@ extension LookoutMetrics {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for LookoutMetrics
+public struct LookoutMetricsErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case tooManyRequestsException = "TooManyRequestsException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize LookoutMetrics
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// You do not have sufficient permissions to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// There was a conflict processing the request. Try your request again.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// The request processing has failed because of an unknown error, exception, or failure.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The specified resource cannot be found. Check the ARN of the resource and try again.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// The request exceeded the service&#39;s quotas. Check the service quotas and try again.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The request was denied due to too many requests being submitted at the same time.
+    public static var tooManyRequestsException: Self { .init(.tooManyRequestsException) }
+    /// The input fails to satisfy the constraints specified by the AWS service. Check your input values and try again.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension LookoutMetricsErrorType: Equatable {
+    public static func == (lhs: LookoutMetricsErrorType, rhs: LookoutMetricsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension LookoutMetricsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

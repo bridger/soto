@@ -59,6 +59,7 @@ public struct S3: AWSService {
                 "ap-northeast-2": "s3.ap-northeast-2.amazonaws.com",
                 "ap-northeast-3": "s3.ap-northeast-3.amazonaws.com",
                 "ap-south-1": "s3.ap-south-1.amazonaws.com",
+                "ap-south-2": "s3.ap-south-2.amazonaws.com",
                 "ap-southeast-1": "s3.ap-southeast-1.amazonaws.com",
                 "ap-southeast-2": "s3.ap-southeast-2.amazonaws.com",
                 "ap-southeast-3": "s3.ap-southeast-3.amazonaws.com",
@@ -858,5 +859,226 @@ extension S3 {
     public init(from: S3, patch: AWSServiceConfig.Patch) {
         self.client = from.client
         self.config = from.config.with(patch: patch)
+    }
+}
+
+// MARK: Paginators
+
+extension S3 {
+    ///  Returns some or all (up to 1,000) of the objects in a bucket with each request. You can use the request parameters as selection criteria to return a subset of the objects in a bucket. A  200 OK response can contain valid or invalid XML. Make sure to design your application to parse the contents of the response and handle it appropriately.  Objects are returned sorted in an ascending order of the respective key names in the list. For more information about listing objects, see Listing object keys  programmatically
+    ///   To use this operation, you must have READ access to the bucket.
+    ///   To use this action in an Identity and Access Management (IAM) policy, you must have permissions to perform the s3:ListBucket action. The bucket owner has this permission by default and can grant this permission to others. For more information about permissions, see Permissions Related to Bucket Subresource Operations and Managing Access Permissions to Your Amazon S3 Resources.  This section describes the latest revision of this action. We recommend that you use this revised API for application development. For backward compatibility, Amazon S3 continues to support the prior version of this API, ListObjects.
+    ///   To get a list of your buckets, see ListBuckets.
+    ///   The following operations are related to ListObjectsV2:    GetObject     PutObject     CreateBucket
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listObjectsV2Paginator<Result>(
+        _ input: ListObjectsV2Request,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListObjectsV2Output, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listObjectsV2,
+            inputKey: \ListObjectsV2Request.continuationToken,
+            outputKey: \ListObjectsV2Output.nextContinuationToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listObjectsV2Paginator(
+        _ input: ListObjectsV2Request,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListObjectsV2Output, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listObjectsV2,
+            inputKey: \ListObjectsV2Request.continuationToken,
+            outputKey: \ListObjectsV2Output.nextContinuationToken,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    ///  Lists the parts that have been uploaded for a specific multipart upload. This operation must include the upload ID, which you obtain by sending the initiate multipart upload request (see CreateMultipartUpload). This request returns a maximum of 1,000 uploaded parts. The default number of parts returned is 1,000 parts. You can restrict the number of parts returned by specifying the max-parts request parameter. If your multipart upload consists of more than 1,000 parts, the response returns an IsTruncated field with the value of true, and a NextPartNumberMarker element. In subsequent ListParts requests you can include the part-number-marker query string parameter and set its value to the NextPartNumberMarker field value from the previous response. If the upload was created using a checksum algorithm, you will need to have permission to the kms:Decrypt action for the request to succeed.
+    ///   For more information on multipart uploads, see Uploading Objects Using Multipart Upload.
+    ///   For information on permissions required to use the multipart upload API, see Multipart Upload and Permissions.
+    ///   The following operations are related to ListParts:    CreateMultipartUpload     UploadPart     CompleteMultipartUpload     AbortMultipartUpload     GetObjectAttributes     ListMultipartUploads
+    ///
+    /// Provide paginated results to closure `onPage` for it to combine them into one result.
+    /// This works in a similar manner to `Array.reduce<Result>(_:_:) -> Result`.
+    ///
+    /// Parameters:
+    ///   - input: Input for request
+    ///   - initialValue: The value to use as the initial accumulating value. `initialValue` is passed to `onPage` the first time it is called.
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each paginated response. It combines an accumulating result with the contents of response. This combined result is then returned
+    ///         along with a boolean indicating if the paginate operation should continue.
+    public func listPartsPaginator<Result>(
+        _ input: ListPartsRequest,
+        _ initialValue: Result,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (Result, ListPartsOutput, EventLoop) -> EventLoopFuture<(Bool, Result)>
+    ) -> EventLoopFuture<Result> {
+        return self.client.paginate(
+            input: input,
+            initialValue: initialValue,
+            command: self.listParts,
+            tokenKey: \ListPartsOutput.nextPartNumberMarker,
+            moreResultsKey: \ListPartsOutput.isTruncated,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+
+    /// Provide paginated results to closure `onPage`.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    ///   - onPage: closure called with each block of entries. Returns boolean indicating whether we should continue.
+    public func listPartsPaginator(
+        _ input: ListPartsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil,
+        onPage: @escaping (ListPartsOutput, EventLoop) -> EventLoopFuture<Bool>
+    ) -> EventLoopFuture<Void> {
+        return self.client.paginate(
+            input: input,
+            command: self.listParts,
+            tokenKey: \ListPartsOutput.nextPartNumberMarker,
+            moreResultsKey: \ListPartsOutput.isTruncated,
+            on: eventLoop,
+            onPage: onPage
+        )
+    }
+}
+
+extension S3.ListObjectsV2Request: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> S3.ListObjectsV2Request {
+        return .init(
+            bucket: self.bucket,
+            continuationToken: token,
+            delimiter: self.delimiter,
+            encodingType: self.encodingType,
+            expectedBucketOwner: self.expectedBucketOwner,
+            fetchOwner: self.fetchOwner,
+            maxKeys: self.maxKeys,
+            prefix: self.prefix,
+            requestPayer: self.requestPayer,
+            startAfter: self.startAfter
+        )
+    }
+}
+
+extension S3.ListPartsRequest: AWSPaginateToken {
+    public func usingPaginationToken(_ token: String) -> S3.ListPartsRequest {
+        return .init(
+            bucket: self.bucket,
+            expectedBucketOwner: self.expectedBucketOwner,
+            key: self.key,
+            maxParts: self.maxParts,
+            partNumberMarker: token,
+            requestPayer: self.requestPayer,
+            sseCustomerAlgorithm: self.sseCustomerAlgorithm,
+            sseCustomerKey: self.sseCustomerKey,
+            sseCustomerKeyMD5: self.sseCustomerKeyMD5,
+            uploadId: self.uploadId
+        )
+    }
+}
+
+// MARK: Waiters
+
+extension S3 {
+    public func waitUntilBucketExists(
+        _ input: HeadBucketRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSSuccessMatcher()),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("NotFound")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.headBucket
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilBucketNotExists(
+        _ input: HeadBucketRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("NotFound")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.headBucket
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilObjectExists(
+        _ input: HeadObjectRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSSuccessMatcher()),
+                .init(state: .retry, matcher: AWSErrorCodeMatcher("NotFound")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.headObject
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilObjectNotExists(
+        _ input: HeadObjectRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> EventLoopFuture<Void> {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: AWSErrorCodeMatcher("NotFound")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.headObject
+        )
+        return self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
     }
 }

@@ -357,4 +357,466 @@ extension ElastiCache {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElastiCache {
+    ///  Returns information about all provisioned clusters if no cluster identifier is specified, or about a specific cache cluster if a cluster identifier is supplied. By default, abbreviated information about the clusters is returned. You can use the optional ShowCacheNodeInfo flag to retrieve detailed information about the cache nodes associated with the clusters. These details include the DNS address and port for the cache node endpoint. If the cluster is in the creating state, only cluster-level information is displayed  until all of the nodes are successfully provisioned. If the cluster is in the deleting state, only cluster-level information is displayed. If cache nodes are currently being added to the cluster, node endpoint information and creation time for the additional nodes are not displayed until they are completely provisioned. When the cluster state is available, the cluster is ready for use. If cache nodes are currently being removed from the cluster, no endpoint information  for the removed nodes is displayed.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeCacheClustersPaginator(
+        _ input: DescribeCacheClustersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeCacheClustersMessage, CacheClusterMessage> {
+        return .init(
+            input: input,
+            command: self.describeCacheClusters,
+            inputKey: \DescribeCacheClustersMessage.marker,
+            outputKey: \CacheClusterMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of the available cache engines and their versions.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeCacheEngineVersionsPaginator(
+        _ input: DescribeCacheEngineVersionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeCacheEngineVersionsMessage, CacheEngineVersionMessage> {
+        return .init(
+            input: input,
+            command: self.describeCacheEngineVersions,
+            inputKey: \DescribeCacheEngineVersionsMessage.marker,
+            outputKey: \CacheEngineVersionMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of cache parameter group descriptions. If a cache parameter group name is specified, the list contains only the descriptions for that group.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeCacheParameterGroupsPaginator(
+        _ input: DescribeCacheParameterGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeCacheParameterGroupsMessage, CacheParameterGroupsMessage> {
+        return .init(
+            input: input,
+            command: self.describeCacheParameterGroups,
+            inputKey: \DescribeCacheParameterGroupsMessage.marker,
+            outputKey: \CacheParameterGroupsMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the detailed parameter list for a particular cache parameter group.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeCacheParametersPaginator(
+        _ input: DescribeCacheParametersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeCacheParametersMessage, CacheParameterGroupDetails> {
+        return .init(
+            input: input,
+            command: self.describeCacheParameters,
+            inputKey: \DescribeCacheParametersMessage.marker,
+            outputKey: \CacheParameterGroupDetails.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of cache security group descriptions. If a cache security group name is specified, the list contains only the description of that group. This applicable only when you have ElastiCache in Classic setup
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeCacheSecurityGroupsPaginator(
+        _ input: DescribeCacheSecurityGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeCacheSecurityGroupsMessage, CacheSecurityGroupMessage> {
+        return .init(
+            input: input,
+            command: self.describeCacheSecurityGroups,
+            inputKey: \DescribeCacheSecurityGroupsMessage.marker,
+            outputKey: \CacheSecurityGroupMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of cache subnet group descriptions. If a subnet group name is specified, the list  contains only the description of that group. This is applicable only when you have ElastiCache in VPC setup. All ElastiCache clusters now launch in VPC by default.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeCacheSubnetGroupsPaginator(
+        _ input: DescribeCacheSubnetGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeCacheSubnetGroupsMessage, CacheSubnetGroupMessage> {
+        return .init(
+            input: input,
+            command: self.describeCacheSubnetGroups,
+            inputKey: \DescribeCacheSubnetGroupsMessage.marker,
+            outputKey: \CacheSubnetGroupMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the default engine and system parameter information for the specified cache engine.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEngineDefaultParametersPaginator(
+        _ input: DescribeEngineDefaultParametersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEngineDefaultParametersMessage, DescribeEngineDefaultParametersResult> {
+        return .init(
+            input: input,
+            command: self.describeEngineDefaultParameters,
+            inputKey: \DescribeEngineDefaultParametersMessage.marker,
+            outputKey: \DescribeEngineDefaultParametersResult.engineDefaults?.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns events related to clusters, cache security groups, and cache parameter groups. You can obtain events specific to a particular cluster, cache security group, or cache parameter group by providing the name as a parameter. By default, only the events occurring within the last hour are returned;  however, you can retrieve up to 14 days' worth of events if necessary.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeEventsPaginator(
+        _ input: DescribeEventsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeEventsMessage, EventsMessage> {
+        return .init(
+            input: input,
+            command: self.describeEvents,
+            inputKey: \DescribeEventsMessage.marker,
+            outputKey: \EventsMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about a particular global replication group. If no identifier is specified, returns information about all Global datastores.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeGlobalReplicationGroupsPaginator(
+        _ input: DescribeGlobalReplicationGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeGlobalReplicationGroupsMessage, DescribeGlobalReplicationGroupsResult> {
+        return .init(
+            input: input,
+            command: self.describeGlobalReplicationGroups,
+            inputKey: \DescribeGlobalReplicationGroupsMessage.marker,
+            outputKey: \DescribeGlobalReplicationGroupsResult.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about a particular replication group. If no identifier is specified, DescribeReplicationGroups returns information about all replication groups.  This operation is valid for Redis only.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeReplicationGroupsPaginator(
+        _ input: DescribeReplicationGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeReplicationGroupsMessage, ReplicationGroupMessage> {
+        return .init(
+            input: input,
+            command: self.describeReplicationGroups,
+            inputKey: \DescribeReplicationGroupsMessage.marker,
+            outputKey: \ReplicationGroupMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about reserved cache nodes for this account, or about a specified reserved cache node.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeReservedCacheNodesPaginator(
+        _ input: DescribeReservedCacheNodesMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeReservedCacheNodesMessage, ReservedCacheNodeMessage> {
+        return .init(
+            input: input,
+            command: self.describeReservedCacheNodes,
+            inputKey: \DescribeReservedCacheNodesMessage.marker,
+            outputKey: \ReservedCacheNodeMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists available reserved cache node offerings.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeReservedCacheNodesOfferingsPaginator(
+        _ input: DescribeReservedCacheNodesOfferingsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeReservedCacheNodesOfferingsMessage, ReservedCacheNodesOfferingMessage> {
+        return .init(
+            input: input,
+            command: self.describeReservedCacheNodesOfferings,
+            inputKey: \DescribeReservedCacheNodesOfferingsMessage.marker,
+            outputKey: \ReservedCacheNodesOfferingMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns details of the service updates
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeServiceUpdatesPaginator(
+        _ input: DescribeServiceUpdatesMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeServiceUpdatesMessage, ServiceUpdatesMessage> {
+        return .init(
+            input: input,
+            command: self.describeServiceUpdates,
+            inputKey: \DescribeServiceUpdatesMessage.marker,
+            outputKey: \ServiceUpdatesMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about cluster or replication group snapshots. By default, DescribeSnapshots lists all of your snapshots; it can optionally describe a single snapshot, or just the snapshots associated with a particular cache cluster.   This operation is valid for Redis only.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeSnapshotsPaginator(
+        _ input: DescribeSnapshotsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeSnapshotsMessage, DescribeSnapshotsListMessage> {
+        return .init(
+            input: input,
+            command: self.describeSnapshots,
+            inputKey: \DescribeSnapshotsMessage.marker,
+            outputKey: \DescribeSnapshotsListMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns details of the update actions
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeUpdateActionsPaginator(
+        _ input: DescribeUpdateActionsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeUpdateActionsMessage, UpdateActionsMessage> {
+        return .init(
+            input: input,
+            command: self.describeUpdateActions,
+            inputKey: \DescribeUpdateActionsMessage.marker,
+            outputKey: \UpdateActionsMessage.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of user groups.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeUserGroupsPaginator(
+        _ input: DescribeUserGroupsMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeUserGroupsMessage, DescribeUserGroupsResult> {
+        return .init(
+            input: input,
+            command: self.describeUserGroups,
+            inputKey: \DescribeUserGroupsMessage.marker,
+            outputKey: \DescribeUserGroupsResult.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of users.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeUsersPaginator(
+        _ input: DescribeUsersMessage,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeUsersMessage, DescribeUsersResult> {
+        return .init(
+            input: input,
+            command: self.describeUsers,
+            inputKey: \DescribeUsersMessage.marker,
+            outputKey: \DescribeUsersResult.marker,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ElastiCache {
+    public func waitUntilCacheClusterAvailable(
+        _ input: DescribeCacheClustersMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("cacheClusters[].cacheClusterStatus", expected: "available")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "deleted")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "deleting")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "incompatible-network")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "restore-failed")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeCacheClusters
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilCacheClusterDeleted(
+        _ input: DescribeCacheClustersMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("cacheClusters[].cacheClusterStatus", expected: "deleted")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("CacheClusterNotFound")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "available")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "creating")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "incompatible-network")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "modifying")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "restore-failed")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("cacheClusters[].cacheClusterStatus", expected: "snapshotting")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeCacheClusters
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilReplicationGroupAvailable(
+        _ input: DescribeReplicationGroupsMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("replicationGroups[].status", expected: "available")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("replicationGroups[].status", expected: "deleted")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeReplicationGroups
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilReplicationGroupDeleted(
+        _ input: DescribeReplicationGroupsMessage,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("replicationGroups[].status", expected: "deleted")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("replicationGroups[].status", expected: "available")),
+                .init(state: .success, matcher: AWSErrorCodeMatcher("ReplicationGroupNotFoundFault")),
+            ],
+            minDelayTime: .seconds(15),
+            command: self.describeReplicationGroups
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

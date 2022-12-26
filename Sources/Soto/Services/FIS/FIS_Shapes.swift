@@ -1782,3 +1782,54 @@ extension FIS {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for FIS
+public struct FISErrorType: AWSErrorType {
+    enum Code: String {
+        case conflictException = "ConflictException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize FIS
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The request could not be processed because of a conflict.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// The specified resource cannot be found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// You have exceeded your service quota.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The specified input is not valid, or fails to satisfy the constraints for the request.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension FISErrorType: Equatable {
+    public static func == (lhs: FISErrorType, rhs: FISErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension FISErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

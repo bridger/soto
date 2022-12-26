@@ -84,4 +84,53 @@ extension CodeStarConnections {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension CodeStarConnections {
+    ///  Lists the connections associated with your account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listConnectionsPaginator(
+        _ input: ListConnectionsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListConnectionsInput, ListConnectionsOutput> {
+        return .init(
+            input: input,
+            command: self.listConnections,
+            inputKey: \ListConnectionsInput.nextToken,
+            outputKey: \ListConnectionsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the hosts associated with your account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listHostsPaginator(
+        _ input: ListHostsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListHostsInput, ListHostsOutput> {
+        return .init(
+            input: input,
+            command: self.listHosts,
+            inputKey: \ListHostsInput.nextToken,
+            outputKey: \ListHostsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

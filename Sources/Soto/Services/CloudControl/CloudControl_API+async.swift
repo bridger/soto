@@ -64,4 +64,76 @@ extension CloudControl {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension CloudControl {
+    ///  Returns existing resource operation requests. This includes requests of all status types. For more information, see Listing active resource operation requests in the Amazon Web Services Cloud Control API User Guide.  Resource operation requests expire after 7 days.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listResourceRequestsPaginator(
+        _ input: ListResourceRequestsInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListResourceRequestsInput, ListResourceRequestsOutput> {
+        return .init(
+            input: input,
+            command: self.listResourceRequests,
+            inputKey: \ListResourceRequestsInput.nextToken,
+            outputKey: \ListResourceRequestsOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about the specified resources. For more information, see Discovering resources in the Amazon Web Services Cloud Control API User Guide. You can use this action to return information about existing resources in your account and Amazon Web Services Region, whether those resources were provisioned using Cloud Control API.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listResourcesPaginator(
+        _ input: ListResourcesInput,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListResourcesInput, ListResourcesOutput> {
+        return .init(
+            input: input,
+            command: self.listResources,
+            inputKey: \ListResourcesInput.nextToken,
+            outputKey: \ListResourcesOutput.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension CloudControl {
+    public func waitUntilResourceRequestSuccess(
+        _ input: GetResourceRequestStatusInput,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESPathMatcher("progressEvent.operationStatus", expected: "SUCCESS")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("progressEvent.operationStatus", expected: "FAILED")),
+                .init(state: .failure, matcher: try! JMESPathMatcher("progressEvent.operationStatus", expected: "CANCEL_COMPLETE")),
+            ],
+            minDelayTime: .seconds(5),
+            command: self.getResourceRequestStatus
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

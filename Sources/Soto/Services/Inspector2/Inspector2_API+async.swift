@@ -58,7 +58,7 @@ extension Inspector2 {
         return try await self.client.execute(operation: "DeleteFilter", path: "/filters/delete", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Describe Amazon Inspector configuration settings for an Amazon Web Services organization
+    /// Describe Amazon Inspector configuration settings for an Amazon Web Services organization.
     public func describeOrganizationConfiguration(_ input: DescribeOrganizationConfigurationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DescribeOrganizationConfigurationResponse {
         return try await self.client.execute(operation: "DescribeOrganizationConfiguration", path: "/organizationconfiguration/describe", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -181,6 +181,209 @@ extension Inspector2 {
     /// Updates the configurations for your Amazon Inspector organization.
     public func updateOrganizationConfiguration(_ input: UpdateOrganizationConfigurationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateOrganizationConfigurationResponse {
         return try await self.client.execute(operation: "UpdateOrganizationConfiguration", path: "/organizationconfiguration/update", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Inspector2 {
+    ///  Lists the permissions an account has to configure Amazon Inspector.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAccountPermissionsPaginator(
+        _ input: ListAccountPermissionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAccountPermissionsRequest, ListAccountPermissionsResponse> {
+        return .init(
+            input: input,
+            command: self.listAccountPermissions,
+            inputKey: \ListAccountPermissionsRequest.nextToken,
+            outputKey: \ListAccountPermissionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists coverage details for you environment.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listCoveragePaginator(
+        _ input: ListCoverageRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListCoverageRequest, ListCoverageResponse> {
+        return .init(
+            input: input,
+            command: self.listCoverage,
+            inputKey: \ListCoverageRequest.nextToken,
+            outputKey: \ListCoverageResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists Amazon Inspector coverage statistics for your environment.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listCoverageStatisticsPaginator(
+        _ input: ListCoverageStatisticsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListCoverageStatisticsRequest, ListCoverageStatisticsResponse> {
+        return .init(
+            input: input,
+            command: self.listCoverageStatistics,
+            inputKey: \ListCoverageStatisticsRequest.nextToken,
+            outputKey: \ListCoverageStatisticsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists information about the Amazon Inspector delegated administrator of your organization.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDelegatedAdminAccountsPaginator(
+        _ input: ListDelegatedAdminAccountsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDelegatedAdminAccountsRequest, ListDelegatedAdminAccountsResponse> {
+        return .init(
+            input: input,
+            command: self.listDelegatedAdminAccounts,
+            inputKey: \ListDelegatedAdminAccountsRequest.nextToken,
+            outputKey: \ListDelegatedAdminAccountsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the filters associated with your account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFiltersPaginator(
+        _ input: ListFiltersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFiltersRequest, ListFiltersResponse> {
+        return .init(
+            input: input,
+            command: self.listFilters,
+            inputKey: \ListFiltersRequest.nextToken,
+            outputKey: \ListFiltersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists aggregated finding data for your environment based on specific criteria.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFindingAggregationsPaginator(
+        _ input: ListFindingAggregationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFindingAggregationsRequest, ListFindingAggregationsResponse> {
+        return .init(
+            input: input,
+            command: self.listFindingAggregations,
+            inputKey: \ListFindingAggregationsRequest.nextToken,
+            outputKey: \ListFindingAggregationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists findings for your environment.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listFindingsPaginator(
+        _ input: ListFindingsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListFindingsRequest, ListFindingsResponse> {
+        return .init(
+            input: input,
+            command: self.listFindings,
+            inputKey: \ListFindingsRequest.nextToken,
+            outputKey: \ListFindingsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List members associated with the Amazon Inspector delegated administrator for your organization.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMembersPaginator(
+        _ input: ListMembersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMembersRequest, ListMembersResponse> {
+        return .init(
+            input: input,
+            command: self.listMembers,
+            inputKey: \ListMembersRequest.nextToken,
+            outputKey: \ListMembersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the Amazon Inspector usage totals over the last 30 days.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listUsageTotalsPaginator(
+        _ input: ListUsageTotalsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListUsageTotalsRequest, ListUsageTotalsResponse> {
+        return .init(
+            input: input,
+            command: self.listUsageTotals,
+            inputKey: \ListUsageTotalsRequest.nextToken,
+            outputKey: \ListUsageTotalsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

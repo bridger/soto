@@ -268,3 +268,57 @@ extension S3Outposts {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for S3Outposts
+public struct S3OutpostsErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize S3Outposts
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// Access was denied for this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// There was a conflict with this action, and it could not be completed.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// There was an exception with the internal server.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The requested resource was not found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// There was an exception validating this data.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension S3OutpostsErrorType: Equatable {
+    public static func == (lhs: S3OutpostsErrorType, rhs: S3OutpostsErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension S3OutpostsErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

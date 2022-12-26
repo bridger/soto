@@ -196,8 +196,8 @@ extension ConfigService {
         return try await self.client.execute(operation: "DescribeAggregateComplianceByConfigRules", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Returns a list of the conformance packs and their associated compliance status with the count of compliant and noncompliant Config rules within each conformance pack.
-    /// 			Also returns the total rule count which includes compliant rules, noncompliant rules, and rules that cannot be evaluated due to insufficient data.
+    /// Returns a list of the conformance packs and their associated compliance status with the count of compliant and noncompliant Config rules within each
+    /// 			conformance pack. Also returns the total rule count which includes compliant rules, noncompliant rules, and rules that cannot be evaluated due to insufficient data.
     /// 		        The results can return an empty result page, but if you have a nextToken, the results are displayed on the next page.
     public func describeAggregateComplianceByConformancePacks(_ input: DescribeAggregateComplianceByConformancePacksRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> DescribeAggregateComplianceByConformancePacksResponse {
         return try await self.client.execute(operation: "DescribeAggregateComplianceByConformancePacks", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -522,7 +522,7 @@ extension ConfigService {
 
     /// Returns the evaluation results for the specified Amazon Web Services resource.
     /// 			The results indicate which Config rules were used to evaluate
-    /// 			the resource, when each rule was last used, and whether the resource
+    /// 			the resource, when each rule was last invoked, and whether the resource
     /// 			complies with each rule.
     public func getComplianceDetailsByResource(_ input: GetComplianceDetailsByResourceRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetComplianceDetailsByResourceResponse {
         return try await self.client.execute(operation: "GetComplianceDetailsByResource", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -644,6 +644,13 @@ extension ConfigService {
         return try await self.client.execute(operation: "GetResourceConfigHistory", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    /// Returns a summary of resource evaluation for the specified resource evaluation ID from the proactive rules that were run.
+    /// 			The results indicate which evaluation context was used to evaluate the rules, which resource details were evaluated,
+    /// 			the evaluation mode that was run, and whether the resource details comply with the configuration of the proactive rules.
+    public func getResourceEvaluationSummary(_ input: GetResourceEvaluationSummaryRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetResourceEvaluationSummaryResponse {
+        return try await self.client.execute(operation: "GetResourceEvaluationSummary", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Returns the details of a specific stored query.
     public func getStoredQuery(_ input: GetStoredQueryRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetStoredQueryResponse {
         return try await self.client.execute(operation: "GetStoredQuery", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -685,6 +692,11 @@ extension ConfigService {
     /// 				nextToken parameter.
     public func listDiscoveredResources(_ input: ListDiscoveredResourcesRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListDiscoveredResourcesResponse {
         return try await self.client.execute(operation: "ListDiscoveredResources", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Returns a list of proactive resource evaluations.
+    public func listResourceEvaluations(_ input: ListResourceEvaluationsRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListResourceEvaluationsResponse {
+        return try await self.client.execute(operation: "ListResourceEvaluations", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Lists the stored queries for a single Amazon Web Services account and a single Amazon Web Services Region. The default is 100.
@@ -905,6 +917,7 @@ extension ConfigService {
     /// 			This API adds a new exception or updates an existing exception for a specific resource with a specific Config rule.
     /// 		        Config generates a remediation exception when a problem occurs executing a remediation action to a specific resource.
     /// 			Remediation exceptions blocks auto-remediation until the exception is cleared.
+    /// 		        To place an exception on an Amazon Web Services resource, ensure remediation is set as manual remediation.
     public func putRemediationExceptions(_ input: PutRemediationExceptionsRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> PutRemediationExceptionsResponse {
         return try await self.client.execute(operation: "PutRemediationExceptions", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -1024,6 +1037,16 @@ extension ConfigService {
         return try await self.client.execute(operation: "StartRemediationExecution", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    /// Runs an on-demand evaluation for the specified resource to determine whether the resource details will comply with configured Config rules.
+    /// 			You can also use it for evaluation purposes. Config recommends using an evaluation context. It runs an execution against the resource details with all
+    /// 			of the Config rules in your account that match with the specified proactive mode and resource type.
+    ///
+    /// 		        Ensure you have the cloudformation:DescribeType role setup to validate the resource type schema.
+    ///
+    public func startResourceEvaluation(_ input: StartResourceEvaluationRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> StartResourceEvaluationResponse {
+        return try await self.client.execute(operation: "StartResourceEvaluation", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Stops recording configurations of the Amazon Web Services resources you have selected to record in your Amazon Web Services account.
     public func stopConfigurationRecorder(_ input: StopConfigurationRecorderRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws {
         return try await self.client.execute(operation: "StopConfigurationRecorder", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -1038,6 +1061,1146 @@ extension ConfigService {
     /// Deletes specified tags from a resource.
     public func untagResource(_ input: UntagResourceRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws {
         return try await self.client.execute(operation: "UntagResource", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ConfigService {
+    ///  Returns a list of compliant and noncompliant rules with the
+    ///  			number of resources for compliant and noncompliant rules. Does not display rules that do not have compliance results.
+    ///
+    ///
+    ///  			         The results can return an empty result page, but if you
+    ///  				have a nextToken, the results are displayed on the next
+    ///  				page.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeAggregateComplianceByConfigRulesPaginator(
+        _ input: DescribeAggregateComplianceByConfigRulesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeAggregateComplianceByConfigRulesRequest, DescribeAggregateComplianceByConfigRulesResponse> {
+        return .init(
+            input: input,
+            command: self.describeAggregateComplianceByConfigRules,
+            inputKey: \DescribeAggregateComplianceByConfigRulesRequest.nextToken,
+            outputKey: \DescribeAggregateComplianceByConfigRulesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of the conformance packs and their associated compliance status with the count of compliant and noncompliant Config rules within each
+    ///  			conformance pack. Also returns the total rule count which includes compliant rules, noncompliant rules, and rules that cannot be evaluated due to insufficient data.
+    ///  		        The results can return an empty result page, but if you have a nextToken, the results are displayed on the next page.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeAggregateComplianceByConformancePacksPaginator(
+        _ input: DescribeAggregateComplianceByConformancePacksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeAggregateComplianceByConformancePacksRequest, DescribeAggregateComplianceByConformancePacksResponse> {
+        return .init(
+            input: input,
+            command: self.describeAggregateComplianceByConformancePacks,
+            inputKey: \DescribeAggregateComplianceByConformancePacksRequest.nextToken,
+            outputKey: \DescribeAggregateComplianceByConformancePacksResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of authorizations granted to various aggregator
+    ///  			accounts and regions.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeAggregationAuthorizationsPaginator(
+        _ input: DescribeAggregationAuthorizationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeAggregationAuthorizationsRequest, DescribeAggregationAuthorizationsResponse> {
+        return .init(
+            input: input,
+            command: self.describeAggregationAuthorizations,
+            inputKey: \DescribeAggregationAuthorizationsRequest.nextToken,
+            outputKey: \DescribeAggregationAuthorizationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Indicates whether the specified Config rules are compliant.
+    ///  			If a rule is noncompliant, this action returns the number of Amazon Web Services
+    ///  			resources that do not comply with the rule.
+    ///  		       A rule is compliant if all of the evaluated resources comply
+    ///  			with it. It is noncompliant if any of these resources do not
+    ///  			comply.
+    ///  		       If Config has no current evaluation results for the rule,
+    ///  			it returns INSUFFICIENT_DATA. This result might
+    ///  			indicate one of the following conditions:
+    ///
+    ///  				           Config has never invoked an evaluation for the
+    ///  					rule. To check whether it has, use the
+    ///  						DescribeConfigRuleEvaluationStatus action
+    ///  					to get the LastSuccessfulInvocationTime and
+    ///  						LastFailedInvocationTime.
+    ///
+    ///  				           The rule's Lambda function is failing to send
+    ///  					evaluation results to Config. Verify that the role you
+    ///  					assigned to your configuration recorder includes the
+    ///  						config:PutEvaluations permission. If the
+    ///  					rule is a custom rule, verify that the Lambda execution
+    ///  					role includes the config:PutEvaluations
+    ///  					permission.
+    ///
+    ///  				           The rule's Lambda function has returned
+    ///  						NOT_APPLICABLE for all evaluation results.
+    ///  					This can occur if the resources were deleted or removed from
+    ///  					the rule's scope.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeComplianceByConfigRulePaginator(
+        _ input: DescribeComplianceByConfigRuleRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeComplianceByConfigRuleRequest, DescribeComplianceByConfigRuleResponse> {
+        return .init(
+            input: input,
+            command: self.describeComplianceByConfigRule,
+            inputKey: \DescribeComplianceByConfigRuleRequest.nextToken,
+            outputKey: \DescribeComplianceByConfigRuleResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Indicates whether the specified Amazon Web Services resources are compliant. If
+    ///  			a resource is noncompliant, this action returns the number of Config rules that the resource does not comply with.
+    ///  		       A resource is compliant if it complies with all the Config
+    ///  			rules that evaluate it. It is noncompliant if it does not comply
+    ///  			with one or more of these rules.
+    ///  		       If Config has no current evaluation results for the
+    ///  			resource, it returns INSUFFICIENT_DATA. This result
+    ///  			might indicate one of the following conditions about the rules that
+    ///  			evaluate the resource:
+    ///
+    ///  				           Config has never invoked an evaluation for the
+    ///  					rule. To check whether it has, use the
+    ///  						DescribeConfigRuleEvaluationStatus action
+    ///  					to get the LastSuccessfulInvocationTime and
+    ///  						LastFailedInvocationTime.
+    ///
+    ///  				           The rule's Lambda function is failing to send
+    ///  					evaluation results to Config. Verify that the role that
+    ///  					you assigned to your configuration recorder includes the
+    ///  						config:PutEvaluations permission. If the
+    ///  					rule is a custom rule, verify that the Lambda execution
+    ///  					role includes the config:PutEvaluations
+    ///  					permission.
+    ///
+    ///  				           The rule's Lambda function has returned
+    ///  						NOT_APPLICABLE for all evaluation results.
+    ///  					This can occur if the resources were deleted or removed from
+    ///  					the rule's scope.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeComplianceByResourcePaginator(
+        _ input: DescribeComplianceByResourceRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeComplianceByResourceRequest, DescribeComplianceByResourceResponse> {
+        return .init(
+            input: input,
+            command: self.describeComplianceByResource,
+            inputKey: \DescribeComplianceByResourceRequest.nextToken,
+            outputKey: \DescribeComplianceByResourceResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns status information for each of your Config managed rules. The status includes information such as the last time Config invoked the rule, the last time Config failed to invoke
+    ///  			the rule, and the related error for the last failure.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeConfigRuleEvaluationStatusPaginator(
+        _ input: DescribeConfigRuleEvaluationStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeConfigRuleEvaluationStatusRequest, DescribeConfigRuleEvaluationStatusResponse> {
+        return .init(
+            input: input,
+            command: self.describeConfigRuleEvaluationStatus,
+            inputKey: \DescribeConfigRuleEvaluationStatusRequest.nextToken,
+            outputKey: \DescribeConfigRuleEvaluationStatusResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns details about your Config rules.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeConfigRulesPaginator(
+        _ input: DescribeConfigRulesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeConfigRulesRequest, DescribeConfigRulesResponse> {
+        return .init(
+            input: input,
+            command: self.describeConfigRules,
+            inputKey: \DescribeConfigRulesRequest.nextToken,
+            outputKey: \DescribeConfigRulesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns status information for sources within an aggregator.
+    ///  			The status includes information about the last time Config verified authorization between the source account and an aggregator account. In case of a failure, the status contains the related error code or message.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeConfigurationAggregatorSourcesStatusPaginator(
+        _ input: DescribeConfigurationAggregatorSourcesStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeConfigurationAggregatorSourcesStatusRequest, DescribeConfigurationAggregatorSourcesStatusResponse> {
+        return .init(
+            input: input,
+            command: self.describeConfigurationAggregatorSourcesStatus,
+            inputKey: \DescribeConfigurationAggregatorSourcesStatusRequest.nextToken,
+            outputKey: \DescribeConfigurationAggregatorSourcesStatusResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the details of one or more configuration aggregators.
+    ///  			If the configuration aggregator is not specified, this action
+    ///  			returns the details for all the configuration aggregators associated
+    ///  			with the account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeConfigurationAggregatorsPaginator(
+        _ input: DescribeConfigurationAggregatorsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeConfigurationAggregatorsRequest, DescribeConfigurationAggregatorsResponse> {
+        return .init(
+            input: input,
+            command: self.describeConfigurationAggregators,
+            inputKey: \DescribeConfigurationAggregatorsRequest.nextToken,
+            outputKey: \DescribeConfigurationAggregatorsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns compliance details for each rule in that conformance pack.
+    ///  		        You must provide exact rule names.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeConformancePackCompliancePaginator(
+        _ input: DescribeConformancePackComplianceRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeConformancePackComplianceRequest, DescribeConformancePackComplianceResponse> {
+        return .init(
+            input: input,
+            command: self.describeConformancePackCompliance,
+            inputKey: \DescribeConformancePackComplianceRequest.nextToken,
+            outputKey: \DescribeConformancePackComplianceResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Provides one or more conformance packs deployment status.
+    ///  		        If there are no conformance packs then you will see an empty result.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeConformancePackStatusPaginator(
+        _ input: DescribeConformancePackStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeConformancePackStatusRequest, DescribeConformancePackStatusResponse> {
+        return .init(
+            input: input,
+            command: self.describeConformancePackStatus,
+            inputKey: \DescribeConformancePackStatusRequest.nextToken,
+            outputKey: \DescribeConformancePackStatusResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of one or more conformance packs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeConformancePacksPaginator(
+        _ input: DescribeConformancePacksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeConformancePacksRequest, DescribeConformancePacksResponse> {
+        return .init(
+            input: input,
+            command: self.describeConformancePacks,
+            inputKey: \DescribeConformancePacksRequest.nextToken,
+            outputKey: \DescribeConformancePacksResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Provides organization Config rule deployment status for an organization.
+    ///
+    ///  		        The status is not considered successful until organization Config rule is successfully deployed in all the member
+    ///  			accounts with an exception of excluded accounts.
+    ///  			         When you specify the limit and the next token, you receive a paginated response.
+    ///  			Limit and next token are not applicable if you specify organization Config rule names.
+    ///  			It is only applicable, when you request all the organization Config rules.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeOrganizationConfigRuleStatusesPaginator(
+        _ input: DescribeOrganizationConfigRuleStatusesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeOrganizationConfigRuleStatusesRequest, DescribeOrganizationConfigRuleStatusesResponse> {
+        return .init(
+            input: input,
+            command: self.describeOrganizationConfigRuleStatuses,
+            inputKey: \DescribeOrganizationConfigRuleStatusesRequest.nextToken,
+            outputKey: \DescribeOrganizationConfigRuleStatusesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of organization Config rules.
+    ///
+    ///  		        When you specify the limit and the next token, you receive a paginated response.
+    ///  			         Limit and next token are not applicable if you specify organization Config rule names.
+    ///  			It is only applicable, when you request all the organization Config rules.
+    ///
+    ///  			          For accounts within an organzation
+    ///
+    ///  			         If you deploy an organizational rule or conformance pack in an organization
+    ///  				administrator account, and then establish a delegated administrator and deploy an
+    ///  				organizational rule or conformance pack in the delegated administrator account, you
+    ///  				won't be able to see the organizational rule or conformance pack in the organization
+    ///  				administrator account from the delegated administrator account or see the organizational
+    ///  				rule or conformance pack in the delegated administrator account from organization
+    ///  				administrator account. The DescribeOrganizationConfigRules and
+    ///  				DescribeOrganizationConformancePacks APIs can only see and interact with
+    ///  				the organization-related resource that were deployed from within the account calling
+    ///  				those APIs.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeOrganizationConfigRulesPaginator(
+        _ input: DescribeOrganizationConfigRulesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeOrganizationConfigRulesRequest, DescribeOrganizationConfigRulesResponse> {
+        return .init(
+            input: input,
+            command: self.describeOrganizationConfigRules,
+            inputKey: \DescribeOrganizationConfigRulesRequest.nextToken,
+            outputKey: \DescribeOrganizationConfigRulesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Provides organization conformance pack deployment status for an organization.
+    ///
+    ///  			         The status is not considered successful until organization conformance pack is successfully
+    ///  				deployed in all the member accounts with an exception of excluded accounts.
+    ///  			         When you specify the limit and the next token, you receive a paginated response.
+    ///  				Limit and next token are not applicable if you specify organization conformance pack names.
+    ///  				They are only applicable, when you request all the organization conformance packs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeOrganizationConformancePackStatusesPaginator(
+        _ input: DescribeOrganizationConformancePackStatusesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeOrganizationConformancePackStatusesRequest, DescribeOrganizationConformancePackStatusesResponse> {
+        return .init(
+            input: input,
+            command: self.describeOrganizationConformancePackStatuses,
+            inputKey: \DescribeOrganizationConformancePackStatusesRequest.nextToken,
+            outputKey: \DescribeOrganizationConformancePackStatusesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of organization conformance packs.
+    ///  		        When you specify the limit and the next token, you receive a paginated response.
+    ///  			         Limit and next token are not applicable if you specify organization conformance packs names. They are only applicable,
+    ///  			when you request all the organization conformance packs.
+    ///
+    ///  			          For accounts within an organzation
+    ///
+    ///  			         If you deploy an organizational rule or conformance pack in an organization
+    ///  				administrator account, and then establish a delegated administrator and deploy an
+    ///  				organizational rule or conformance pack in the delegated administrator account, you
+    ///  				won't be able to see the organizational rule or conformance pack in the organization
+    ///  				administrator account from the delegated administrator account or see the organizational
+    ///  				rule or conformance pack in the delegated administrator account from organization
+    ///  				administrator account. The DescribeOrganizationConfigRules and
+    ///  				DescribeOrganizationConformancePacks APIs can only see and interact with
+    ///  				the organization-related resource that were deployed from within the account calling
+    ///  				those APIs.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeOrganizationConformancePacksPaginator(
+        _ input: DescribeOrganizationConformancePacksRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeOrganizationConformancePacksRequest, DescribeOrganizationConformancePacksResponse> {
+        return .init(
+            input: input,
+            command: self.describeOrganizationConformancePacks,
+            inputKey: \DescribeOrganizationConformancePacksRequest.nextToken,
+            outputKey: \DescribeOrganizationConformancePacksResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of all pending aggregation requests.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describePendingAggregationRequestsPaginator(
+        _ input: DescribePendingAggregationRequestsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribePendingAggregationRequestsRequest, DescribePendingAggregationRequestsResponse> {
+        return .init(
+            input: input,
+            command: self.describePendingAggregationRequests,
+            inputKey: \DescribePendingAggregationRequestsRequest.nextToken,
+            outputKey: \DescribePendingAggregationRequestsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the details of one or more remediation exceptions. A detailed view of a remediation exception for a set of resources that includes an explanation of an exception and the time when the exception will be deleted.
+    ///  			When you specify the limit and the next token, you receive a paginated response.
+    ///  		        Config generates a remediation exception when a problem occurs executing a remediation action to a specific resource.
+    ///  				Remediation exceptions blocks auto-remediation until the exception is cleared.
+    ///  			         When you specify the limit and the next token, you receive a paginated response.
+    ///  			         Limit and next token are not applicable if you request resources in batch. It is only applicable, when you request all resources.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeRemediationExceptionsPaginator(
+        _ input: DescribeRemediationExceptionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeRemediationExceptionsRequest, DescribeRemediationExceptionsResponse> {
+        return .init(
+            input: input,
+            command: self.describeRemediationExceptions,
+            inputKey: \DescribeRemediationExceptionsRequest.nextToken,
+            outputKey: \DescribeRemediationExceptionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Provides a detailed view of a Remediation Execution for a set of resources including state, timestamps for when steps for the remediation execution occur, and any error messages for steps that have failed.
+    ///  			When you specify the limit and the next token, you receive a paginated response.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeRemediationExecutionStatusPaginator(
+        _ input: DescribeRemediationExecutionStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeRemediationExecutionStatusRequest, DescribeRemediationExecutionStatusResponse> {
+        return .init(
+            input: input,
+            command: self.describeRemediationExecutionStatus,
+            inputKey: \DescribeRemediationExecutionStatusRequest.nextToken,
+            outputKey: \DescribeRemediationExecutionStatusResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the details of one or more retention configurations. If
+    ///  			the retention configuration name is not specified, this action
+    ///  			returns the details for all the retention configurations for that
+    ///  			account.
+    ///
+    ///  			         Currently, Config supports only one retention
+    ///  				configuration per region in your account.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeRetentionConfigurationsPaginator(
+        _ input: DescribeRetentionConfigurationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeRetentionConfigurationsRequest, DescribeRetentionConfigurationsResponse> {
+        return .init(
+            input: input,
+            command: self.describeRetentionConfigurations,
+            inputKey: \DescribeRetentionConfigurationsRequest.nextToken,
+            outputKey: \DescribeRetentionConfigurationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the evaluation results for the specified Config
+    ///  			rule for a specific resource in a rule. The results indicate which
+    ///  			Amazon Web Services resources were evaluated by the rule, when each resource was
+    ///  			last evaluated, and whether each resource complies with the rule.
+    ///
+    ///  			         The results can return an empty result page. But if you
+    ///  				have a nextToken, the results are displayed on the next
+    ///  				page.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getAggregateComplianceDetailsByConfigRulePaginator(
+        _ input: GetAggregateComplianceDetailsByConfigRuleRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetAggregateComplianceDetailsByConfigRuleRequest, GetAggregateComplianceDetailsByConfigRuleResponse> {
+        return .init(
+            input: input,
+            command: self.getAggregateComplianceDetailsByConfigRule,
+            inputKey: \GetAggregateComplianceDetailsByConfigRuleRequest.nextToken,
+            outputKey: \GetAggregateComplianceDetailsByConfigRuleResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the number of compliant and noncompliant rules for one
+    ///  			or more accounts and regions in an aggregator.
+    ///
+    ///  			         The results can return an empty result page, but if you
+    ///  				have a nextToken, the results are displayed on the next
+    ///  				page.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getAggregateConfigRuleComplianceSummaryPaginator(
+        _ input: GetAggregateConfigRuleComplianceSummaryRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetAggregateConfigRuleComplianceSummaryRequest, GetAggregateConfigRuleComplianceSummaryResponse> {
+        return .init(
+            input: input,
+            command: self.getAggregateConfigRuleComplianceSummary,
+            inputKey: \GetAggregateConfigRuleComplianceSummaryRequest.nextToken,
+            outputKey: \GetAggregateConfigRuleComplianceSummaryResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the count of compliant and noncompliant conformance packs across all Amazon Web Services accounts and Amazon Web Services Regions in an aggregator. You can filter based on Amazon Web Services account ID or Amazon Web Services Region.
+    ///  		        The results can return an empty result page, but if you have a nextToken, the results are displayed on the next page.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getAggregateConformancePackComplianceSummaryPaginator(
+        _ input: GetAggregateConformancePackComplianceSummaryRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetAggregateConformancePackComplianceSummaryRequest, GetAggregateConformancePackComplianceSummaryResponse> {
+        return .init(
+            input: input,
+            command: self.getAggregateConformancePackComplianceSummary,
+            inputKey: \GetAggregateConformancePackComplianceSummaryRequest.nextToken,
+            outputKey: \GetAggregateConformancePackComplianceSummaryResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the resource counts across accounts and regions that are present in your Config aggregator. You can request the resource counts by providing filters and GroupByKey.
+    ///  		       For example, if the input contains accountID 12345678910 and region us-east-1 in filters, the API returns the count of resources in account ID 12345678910 and region us-east-1.
+    ///  			If the input contains ACCOUNT_ID as a GroupByKey, the API returns resource counts for all source accounts that are present in your aggregator.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getAggregateDiscoveredResourceCountsPaginator(
+        _ input: GetAggregateDiscoveredResourceCountsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetAggregateDiscoveredResourceCountsRequest, GetAggregateDiscoveredResourceCountsResponse> {
+        return .init(
+            input: input,
+            command: self.getAggregateDiscoveredResourceCounts,
+            inputKey: \GetAggregateDiscoveredResourceCountsRequest.nextToken,
+            outputKey: \GetAggregateDiscoveredResourceCountsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the evaluation results for the specified Config
+    ///  			rule. The results indicate which Amazon Web Services resources were evaluated by the
+    ///  			rule, when each resource was last evaluated, and whether each
+    ///  			resource complies with the rule.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getComplianceDetailsByConfigRulePaginator(
+        _ input: GetComplianceDetailsByConfigRuleRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetComplianceDetailsByConfigRuleRequest, GetComplianceDetailsByConfigRuleResponse> {
+        return .init(
+            input: input,
+            command: self.getComplianceDetailsByConfigRule,
+            inputKey: \GetComplianceDetailsByConfigRuleRequest.nextToken,
+            outputKey: \GetComplianceDetailsByConfigRuleResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the evaluation results for the specified Amazon Web Services resource.
+    ///  			The results indicate which Config rules were used to evaluate
+    ///  			the resource, when each rule was last invoked, and whether the resource
+    ///  			complies with each rule.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getComplianceDetailsByResourcePaginator(
+        _ input: GetComplianceDetailsByResourceRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetComplianceDetailsByResourceRequest, GetComplianceDetailsByResourceResponse> {
+        return .init(
+            input: input,
+            command: self.getComplianceDetailsByResource,
+            inputKey: \GetComplianceDetailsByResourceRequest.nextToken,
+            outputKey: \GetComplianceDetailsByResourceResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns compliance details of a conformance pack for all Amazon Web Services resources that are monitered by conformance pack.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getConformancePackComplianceDetailsPaginator(
+        _ input: GetConformancePackComplianceDetailsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetConformancePackComplianceDetailsRequest, GetConformancePackComplianceDetailsResponse> {
+        return .init(
+            input: input,
+            command: self.getConformancePackComplianceDetails,
+            inputKey: \GetConformancePackComplianceDetailsRequest.nextToken,
+            outputKey: \GetConformancePackComplianceDetailsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns compliance details for the conformance pack based on the cumulative compliance results of all the rules in that conformance pack.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getConformancePackComplianceSummaryPaginator(
+        _ input: GetConformancePackComplianceSummaryRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetConformancePackComplianceSummaryRequest, GetConformancePackComplianceSummaryResponse> {
+        return .init(
+            input: input,
+            command: self.getConformancePackComplianceSummary,
+            inputKey: \GetConformancePackComplianceSummaryRequest.nextToken,
+            outputKey: \GetConformancePackComplianceSummaryResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns the resource types, the number of each resource type,
+    ///  			and the total number of resources that Config is recording in
+    ///  			this region for your Amazon Web Services account.
+    ///  		        Example
+    ///  				           Config is recording three resource types in the US
+    ///  					East (Ohio) Region for your account: 25 EC2 instances, 20
+    ///  					IAM users, and 15 S3 buckets.
+    ///
+    ///  				           You make a call to the
+    ///  						GetDiscoveredResourceCounts action and
+    ///  					specify that you want all resource types.
+    ///
+    ///  				           Config returns the following:
+    ///
+    ///  						               The resource types (EC2 instances, IAM users,
+    ///  							and S3 buckets).
+    ///
+    ///  						               The number of each resource type (25, 20, and
+    ///  							15).
+    ///
+    ///  						               The total number of all resources
+    ///  							(60).
+    ///
+    ///
+    ///  		       The response is paginated. By default, Config lists 100
+    ///  				ResourceCount objects on each page. You can
+    ///  			customize this number with the limit parameter. The
+    ///  			response includes a nextToken string. To get the next
+    ///  			page of results, run the request again and specify the string for
+    ///  			the nextToken parameter.
+    ///
+    ///  			         If you make a call to the GetDiscoveredResourceCounts action, you might
+    ///  				not immediately receive resource counts in the following
+    ///  				situations:
+    ///
+    ///  					             You are a new Config customer.
+    ///
+    ///  					             You just enabled resource recording.
+    ///
+    ///  			         It might take a few minutes for Config to record and
+    ///  				count your resources. Wait a few minutes and then retry the
+    ///  					GetDiscoveredResourceCounts action.
+    ///
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getDiscoveredResourceCountsPaginator(
+        _ input: GetDiscoveredResourceCountsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetDiscoveredResourceCountsRequest, GetDiscoveredResourceCountsResponse> {
+        return .init(
+            input: input,
+            command: self.getDiscoveredResourceCounts,
+            inputKey: \GetDiscoveredResourceCountsRequest.nextToken,
+            outputKey: \GetDiscoveredResourceCountsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns detailed status for each member account within an organization for a given organization Config rule.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getOrganizationConfigRuleDetailedStatusPaginator(
+        _ input: GetOrganizationConfigRuleDetailedStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetOrganizationConfigRuleDetailedStatusRequest, GetOrganizationConfigRuleDetailedStatusResponse> {
+        return .init(
+            input: input,
+            command: self.getOrganizationConfigRuleDetailedStatus,
+            inputKey: \GetOrganizationConfigRuleDetailedStatusRequest.nextToken,
+            outputKey: \GetOrganizationConfigRuleDetailedStatusResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns detailed status for each member account within an organization for a given organization conformance pack.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getOrganizationConformancePackDetailedStatusPaginator(
+        _ input: GetOrganizationConformancePackDetailedStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetOrganizationConformancePackDetailedStatusRequest, GetOrganizationConformancePackDetailedStatusResponse> {
+        return .init(
+            input: input,
+            command: self.getOrganizationConformancePackDetailedStatus,
+            inputKey: \GetOrganizationConformancePackDetailedStatusRequest.nextToken,
+            outputKey: \GetOrganizationConformancePackDetailedStatusResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of ConfigurationItems for the specified resource.
+    ///  			The list contains details about each state of the resource
+    ///  			during the specified time interval. If you specified a retention
+    ///  			period to retain your ConfigurationItems between a
+    ///  			minimum of 30 days and a maximum of 7 years (2557 days), Config
+    ///  			returns the ConfigurationItems for the specified
+    ///  			retention period.
+    ///  		       The response is paginated. By default, Config returns a
+    ///  			limit of 10 configuration items per page. You can customize this
+    ///  			number with the limit parameter. The response includes
+    ///  			a nextToken string. To get the next page of results,
+    ///  			run the request again and specify the string for the
+    ///  				nextToken parameter.
+    ///
+    ///  			         Each call to the API is limited to span a duration of seven
+    ///  				days. It is likely that the number of records returned is
+    ///  				smaller than the specified limit. In such cases,
+    ///  				you can make another call, using the
+    ///  				nextToken.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getResourceConfigHistoryPaginator(
+        _ input: GetResourceConfigHistoryRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetResourceConfigHistoryRequest, GetResourceConfigHistoryResponse> {
+        return .init(
+            input: input,
+            command: self.getResourceConfigHistory,
+            inputKey: \GetResourceConfigHistoryRequest.nextToken,
+            outputKey: \GetResourceConfigHistoryResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Accepts a resource type and returns a list of resource identifiers that are aggregated for a specific resource type across accounts and regions.
+    ///  			A resource identifier includes the resource type, ID, (if available) the custom resource name, source account, and source region.
+    ///  			You can narrow the results to include only resources that have specific resource IDs, or a resource name, or source account ID, or source region.
+    ///  			      For example, if the input consists of accountID 12345678910 and the region is us-east-1 for resource type AWS::EC2::Instance then the API returns all the EC2 instance identifiers of accountID 12345678910 and region us-east-1.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAggregateDiscoveredResourcesPaginator(
+        _ input: ListAggregateDiscoveredResourcesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAggregateDiscoveredResourcesRequest, ListAggregateDiscoveredResourcesResponse> {
+        return .init(
+            input: input,
+            command: self.listAggregateDiscoveredResources,
+            inputKey: \ListAggregateDiscoveredResourcesRequest.nextToken,
+            outputKey: \ListAggregateDiscoveredResourcesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of conformance pack compliance scores.
+    ///  			A compliance score is the percentage of the number of compliant rule-resource combinations in a conformance pack compared to the number of total possible rule-resource combinations in the conformance pack.
+    ///  			This metric provides you with a high-level view of the compliance state of your conformance packs. You can use it to identify, investigate, and understand
+    ///  			the level of compliance in your conformance packs.
+    ///  		        Conformance packs with no evaluation results will have a compliance score of INSUFFICIENT_DATA.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listConformancePackComplianceScoresPaginator(
+        _ input: ListConformancePackComplianceScoresRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListConformancePackComplianceScoresRequest, ListConformancePackComplianceScoresResponse> {
+        return .init(
+            input: input,
+            command: self.listConformancePackComplianceScores,
+            inputKey: \ListConformancePackComplianceScoresRequest.nextToken,
+            outputKey: \ListConformancePackComplianceScoresResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Accepts a resource type and returns a list of resource
+    ///  			identifiers for the resources of that type. A resource identifier
+    ///  			includes the resource type, ID, and (if available) the custom
+    ///  			resource name. The results consist of resources that Config has
+    ///  			discovered, including those that Config is not currently
+    ///  			recording. You can narrow the results to include only resources that
+    ///  			have specific resource IDs or a resource name.
+    ///
+    ///  			         You can specify either resource IDs or a resource name, but
+    ///  				not both, in the same request.
+    ///
+    ///  		       The response is paginated. By default, Config lists 100
+    ///  			resource identifiers on each page. You can customize this number
+    ///  			with the limit parameter. The response includes a
+    ///  				nextToken string. To get the next page of results,
+    ///  			run the request again and specify the string for the
+    ///  				nextToken parameter.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDiscoveredResourcesPaginator(
+        _ input: ListDiscoveredResourcesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDiscoveredResourcesRequest, ListDiscoveredResourcesResponse> {
+        return .init(
+            input: input,
+            command: self.listDiscoveredResources,
+            inputKey: \ListDiscoveredResourcesRequest.nextToken,
+            outputKey: \ListDiscoveredResourcesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of proactive resource evaluations.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listResourceEvaluationsPaginator(
+        _ input: ListResourceEvaluationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListResourceEvaluationsRequest, ListResourceEvaluationsResponse> {
+        return .init(
+            input: input,
+            command: self.listResourceEvaluations,
+            inputKey: \ListResourceEvaluationsRequest.nextToken,
+            outputKey: \ListResourceEvaluationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the stored queries for a single Amazon Web Services account and a single Amazon Web Services Region. The default is 100.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listStoredQueriesPaginator(
+        _ input: ListStoredQueriesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListStoredQueriesRequest, ListStoredQueriesResponse> {
+        return .init(
+            input: input,
+            command: self.listStoredQueries,
+            inputKey: \ListStoredQueriesRequest.nextToken,
+            outputKey: \ListStoredQueriesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  List the tags for Config resource.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTagsForResourcePaginator(
+        _ input: ListTagsForResourceRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTagsForResourceRequest, ListTagsForResourceResponse> {
+        return .init(
+            input: input,
+            command: self.listTagsForResource,
+            inputKey: \ListTagsForResourceRequest.nextToken,
+            outputKey: \ListTagsForResourceResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Accepts a structured query language (SQL) SELECT command and an aggregator to query configuration state of Amazon Web Services resources across multiple accounts and regions,
+    ///  			performs the corresponding search, and returns resource configurations matching the properties.
+    ///  		       For more information about query components, see the
+    ///  			 Query Components section in the Config Developer Guide.
+    ///
+    ///
+    ///  			         If you run an aggregation query (i.e., using GROUP BY or using aggregate functions such as COUNT; e.g., SELECT resourceId, COUNT(*) WHERE resourceType = 'AWS::IAM::Role' GROUP BY resourceId)
+    ///  				and do not specify the MaxResults or the Limit query parameters, the default page size is set to 500.
+    ///
+    ///  			         If you run a non-aggregation query (i.e., not using GROUP BY or aggregate function; e.g., SELECT * WHERE resourceType = 'AWS::IAM::Role')
+    ///  				and do not specify the MaxResults or the Limit query parameters, the default page size is set to 25.
+    ///
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func selectAggregateResourceConfigPaginator(
+        _ input: SelectAggregateResourceConfigRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SelectAggregateResourceConfigRequest, SelectAggregateResourceConfigResponse> {
+        return .init(
+            input: input,
+            command: self.selectAggregateResourceConfig,
+            inputKey: \SelectAggregateResourceConfigRequest.nextToken,
+            outputKey: \SelectAggregateResourceConfigResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Accepts a structured query language (SQL) SELECT command, performs the corresponding search, and returns resource configurations matching the properties.
+    ///  		       For more information about query components, see the
+    ///  			 Query Components section in the Config Developer Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func selectResourceConfigPaginator(
+        _ input: SelectResourceConfigRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<SelectResourceConfigRequest, SelectResourceConfigResponse> {
+        return .init(
+            input: input,
+            command: self.selectResourceConfig,
+            inputKey: \SelectResourceConfigRequest.nextToken,
+            outputKey: \SelectResourceConfigResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

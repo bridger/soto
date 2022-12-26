@@ -83,7 +83,7 @@ extension RedshiftServerless {
         return try await self.client.execute(operation: "DeleteWorkgroup", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
-    /// Returns a database user name and temporary password with temporary authorization to log in to Amazon Redshift Serverless. By default, the temporary credentials expire in 900 seconds.  You can optionally specify a duration between 900 seconds (15 minutes) and 3600 seconds (60 minutes).   The Identity and Access Management (IAM) user or role that runs  GetCredentials must have an IAM policy attached that allows access to all  necessary actions and resources.    If the DbName parameter is specified, the IAM policy must  allow access to the resource dbname for the specified database name.
+    /// Returns a database user name and temporary password with temporary authorization to log in to Amazon Redshift Serverless. By default, the temporary credentials expire in 900 seconds.  You can optionally specify a duration between 900 seconds (15 minutes) and 3600 seconds (60 minutes).  The Identity and Access Management (IAM) user or role that runs  GetCredentials must have an IAM policy attached that allows access to all  necessary actions and resources.  If the DbName parameter is specified, the IAM policy must  allow access to the resource dbname for the specified database name.
     public func getCredentials(_ input: GetCredentialsRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetCredentialsResponse {
         return try await self.client.execute(operation: "GetCredentials", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
@@ -111,6 +111,11 @@ extension RedshiftServerless {
     /// Returns information about a specific snapshot.
     public func getSnapshot(_ input: GetSnapshotRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetSnapshotResponse {
         return try await self.client.execute(operation: "GetSnapshot", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Returns information about a TableRestoreStatus object.
+    public func getTableRestoreStatus(_ input: GetTableRestoreStatusRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetTableRestoreStatusResponse {
+        return try await self.client.execute(operation: "GetTableRestoreStatus", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Returns information about a usage limit.
@@ -143,6 +148,11 @@ extension RedshiftServerless {
         return try await self.client.execute(operation: "ListSnapshots", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    /// Returns information about an array of TableRestoreStatus objects.
+    public func listTableRestoreStatus(_ input: ListTableRestoreStatusRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListTableRestoreStatusResponse {
+        return try await self.client.execute(operation: "ListTableRestoreStatus", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     /// Lists the tags assigned to a resource.
     public func listTagsForResource(_ input: ListTagsForResourceRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> ListTagsForResourceResponse {
         return try await self.client.execute(operation: "ListTagsForResource", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -171,6 +181,11 @@ extension RedshiftServerless {
     /// Restores a namespace from a snapshot.
     public func restoreFromSnapshot(_ input: RestoreFromSnapshotRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> RestoreFromSnapshotResponse {
         return try await self.client.execute(operation: "RestoreFromSnapshot", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
+    /// Restores a table from a snapshot to your Amazon Redshift Serverless instance.
+    public func restoreTableFromSnapshot(_ input: RestoreTableFromSnapshotRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> RestoreTableFromSnapshotResponse {
+        return try await self.client.execute(operation: "RestoreTableFromSnapshot", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
     /// Assigns one or more tags to a resource.
@@ -206,6 +221,165 @@ extension RedshiftServerless {
     /// Updates a workgroup with the specified configuration settings.
     public func updateWorkgroup(_ input: UpdateWorkgroupRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateWorkgroupResponse {
         return try await self.client.execute(operation: "UpdateWorkgroup", path: "/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension RedshiftServerless {
+    ///  Returns an array of EndpointAccess objects and relevant information.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEndpointAccessPaginator(
+        _ input: ListEndpointAccessRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEndpointAccessRequest, ListEndpointAccessResponse> {
+        return .init(
+            input: input,
+            command: self.listEndpointAccess,
+            inputKey: \ListEndpointAccessRequest.nextToken,
+            outputKey: \ListEndpointAccessResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about a list of specified namespaces.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listNamespacesPaginator(
+        _ input: ListNamespacesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListNamespacesRequest, ListNamespacesResponse> {
+        return .init(
+            input: input,
+            command: self.listNamespaces,
+            inputKey: \ListNamespacesRequest.nextToken,
+            outputKey: \ListNamespacesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns an array of recovery points.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRecoveryPointsPaginator(
+        _ input: ListRecoveryPointsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRecoveryPointsRequest, ListRecoveryPointsResponse> {
+        return .init(
+            input: input,
+            command: self.listRecoveryPoints,
+            inputKey: \ListRecoveryPointsRequest.nextToken,
+            outputKey: \ListRecoveryPointsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of snapshots.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listSnapshotsPaginator(
+        _ input: ListSnapshotsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListSnapshotsRequest, ListSnapshotsResponse> {
+        return .init(
+            input: input,
+            command: self.listSnapshots,
+            inputKey: \ListSnapshotsRequest.nextToken,
+            outputKey: \ListSnapshotsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about an array of TableRestoreStatus objects.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listTableRestoreStatusPaginator(
+        _ input: ListTableRestoreStatusRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListTableRestoreStatusRequest, ListTableRestoreStatusResponse> {
+        return .init(
+            input: input,
+            command: self.listTableRestoreStatus,
+            inputKey: \ListTableRestoreStatusRequest.nextToken,
+            outputKey: \ListTableRestoreStatusResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all usage limits within Amazon Redshift Serverless.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listUsageLimitsPaginator(
+        _ input: ListUsageLimitsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListUsageLimitsRequest, ListUsageLimitsResponse> {
+        return .init(
+            input: input,
+            command: self.listUsageLimits,
+            inputKey: \ListUsageLimitsRequest.nextToken,
+            outputKey: \ListUsageLimitsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns information about a list of specified workgroups.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listWorkgroupsPaginator(
+        _ input: ListWorkgroupsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListWorkgroupsRequest, ListWorkgroupsResponse> {
+        return .init(
+            input: input,
+            command: self.listWorkgroups,
+            inputKey: \ListWorkgroupsRequest.nextToken,
+            outputKey: \ListWorkgroupsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

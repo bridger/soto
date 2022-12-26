@@ -1651,3 +1651,58 @@ extension LexRuntimeV2 {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for LexRuntimeV2
+public struct LexRuntimeV2ErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case badGatewayException = "BadGatewayException"
+        case conflictException = "ConflictException"
+        case dependencyFailedException = "DependencyFailedException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize LexRuntimeV2
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    public static var badGatewayException: Self { .init(.badGatewayException) }
+    public static var conflictException: Self { .init(.conflictException) }
+    public static var dependencyFailedException: Self { .init(.dependencyFailedException) }
+    public static var internalServerException: Self { .init(.internalServerException) }
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    public static var throttlingException: Self { .init(.throttlingException) }
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension LexRuntimeV2ErrorType: Equatable {
+    public static func == (lhs: LexRuntimeV2ErrorType, rhs: LexRuntimeV2ErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension LexRuntimeV2ErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

@@ -62,8 +62,8 @@ extension KinesisAnalyticsV2 {
     }
 
     public enum ConfigurationType: String, CustomStringConvertible, Codable, _SotoSendable {
-        case custom = "CUSTOM"
         case `default` = "DEFAULT"
+        case custom = "CUSTOM"
         public var description: String { return self.rawValue }
     }
 
@@ -83,8 +83,8 @@ extension KinesisAnalyticsV2 {
     }
 
     public enum MetricsLevel: String, CustomStringConvertible, Codable, _SotoSendable {
-        case application = "APPLICATION"
         case `operator` = "OPERATOR"
+        case application = "APPLICATION"
         case parallelism = "PARALLELISM"
         case task = "TASK"
         public var description: String { return self.rawValue }
@@ -99,6 +99,7 @@ extension KinesisAnalyticsV2 {
     public enum RuntimeEnvironment: String, CustomStringConvertible, Codable, _SotoSendable {
         case flink111 = "FLINK-1_11"
         case flink113 = "FLINK-1_13"
+        case flink115 = "FLINK-1_15"
         case flink16 = "FLINK-1_6"
         case flink18 = "FLINK-1_8"
         case sql10 = "SQL-1_0"
@@ -681,7 +682,7 @@ extension KinesisAnalyticsV2 {
         public let createTimestamp: Date?
         /// The current timestamp when the application was last updated.
         public let lastUpdateTimestamp: Date?
-        /// The runtime environment for the application (SQL-1_0, FLINK-1_6, FLINK-1_8, or FLINK-1_11).
+        /// The runtime environment for the application.
         public let runtimeEnvironment: RuntimeEnvironment
         /// Specifies the IAM role that the application uses to access external resources.
         public let serviceExecutionRole: String?
@@ -1223,13 +1224,13 @@ extension KinesisAnalyticsV2 {
         public let applicationConfiguration: ApplicationConfiguration?
         /// A summary description of the application.
         public let applicationDescription: String?
-        /// Use the STREAMING mode to create a Kinesis Data Analytics Studio notebook. To create a Kinesis Data Analytics Studio notebook, use the  INTERACTIVE mode.
+        /// Use the STREAMING mode to create a Kinesis Data Analytics For Flink application. To create a Kinesis Data Analytics Studio notebook, use the  INTERACTIVE mode.
         public let applicationMode: ApplicationMode?
         /// The name of your application (for example, sample-app).
         public let applicationName: String
         /// Use this parameter to configure an Amazon CloudWatch log stream to monitor application configuration errors.
         public let cloudWatchLoggingOptions: [CloudWatchLoggingOption]?
-        /// The runtime environment for the application (SQL-1_0, FLINK-1_6, FLINK-1_8, or FLINK-1_11).
+        /// The runtime environment for the application.
         public let runtimeEnvironment: RuntimeEnvironment
         /// The IAM role used by the application to access Kinesis data streams, Kinesis Data Firehose delivery streams, Amazon S3 objects, and other external resources.
         public let serviceExecutionRole: String
@@ -4380,5 +4381,83 @@ extension KinesisAnalyticsV2 {
         private enum CodingKeys: String, CodingKey {
             case logLevelUpdate = "LogLevelUpdate"
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for KinesisAnalyticsV2
+public struct KinesisAnalyticsV2ErrorType: AWSErrorType {
+    enum Code: String {
+        case codeValidationException = "CodeValidationException"
+        case concurrentModificationException = "ConcurrentModificationException"
+        case invalidApplicationConfigurationException = "InvalidApplicationConfigurationException"
+        case invalidArgumentException = "InvalidArgumentException"
+        case invalidRequestException = "InvalidRequestException"
+        case limitExceededException = "LimitExceededException"
+        case resourceInUseException = "ResourceInUseException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case resourceProvisionedThroughputExceededException = "ResourceProvisionedThroughputExceededException"
+        case serviceUnavailableException = "ServiceUnavailableException"
+        case tooManyTagsException = "TooManyTagsException"
+        case unableToDetectSchemaException = "UnableToDetectSchemaException"
+        case unsupportedOperationException = "UnsupportedOperationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize KinesisAnalyticsV2
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// The user-provided application code (query) is not valid. This can be a simple syntax error.
+    public static var codeValidationException: Self { .init(.codeValidationException) }
+    /// Exception thrown as a result of concurrent modifications to an application. This error can be the result of attempting to modify an application without using the current application ID.
+    public static var concurrentModificationException: Self { .init(.concurrentModificationException) }
+    /// The user-provided application configuration is not valid.
+    public static var invalidApplicationConfigurationException: Self { .init(.invalidApplicationConfigurationException) }
+    /// The specified input parameter value is not valid.
+    public static var invalidArgumentException: Self { .init(.invalidArgumentException) }
+    /// The request JSON is not valid for the operation.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// The number of allowed resources has been exceeded.
+    public static var limitExceededException: Self { .init(.limitExceededException) }
+    /// The application is not available for this operation.
+    public static var resourceInUseException: Self { .init(.resourceInUseException) }
+    /// Specified application can&#39;t be found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// Discovery failed to get a record from the streaming source because of the Kinesis Streams ProvisionedThroughputExceededException. For more information, see GetRecords in the Amazon Kinesis Streams API Reference.
+    public static var resourceProvisionedThroughputExceededException: Self { .init(.resourceProvisionedThroughputExceededException) }
+    /// The service cannot complete the request.
+    public static var serviceUnavailableException: Self { .init(.serviceUnavailableException) }
+    /// Application created with too many tags, or too many tags added to an application. Note that the maximum  number of application tags includes system tags. The maximum number of user-defined application tags is 50.
+    public static var tooManyTagsException: Self { .init(.tooManyTagsException) }
+    /// The data format is not valid. Kinesis Data Analytics cannot detect the schema for the given streaming source.
+    public static var unableToDetectSchemaException: Self { .init(.unableToDetectSchemaException) }
+    /// The request was rejected because a specified parameter is not supported or a specified resource is not valid for this  operation.
+    public static var unsupportedOperationException: Self { .init(.unsupportedOperationException) }
+}
+
+extension KinesisAnalyticsV2ErrorType: Equatable {
+    public static func == (lhs: KinesisAnalyticsV2ErrorType, rhs: KinesisAnalyticsV2ErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension KinesisAnalyticsV2ErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

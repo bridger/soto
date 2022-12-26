@@ -84,4 +84,53 @@ extension ChimeSDKMediaPipelines {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ChimeSDKMediaPipelines {
+    ///  Returns a list of media pipelines.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMediaCapturePipelinesPaginator(
+        _ input: ListMediaCapturePipelinesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMediaCapturePipelinesRequest, ListMediaCapturePipelinesResponse> {
+        return .init(
+            input: input,
+            command: self.listMediaCapturePipelines,
+            inputKey: \ListMediaCapturePipelinesRequest.nextToken,
+            outputKey: \ListMediaCapturePipelinesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of media pipelines.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listMediaPipelinesPaginator(
+        _ input: ListMediaPipelinesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListMediaPipelinesRequest, ListMediaPipelinesResponse> {
+        return .init(
+            input: input,
+            command: self.listMediaPipelines,
+            inputKey: \ListMediaPipelinesRequest.nextToken,
+            outputKey: \ListMediaPipelinesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

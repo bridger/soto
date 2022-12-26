@@ -2652,3 +2652,57 @@ extension AppRunner {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for AppRunner
+public struct AppRunnerErrorType: AWSErrorType {
+    enum Code: String {
+        case internalServiceErrorException = "InternalServiceErrorException"
+        case invalidRequestException = "InvalidRequestException"
+        case invalidStateException = "InvalidStateException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize AppRunner
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// An unexpected service exception occurred.
+    public static var internalServiceErrorException: Self { .init(.internalServiceErrorException) }
+    /// One or more input parameters aren&#39;t valid. Refer to the API action&#39;s document page, correct the input parameters, and try the action again.
+    public static var invalidRequestException: Self { .init(.invalidRequestException) }
+    /// You can&#39;t perform this action when the resource is in its current state.
+    public static var invalidStateException: Self { .init(.invalidStateException) }
+    /// A resource doesn&#39;t exist for the specified Amazon Resource Name (ARN) in your Amazon Web Services account.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// App Runner can&#39;t create this resource. You&#39;ve reached your account quota for this resource type. For App Runner per-resource quotas, see App Runner endpoints and quotas in the Amazon Web Services General Reference.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+}
+
+extension AppRunnerErrorType: Equatable {
+    public static func == (lhs: AppRunnerErrorType, rhs: AppRunnerErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension AppRunnerErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}

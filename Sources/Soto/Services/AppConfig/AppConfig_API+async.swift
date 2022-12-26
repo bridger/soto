@@ -241,4 +241,185 @@ extension AppConfig {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension AppConfig {
+    ///  Lists all applications in your Amazon Web Services account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listApplicationsPaginator(
+        _ input: ListApplicationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListApplicationsRequest, Applications> {
+        return .init(
+            input: input,
+            command: self.listApplications,
+            inputKey: \ListApplicationsRequest.nextToken,
+            outputKey: \Applications.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the configuration profiles for an application.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listConfigurationProfilesPaginator(
+        _ input: ListConfigurationProfilesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListConfigurationProfilesRequest, ConfigurationProfiles> {
+        return .init(
+            input: input,
+            command: self.listConfigurationProfiles,
+            inputKey: \ListConfigurationProfilesRequest.nextToken,
+            outputKey: \ConfigurationProfiles.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists deployment strategies.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDeploymentStrategiesPaginator(
+        _ input: ListDeploymentStrategiesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDeploymentStrategiesRequest, DeploymentStrategies> {
+        return .init(
+            input: input,
+            command: self.listDeploymentStrategies,
+            inputKey: \ListDeploymentStrategiesRequest.nextToken,
+            outputKey: \DeploymentStrategies.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the deployments for an environment in descending deployment number order.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDeploymentsPaginator(
+        _ input: ListDeploymentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDeploymentsRequest, Deployments> {
+        return .init(
+            input: input,
+            command: self.listDeployments,
+            inputKey: \ListDeploymentsRequest.nextToken,
+            outputKey: \Deployments.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists the environments for an application.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listEnvironmentsPaginator(
+        _ input: ListEnvironmentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListEnvironmentsRequest, Environments> {
+        return .init(
+            input: input,
+            command: self.listEnvironments,
+            inputKey: \ListEnvironmentsRequest.nextToken,
+            outputKey: \Environments.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all AppConfig extension associations in the account. For more information about extensions and associations, see Working with AppConfig extensions in the AppConfig User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listExtensionAssociationsPaginator(
+        _ input: ListExtensionAssociationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListExtensionAssociationsRequest, ExtensionAssociations> {
+        return .init(
+            input: input,
+            command: self.listExtensionAssociations,
+            inputKey: \ListExtensionAssociationsRequest.nextToken,
+            outputKey: \ExtensionAssociations.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists all custom and Amazon Web Services-authored AppConfig extensions in the account. For more information about extensions, see Working with AppConfig extensions in the AppConfig User Guide.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listExtensionsPaginator(
+        _ input: ListExtensionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListExtensionsRequest, Extensions> {
+        return .init(
+            input: input,
+            command: self.listExtensions,
+            inputKey: \ListExtensionsRequest.nextToken,
+            outputKey: \Extensions.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Lists configurations stored in the AppConfig hosted configuration store by version.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listHostedConfigurationVersionsPaginator(
+        _ input: ListHostedConfigurationVersionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListHostedConfigurationVersionsRequest, HostedConfigurationVersions> {
+        return .init(
+            input: input,
+            command: self.listHostedConfigurationVersions,
+            inputKey: \ListHostedConfigurationVersionsRequest.nextToken,
+            outputKey: \HostedConfigurationVersions.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

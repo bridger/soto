@@ -194,4 +194,207 @@ extension Panorama {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Panorama {
+    ///  Returns a list of application instance dependencies.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listApplicationInstanceDependenciesPaginator(
+        _ input: ListApplicationInstanceDependenciesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListApplicationInstanceDependenciesRequest, ListApplicationInstanceDependenciesResponse> {
+        return .init(
+            input: input,
+            command: self.listApplicationInstanceDependencies,
+            inputKey: \ListApplicationInstanceDependenciesRequest.nextToken,
+            outputKey: \ListApplicationInstanceDependenciesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of application node instances.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listApplicationInstanceNodeInstancesPaginator(
+        _ input: ListApplicationInstanceNodeInstancesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListApplicationInstanceNodeInstancesRequest, ListApplicationInstanceNodeInstancesResponse> {
+        return .init(
+            input: input,
+            command: self.listApplicationInstanceNodeInstances,
+            inputKey: \ListApplicationInstanceNodeInstancesRequest.nextToken,
+            outputKey: \ListApplicationInstanceNodeInstancesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of application instances.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listApplicationInstancesPaginator(
+        _ input: ListApplicationInstancesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListApplicationInstancesRequest, ListApplicationInstancesResponse> {
+        return .init(
+            input: input,
+            command: self.listApplicationInstances,
+            inputKey: \ListApplicationInstancesRequest.nextToken,
+            outputKey: \ListApplicationInstancesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of devices.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDevicesPaginator(
+        _ input: ListDevicesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDevicesRequest, ListDevicesResponse> {
+        return .init(
+            input: input,
+            command: self.listDevices,
+            inputKey: \ListDevicesRequest.nextToken,
+            outputKey: \ListDevicesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of jobs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listDevicesJobsPaginator(
+        _ input: ListDevicesJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListDevicesJobsRequest, ListDevicesJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listDevicesJobs,
+            inputKey: \ListDevicesJobsRequest.nextToken,
+            outputKey: \ListDevicesJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of camera stream node jobs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listNodeFromTemplateJobsPaginator(
+        _ input: ListNodeFromTemplateJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListNodeFromTemplateJobsRequest, ListNodeFromTemplateJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listNodeFromTemplateJobs,
+            inputKey: \ListNodeFromTemplateJobsRequest.nextToken,
+            outputKey: \ListNodeFromTemplateJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of nodes.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listNodesPaginator(
+        _ input: ListNodesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListNodesRequest, ListNodesResponse> {
+        return .init(
+            input: input,
+            command: self.listNodes,
+            inputKey: \ListNodesRequest.nextToken,
+            outputKey: \ListNodesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of package import jobs.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPackageImportJobsPaginator(
+        _ input: ListPackageImportJobsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPackageImportJobsRequest, ListPackageImportJobsResponse> {
+        return .init(
+            input: input,
+            command: self.listPackageImportJobs,
+            inputKey: \ListPackageImportJobsRequest.nextToken,
+            outputKey: \ListPackageImportJobsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of packages.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listPackagesPaginator(
+        _ input: ListPackagesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListPackagesRequest, ListPackagesResponse> {
+        return .init(
+            input: input,
+            command: self.listPackages,
+            inputKey: \ListPackagesRequest.nextToken,
+            outputKey: \ListPackagesResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

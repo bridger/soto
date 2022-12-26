@@ -43,6 +43,11 @@ extension MigrationHubStrategy {
         return try await self.client.execute(operation: "GetImportFileTask", path: "/get-import-file-task/{id}", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
     }
 
+    /// Retrieve the latest ID of a specific assessment task.
+    public func getLatestAssessmentId(_ input: GetLatestAssessmentIdRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetLatestAssessmentIdResponse {
+        return try await self.client.execute(operation: "GetLatestAssessmentId", path: "/get-latest-assessment-id", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+
     ///  Retrieves your migration and modernization preferences.
     public func getPortfolioPreferences(_ input: GetPortfolioPreferencesRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> GetPortfolioPreferencesResponse {
         return try await self.client.execute(operation: "GetPortfolioPreferences", path: "/get-portfolio-preferences", httpMethod: .GET, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
@@ -121,6 +126,121 @@ extension MigrationHubStrategy {
     ///  Updates the configuration of the specified server.
     public func updateServerConfig(_ input: UpdateServerConfigRequest, logger: Logger = AWSClient.loggingDisabled, on eventLoop: EventLoop? = nil) async throws -> UpdateServerConfigResponse {
         return try await self.client.execute(operation: "UpdateServerConfig", path: "/update-server-config/", httpMethod: .POST, serviceConfig: self.config, input: input, logger: logger, on: eventLoop)
+    }
+}
+
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension MigrationHubStrategy {
+    ///   Retrieves detailed information about a specified server.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getServerDetailsPaginator(
+        _ input: GetServerDetailsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetServerDetailsRequest, GetServerDetailsResponse> {
+        return .init(
+            input: input,
+            command: self.getServerDetails,
+            inputKey: \GetServerDetailsRequest.nextToken,
+            outputKey: \GetServerDetailsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///   Retrieves a list of all the application components (processes).
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listApplicationComponentsPaginator(
+        _ input: ListApplicationComponentsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListApplicationComponentsRequest, ListApplicationComponentsResponse> {
+        return .init(
+            input: input,
+            command: self.listApplicationComponents,
+            inputKey: \ListApplicationComponentsRequest.nextToken,
+            outputKey: \ListApplicationComponentsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///   Retrieves a list of all the installed collectors.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listCollectorsPaginator(
+        _ input: ListCollectorsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListCollectorsRequest, ListCollectorsResponse> {
+        return .init(
+            input: input,
+            command: self.listCollectors,
+            inputKey: \ListCollectorsRequest.nextToken,
+            outputKey: \ListCollectorsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///   Retrieves a list of all the imports performed.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listImportFileTaskPaginator(
+        _ input: ListImportFileTaskRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListImportFileTaskRequest, ListImportFileTaskResponse> {
+        return .init(
+            input: input,
+            command: self.listImportFileTask,
+            inputKey: \ListImportFileTaskRequest.nextToken,
+            outputKey: \ListImportFileTaskResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///   Returns a list of all the servers.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listServersPaginator(
+        _ input: ListServersRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListServersRequest, ListServersResponse> {
+        return .init(
+            input: input,
+            command: self.listServers,
+            inputKey: \ListServersRequest.nextToken,
+            outputKey: \ListServersResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
     }
 }
 

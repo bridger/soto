@@ -54,4 +54,31 @@ extension ApplicationCostProfiler {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension ApplicationCostProfiler {
+    ///  Retrieves a list of all reports and their configurations for your AWS account. The maximum number of reports is one.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listReportDefinitionsPaginator(
+        _ input: ListReportDefinitionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListReportDefinitionsRequest, ListReportDefinitionsResult> {
+        return .init(
+            input: input,
+            command: self.listReportDefinitions,
+            inputKey: \ListReportDefinitionsRequest.nextToken,
+            outputKey: \ListReportDefinitionsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

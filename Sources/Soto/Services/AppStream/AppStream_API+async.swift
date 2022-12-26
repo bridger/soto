@@ -349,4 +349,94 @@ extension AppStream {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension AppStream {
+    ///  Retrieves a list that describes the permissions for shared AWS account IDs on a private image that you own.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeImagePermissionsPaginator(
+        _ input: DescribeImagePermissionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeImagePermissionsRequest, DescribeImagePermissionsResult> {
+        return .init(
+            input: input,
+            command: self.describeImagePermissions,
+            inputKey: \DescribeImagePermissionsRequest.nextToken,
+            outputKey: \DescribeImagePermissionsResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves a list that describes one or more specified images, if the image names or image ARNs are provided. Otherwise, all images in the account are described.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func describeImagesPaginator(
+        _ input: DescribeImagesRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<DescribeImagesRequest, DescribeImagesResult> {
+        return .init(
+            input: input,
+            command: self.describeImages,
+            inputKey: \DescribeImagesRequest.nextToken,
+            outputKey: \DescribeImagesResult.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
+// MARK: Waiters
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension AppStream {
+    public func waitUntilFleetStarted(
+        _ input: DescribeFleetsRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("fleets[].state", expected: "ACTIVE")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("fleets[].state", expected: "PENDING_DEACTIVATE")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("fleets[].state", expected: "INACTIVE")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeFleets
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+
+    public func waitUntilFleetStopped(
+        _ input: DescribeFleetsRequest,
+        maxWaitTime: TimeAmount? = nil,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) async throws {
+        let waiter = AWSClient.Waiter(
+            acceptors: [
+                .init(state: .success, matcher: try! JMESAllPathMatcher("fleets[].state", expected: "INACTIVE")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("fleets[].state", expected: "PENDING_ACTIVATE")),
+                .init(state: .failure, matcher: try! JMESAnyPathMatcher("fleets[].state", expected: "ACTIVE")),
+            ],
+            minDelayTime: .seconds(30),
+            command: self.describeFleets
+        )
+        return try await self.client.waitUntil(input, waiter: waiter, maxWaitTime: maxWaitTime, logger: logger, on: eventLoop)
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

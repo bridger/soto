@@ -625,11 +625,11 @@ extension Proton {
         /// The ID of the management account that accepts or rejects the environment account connection. You create and manage the Proton environment in this account. If the management account accepts the environment account connection, Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account.
         public let managementAccountId: String
         /// The Amazon Resource Name (ARN) of the IAM service role that's created in the environment account. Proton uses this role to provision infrastructure resources in the associated environment account.
-        public let roleArn: String
+        public let roleArn: String?
         /// An optional list of metadata items that you can associate with the Proton environment account connection. A tag is a key-value pair. For more information, see Proton resources and tagging in the Proton User Guide.
         public let tags: [Tag]?
 
-        public init(clientToken: String? = CreateEnvironmentAccountConnectionInput.idempotencyToken(), codebuildRoleArn: String? = nil, componentRoleArn: String? = nil, environmentName: String, managementAccountId: String, roleArn: String, tags: [Tag]? = nil) {
+        public init(clientToken: String? = CreateEnvironmentAccountConnectionInput.idempotencyToken(), codebuildRoleArn: String? = nil, componentRoleArn: String? = nil, environmentName: String, managementAccountId: String, roleArn: String? = nil, tags: [Tag]? = nil) {
             self.clientToken = clientToken
             self.codebuildRoleArn = codebuildRoleArn
             self.componentRoleArn = componentRoleArn
@@ -5234,5 +5234,65 @@ extension Proton {
         private enum CodingKeys: String, CodingKey {
             case s3
         }
+    }
+}
+
+// MARK: - Errors
+
+/// Error enum for Proton
+public struct ProtonErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case serviceQuotaExceededException = "ServiceQuotaExceededException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Proton
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// There isn&#39;t sufficient access for performing this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// The request couldn&#39;t be made due to a conflicting operation or resource.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// The request failed to register with the service.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The requested resource wasn&#39;t found.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// A quota was exceeded. For more information, see Proton Quotas in the Proton User Guide.
+    public static var serviceQuotaExceededException: Self { .init(.serviceQuotaExceededException) }
+    /// The request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input is invalid or an out-of-range value was supplied for the input parameter.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension ProtonErrorType: Equatable {
+    public static func == (lhs: ProtonErrorType, rhs: ProtonErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension ProtonErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
     }
 }

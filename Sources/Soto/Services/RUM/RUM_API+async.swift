@@ -115,4 +115,98 @@ extension RUM {
     }
 }
 
+// MARK: Paginators
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension RUM {
+    ///  Retrieves the list of metrics and dimensions that a RUM app monitor is sending to a single destination.
+    ///  API Reference: https://docs.aws.amazon.com/rum/latest/developerguide/BatchGetRumMetricDefinitions.html
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func batchGetRumMetricDefinitionsPaginator(
+        _ input: BatchGetRumMetricDefinitionsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<BatchGetRumMetricDefinitionsRequest, BatchGetRumMetricDefinitionsResponse> {
+        return .init(
+            input: input,
+            command: self.batchGetRumMetricDefinitions,
+            inputKey: \BatchGetRumMetricDefinitionsRequest.nextToken,
+            outputKey: \BatchGetRumMetricDefinitionsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Retrieves the raw performance events that RUM has collected from your web application, so that you can do your own processing or analysis of this data.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func getAppMonitorDataPaginator(
+        _ input: GetAppMonitorDataRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<GetAppMonitorDataRequest, GetAppMonitorDataResponse> {
+        return .init(
+            input: input,
+            command: self.getAppMonitorData,
+            inputKey: \GetAppMonitorDataRequest.nextToken,
+            outputKey: \GetAppMonitorDataResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of the Amazon CloudWatch RUM app monitors in the account.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listAppMonitorsPaginator(
+        _ input: ListAppMonitorsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListAppMonitorsRequest, ListAppMonitorsResponse> {
+        return .init(
+            input: input,
+            command: self.listAppMonitors,
+            inputKey: \ListAppMonitorsRequest.nextToken,
+            outputKey: \ListAppMonitorsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+
+    ///  Returns a list of destinations that you have created to receive RUM extended metrics,  for the specified app monitor. For more information about extended metrics, see AddRumMetrics.
+    /// Return PaginatorSequence for operation.
+    ///
+    /// - Parameters:
+    ///   - input: Input for request
+    ///   - logger: Logger used flot logging
+    ///   - eventLoop: EventLoop to run this process on
+    public func listRumMetricsDestinationsPaginator(
+        _ input: ListRumMetricsDestinationsRequest,
+        logger: Logger = AWSClient.loggingDisabled,
+        on eventLoop: EventLoop? = nil
+    ) -> AWSClient.PaginatorSequence<ListRumMetricsDestinationsRequest, ListRumMetricsDestinationsResponse> {
+        return .init(
+            input: input,
+            command: self.listRumMetricsDestinations,
+            inputKey: \ListRumMetricsDestinationsRequest.nextToken,
+            outputKey: \ListRumMetricsDestinationsResponse.nextToken,
+            logger: logger,
+            on: eventLoop
+        )
+    }
+}
+
 #endif // compiler(>=5.5.2) && canImport(_Concurrency)

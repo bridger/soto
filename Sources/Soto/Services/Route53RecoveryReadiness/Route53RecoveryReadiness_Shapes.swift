@@ -1587,3 +1587,60 @@ extension Route53RecoveryReadiness {
         }
     }
 }
+
+// MARK: - Errors
+
+/// Error enum for Route53RecoveryReadiness
+public struct Route53RecoveryReadinessErrorType: AWSErrorType {
+    enum Code: String {
+        case accessDeniedException = "AccessDeniedException"
+        case conflictException = "ConflictException"
+        case internalServerException = "InternalServerException"
+        case resourceNotFoundException = "ResourceNotFoundException"
+        case throttlingException = "ThrottlingException"
+        case validationException = "ValidationException"
+    }
+
+    private let error: Code
+    public let context: AWSErrorContext?
+
+    /// initialize Route53RecoveryReadiness
+    public init?(errorCode: String, context: AWSErrorContext) {
+        guard let error = Code(rawValue: errorCode) else { return nil }
+        self.error = error
+        self.context = context
+    }
+
+    internal init(_ error: Code) {
+        self.error = error
+        self.context = nil
+    }
+
+    /// return error code string
+    public var errorCode: String { self.error.rawValue }
+
+    /// User does not have sufficient access to perform this action.
+    public static var accessDeniedException: Self { .init(.accessDeniedException) }
+    /// Updating or deleting a resource can cause an inconsistent state.
+    public static var conflictException: Self { .init(.conflictException) }
+    /// An unexpected error occurred.
+    public static var internalServerException: Self { .init(.internalServerException) }
+    /// The requested resource does not exist.
+    public static var resourceNotFoundException: Self { .init(.resourceNotFoundException) }
+    /// Request was denied due to request throttling.
+    public static var throttlingException: Self { .init(.throttlingException) }
+    /// The input fails to satisfy the constraints specified by an AWS service.
+    public static var validationException: Self { .init(.validationException) }
+}
+
+extension Route53RecoveryReadinessErrorType: Equatable {
+    public static func == (lhs: Route53RecoveryReadinessErrorType, rhs: Route53RecoveryReadinessErrorType) -> Bool {
+        lhs.error == rhs.error
+    }
+}
+
+extension Route53RecoveryReadinessErrorType: CustomStringConvertible {
+    public var description: String {
+        return "\(self.error.rawValue): \(self.message ?? "")"
+    }
+}
